@@ -1,0 +1,140 @@
+@import "../../sass/variables";
+
+.banner-sec {
+
+    .category-sec {
+        border: 1px solid $secondary-color;
+        border-radius: var(--border-radius);
+
+        .menu-heading {
+            background-color: $primary-color;
+            padding: 10px;
+
+            .menu-icon {
+                font-size: 25px;
+                color: $bg-color;
+                margin-left: 10px;
+                margin-right: 20px;
+            }
+
+            .menu-title {
+                font-size: 18px;
+                font-weight: 500;
+                color: $bg-color;
+                margin-right: 70px;
+            }
+
+            .menu-angle {
+                font-size: 18px;
+                font-weight: 500;
+                color: $bg-color;
+            }
+        }
+
+        .wrap-menu {
+            .main-menu {
+                list-style: none;
+
+                .menu-item {
+                    border-bottom: 1px dotted $font-color;
+                    padding-bottom: 1rem;
+
+                    a {
+                        text-decoration: none;
+                        color: $secondary-color;
+                        font-size: 1rem;
+                        font-weight: 500;
+                        line-height: 20px;
+                        align-items: center;
+
+                        &:hover {
+                            color: $primary-color;
+                        }
+
+                        .icon {
+                            float: right;
+                            margin: 0 0.5rem;
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+
+    .main-slide {
+        position: relative;
+
+
+        img {
+            z-index: 0;
+            height: 80vh;
+            background-size: cover;
+        }
+
+        .slide-contain {
+            top: 0;
+            left: 0;
+            padding: 2rem;
+            padding-top: 25vh;
+            position: absolute;
+            align-items: center;
+
+            .first-line {
+                font-size: 30px;
+                line-height: 25px;
+                color: $secondary-color;
+                margin: 10px 0;
+            }
+
+            .second-line {
+                line-height: 3.5rem;
+                font-weight: bold;
+                margin: 15px 0;
+            }
+
+            .third-line {
+                margin-bottom: 30px;
+            }
+
+            .buttons .btn-style {
+                margin: 10px;
+                font-size: 18px;
+                padding: 12px 45px;
+            }
+        }
+
+
+        .button {
+            text-align: center;
+            cursor: pointer;
+
+            .prev_button {
+                position: absolute;
+                top: 50%;
+                left: 2rem;
+                transform: translateY(-50%);
+
+                .icon {
+                    font-size: 3rem;
+                    border: 2px solid $bg-grey;
+                    border-radius: $border-radius-full;
+                }
+            }
+
+            .next_button {
+                position: absolute;
+                top: 50%;
+                right: 2rem;
+                transform: translateY(-50%);
+
+                .icon {
+                    font-size: 3rem;
+                    border: 2px solid $bg-grey;
+                    border-radius: $border-radius-full;
+                }
+            }
+        }
+    }
+}

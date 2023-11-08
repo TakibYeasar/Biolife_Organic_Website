@@ -1,0 +1,131 @@
+@import "../../sass/variables";
+
+.article-sec {
+    margin: 30px 0;
+
+    .section-heading {
+        margin-top: 30px;
+        margin-bottom: 15px;
+        justify-content: space-between;
+
+        a {
+            text-decoration: none;
+            color: $secondary-color;
+            background-color: $card-bg;
+            padding: 5px 10px;
+            height: 40px;
+
+            &:hover {
+                color: $primary-color;
+            }
+        }
+    }
+
+    .articles-container {
+        list-style: none;
+
+        .articles-item {
+            margin: 0 15px;
+            .article-thumb {
+                position: relative;
+
+                .post-date {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    margin: 1rem;
+                    background-color: $primary-color;
+                    display: grid;
+                    border-radius: 50%;
+                    height: 50px;
+                    width: 50px;
+                    justify-content: center;
+                    padding: 5px;
+            
+                    span {
+                        margin: 0;
+                        font-size: 15px;
+                        font-weight: bold;
+                        color: $bg-color;
+                    }
+                }
+            }
+
+            .article-content {
+                .post-name a {
+                    text-decoration: none;
+                    color: $font-color;
+                    font-size: 20px;
+                    font-weight: 700;
+                    padding: 0 15px;
+                }
+
+                .post-meta {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0;
+
+                    a {
+                        text-decoration: none;
+                    }
+
+                    .post-meta__item.author span {
+                        margin: 0 10px;
+                        color: $font-color;
+                        font-weight: bold;
+
+                        &:hover {
+                            color: $primary-color;
+                        }
+                    }
+
+                    .post-meta__item.liked-count .icon,
+                    .post-meta__item.comment-count .icon,
+                    .post-meta__item span.tbn {
+                        margin: 0 10px;
+                        color: $secondary-color;
+                        font-weight: bold;
+                        cursor: pointer;
+                    
+                        &:hover {
+                            color: $primary-color;
+                        }
+                    }
+
+                    .post-meta__item {
+
+                        .inner-content .socials {
+                            display: flex;
+                            list-style: none;
+                            background-color: $card-bg;
+                            align-items: center;
+                            padding: 5px;
+                            margin-top: 10px;
+                            display: none;
+
+                            .socail-btn {
+                                margin: 5px;
+                                color: $secondary-color;
+                            }
+                        }
+                    }
+                }
+
+                .excerpt {
+                    font-size: 16px;
+                }
+
+                .group-buttons a.readmore {
+                    font-size: 20px;
+                    font-weight: 500;
+                    color: $primary-color;
+
+                    &:hover {
+                        color: $font-color;
+                    }
+                }
+            }
+        }
+    }
+}

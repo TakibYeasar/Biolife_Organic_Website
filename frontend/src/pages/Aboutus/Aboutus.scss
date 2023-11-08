@@ -1,0 +1,140 @@
+@import "../../sass/variables";
+
+.aboutus-sec {
+
+    .breadcrumb {
+        position: relative;
+
+        .img-fluid {
+            height: 30vh;
+            width: 100%;
+        }
+
+        .title {
+            position: absolute;
+            top: 40%;
+            left: 40%;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+    }
+
+    .boillife-nav {
+        a, span {
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: $font-color;
+            margin: 0 0.5rem;
+        }
+    }
+
+
+    .boillife-store {
+        .store-heading {
+            margin: 6rem 0;
+        }
+
+        .store-content {
+            align-items: center;
+            img {
+                -ms-background-size: cover;
+                background-size: cover;
+                z-index: 0;
+                height: 30vh;
+                width: 100%;
+                margin: 2rem 0;
+                justify-content: flex-end;
+            }
+
+            .text-content {
+                justify-content: end;
+
+                .quote-text {
+                    color: $primary-color;
+                }
+            }
+        }
+    }
+
+    .whyus-sec {
+        background-color: $card-bg;
+        padding: 2rem;
+
+        .whyus-heading {
+            margin: 2rem 0;
+        }
+
+        .whyus-content .reasons-sec {
+            list-style: none;
+
+            .icon,
+            .reasons-num {
+                color: $primary-color;
+            }
+
+            .reasons-title {
+                color: $bg-grey;
+            }
+
+            .desc {
+                font-size: 16px;
+            }
+        }
+    }
+
+    .testimonial-sec {
+        margin: 5rem 0;
+
+        .testimonial-heading {
+            margin: 2rem 0;
+
+            .icon {
+                margin: 0 5px;
+                color: $primary-color;
+            }
+        }
+
+        .testimonial-slider {
+            .slider-sec {
+                list-style: none;
+            }
+
+            .slider-item .featured-item {
+                .img-sec {
+                    img {
+                        margin-top: 1rem;
+                        font-size: 25px;
+                    }
+                }
+
+                .item-desc {
+                    align-items: center;
+                    padding: 1rem;
+
+                    .bottom-desc {
+
+                        .name,
+                        .title {
+                            font-size: 18px;
+                            color: $font-color;
+                        }
+
+                        .ratings {
+                            align-items: center;
+                            justify-content: center;
+                            margin: 1rem;
+
+                            .icon {
+                                margin: 0 5px;
+                                color: $primary-color;
+                            }
+                        }
+                    }
+                }
+
+
+            }
+        }
+    }
+}

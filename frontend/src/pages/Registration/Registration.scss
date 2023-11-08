@@ -1,0 +1,33 @@
+@import "../../sass/variables";
+
+.registrations_sec {
+    .body-content {
+        background-color: $card-bg;
+        border-radius: $border-radius;
+        padding: 1rem;
+
+
+        .create-new-account {
+            .checkout-subtitle {
+                font-size: 2.2rem;
+                font-weight: 600;
+            }
+
+            .title-tag-line {
+                font-size: 1.2rem;
+                color: $primary-color;
+            }
+
+            .register-form {
+                .form-group {
+                    margin: 0.5rem 0;
+
+                    .info-title {
+                        font-size: 18px;
+                        margin: 0.5rem 0;
+                    }
+                }
+            }
+        }
+    }
+}
