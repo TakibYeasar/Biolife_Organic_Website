@@ -19,7 +19,7 @@ const Specialoffer = () => {
       <div className="container">
         <div className="row">
           {soffer.map((item, i) => (
-            <div key={i} item className="special_offer d-flex">
+            <div key={i} item="true" className="special_offer d-flex">
               <div className="col-lg-4 col-md-12">
                 <div className="text-content text-center">
                   <span className="sub-line">{item?.title}</span><br />

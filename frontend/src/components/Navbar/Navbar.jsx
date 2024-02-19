@@ -3,9 +3,9 @@ import "./Navbar.scss";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import organic4 from "../../../../assets/images/organic-4.png";
 import { FaCartPlus, FaEnvelope, FaFacebook, FaHeart, FaPinterest, FaShoppingCart, FaTwitter, FaUser } from 'react-icons/fa';
-// import { useSelector, useDispatch } from "react-redux";
-// import { logout, reset } from "../features/auth/authSlice";
-// import { useNavigate } from "react-router-dom";
+// import { useDispatch, useSelector } from "react-redux";
+// import { selectAuth, signOutUserAsync } from "../authSlice";
+// import { Navigate } from "react-router-dom";
 
 
 const Navbar = () => {
@@ -19,6 +19,12 @@ const Navbar = () => {
     //     dispatch(reset());
     //     navigate("/");
     // };
+
+    // const { user } = useSelector(selectAuth);
+    // const dispatch = useDispatch();
+    // useEffect(() => {
+    //     dispatch(signOutUserAsync());
+    // }, []);
 
 
 

@@ -29,7 +29,7 @@ const Companies = () => {
         <ul className="brand-slide d-flex">
 
           {brands.map((item, i) => (
-            <li key={i} item>
+            <li key={i} item="true">
               <div className="biolife-brd-container">
                 <a href="#" className="link">
                   <figure><img src={item?.image} width={214} height={163} alt="" /></figure>

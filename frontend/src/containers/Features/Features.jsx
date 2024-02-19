@@ -33,7 +33,7 @@ const Features = () => {
         <ul className="row ">
 
           {featured.map((item, i) => (
-            <li className='col-lg-4 featured_item' key={i} item>
+            <li className='col-lg-4 featured_item' key={i} item="true">
               <div className="banner-contain">
                 <div className="media">
                   <a href="#" className="bn-link"><img src={item?.image} width={193} height={185} alt="" /></a>

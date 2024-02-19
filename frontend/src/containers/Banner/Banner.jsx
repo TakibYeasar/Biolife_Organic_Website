@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import "./Banner.scss";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { FaAngleLeft, FaAngleRight, FaBars, FaCaretDown } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+// import { useSelector, useDispatch } from "react-redux";
+// import { getBannersAsync } from '../../features/root/rootSlice';
 import bg01 from "../../../../assets/images/home/light-main_slide_01.jpg";
 import bg02 from "../../../../assets/images/home/light-main_slide_02.jpg";
 import bg03 from "../../../../assets/images/home/light-main_slide_03.jpg";
@@ -43,25 +45,25 @@ const category = [
   },
 ]
 
-const banner = [
+const banners = [
   {
     image: bg01,
     title: "Lorem ipsum dolor sit amet",
     subtitle: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
   },
-  // {
-  //   image: bg02,
-  //   title: "Lorem ipsum dolor sit amet",
-  //   subtitle: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-  //   desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-  // },
-  // {
-  //   image: bg03,
-  //   title: "Lorem ipsum dolor sit amet",
-  //   subtitle: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-  //   desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-  // },
+  {
+    image: bg02,
+    title: "Lorem ipsum dolor sit amet",
+    subtitle: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+  },
+  {
+    image: bg03,
+    title: "Lorem ipsum dolor sit amet",
+    subtitle: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+  },
 ]
 
 const variants = {
@@ -89,25 +91,34 @@ const variants = {
 
 const Banner = () => {
 
-  const [items, setItems] = useState();
+  // const dispatch = useDispatch();
   const [derection, setDerection] = useState(0);
+  // const [banners, setBanners] = useState();
+  
+  // const banners = useSelector(state => state.banners) ?? [];
+
+  // useEffect(() => {
+  //   dispatch(getBannersAsync);
+  //   // setBanners(dispatch);
+  // }, []);
+  
 
   function nextStep() {
     setDerection(+1);
-    if (items == items.length - 1) {
+    if (banners == banners.length - 1) {
       setItems(0);
       return
     }
-    setItems(items + 1);
+    setItems(banners + 1);
   }
 
   function prevStep() {
     setDerection(-1);
-    if (items == 0) {
-      setItems(items.length - 1);
+    if (banners == 0) {
+      setItems(banners.length - 1);
       return
     }
-    setItems(items - 1);
+    setItems(banners - 1);
   }
 
   return (
@@ -125,7 +136,7 @@ const Banner = () => {
 
               <div className="wrap-menu">
                 {category.map((item, i) => (
-                  <ul key={i} item className="main-menu">
+                  <ul key={i} item="true" className="main-menu">
                     <li className="menu-item"><a href="#">{item?.title} <FaAngleRight className="icon" /></a></li>
                   </ul>
                 ))}
@@ -135,8 +146,8 @@ const Banner = () => {
 
 
           <div className="col-lg-9 col-md-8">
-            {banner.map((item, i) => (
-              <motion.div className="main-slide" variants={variants} animate="animate" initial="initial" exit="exit" custom={derection} key={i} item>
+            {banners?.map((item, i) => (
+              <motion.div className="main-slide" variants={variants} animate="animate" initial="initial" exit="exit" custom={derection} key={i} item="true">
                 <AnimatePresence initial={false}>
                   <img src={item.image} alt="" />
                   <div className="slide-contain">
@@ -150,8 +161,8 @@ const Banner = () => {
                   </div>
                 </AnimatePresence>
                 <div className="button d-flex">
-                  <a href="" onClick={prevStep} className="prev_button"><FaAngleLeft className='icon' /></a>
-                  <a href="" onClick={nextStep} className="next_button"><FaAngleRight className='icon' /></a>
+                  <a href="#" onClick={prevStep} className="prev_button"><FaAngleLeft className='icon' /></a>
+                  <a href="#" onClick={nextStep} className="next_button"><FaAngleRight className='icon' /></a>
                 </div>
               </motion.div>
             ))}

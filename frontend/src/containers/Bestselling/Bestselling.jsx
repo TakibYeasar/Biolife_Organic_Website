@@ -105,7 +105,7 @@ const Bestselling = () => {
           <div className="col-lg-4">
 
               {dsproduct.map((item, i) => (
-                <div key={i} item className='discount_prod'>
+                <div key={i} item="true" className='discount_prod'>
                   <div className="boillife-banner">
                       <a href="#" className="banner-img"><img src={item?.photo_main} alt="" /></a>
                     <div className="text-content">

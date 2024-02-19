@@ -94,7 +94,7 @@ const Prodfeature = () => {
                             </div>
                             <ul className="products-list">
                                 {topratedprod.map((item, i) => (
-                                    <li className="product-item" key={i} item>
+                                    <li className="product-item" key={i} item="true">
                                         <div className="contain-product d-flex">
                                             <div className="product-thumb">
                                                 <a href="#" className="link-to-product">
@@ -126,7 +126,7 @@ const Prodfeature = () => {
                             </div>
                             <ul className="products-list">
                                 {featuredprod.map((item, i) => (
-                                    <li className="product-item" key={i} item>
+                                    <li className="product-item" key={i} item="true">
                                         <div className="contain-product d-flex">
                                             <div className="product-thumb">
                                                 <a href="#" className="link-to-product">
@@ -158,7 +158,7 @@ const Prodfeature = () => {
                             </div>
                             <ul className="products-list">
                                 {bestsellingprod.map((item, i) => (
-                                    <li className="product-item" key={i} item>
+                                    <li className="product-item" key={i} item="true">
                                         <div className="contain-product d-flex">
                                             <div className="product-thumb">
                                                 <a href="#" className="link-to-product">

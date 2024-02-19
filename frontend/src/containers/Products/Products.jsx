@@ -136,6 +136,23 @@ const onsaleprod = [
 
 const Products = () => {
 
+  // const cars = useSelector((state) => state.cars.cars);
+  // const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   dispatch(fetchCars());
+  // }, [dispatch]);
+
+  // const handleDelete = async (vehicleId) => {
+  //   try {
+  //     await dispatch(deleteVehicle(vehicleId));
+  //     await dispatch(fetchCars());
+  //     toast.success('Vehicle successfully deleted.');
+  //   } catch (error) {
+  //     error('something went wrong');
+  //   }
+  // };
+
   // const { posts, loading } = useSelector(state => state.post);
   // const dispatch = useDispatch();
 
@@ -182,7 +199,7 @@ const Products = () => {
               <motion.ul ref={carousel} drag="x" dragConstraints={{ right: 0, left: -width }} className="product-list active d-flex">
 
                 {allproducts.map((item, i) => (
-                  <motion.li key={i} item className="product-item col-lg-3 col-md-6 col-sm-12">
+                  <motion.li key={i} item="true" className="product-item col-lg-3 col-md-6 col-sm-12">
                     <Singleprod item={item} />
                   </motion.li>
                 ))}

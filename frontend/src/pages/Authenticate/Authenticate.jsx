@@ -1,52 +1,81 @@
 import React, { useState } from "react";
-// import { Link, Redirect } from "react-router-dom";
 import "./Authenticate.scss";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
-// import { useSelector, useDispatch } from "react-redux";
-// import { login, reset } from "../features/auth/authSlice";
-// import Spinner from "../components/Spinner";
-// import { toast } from "react-toastify";
+// import { Link, Navigate } from "react-router-dom";
+// import { useForm } from "react-hook-form";
+// import { useDispatch, useSelector } from "react-redux";
+// import { loginUserAsync, selectAuth } from "../authSlice";
+
+// 02
+// import { useSelector, useDispatch } from 'react-redux';
+// import { useNavigate } from 'react-router-dom';
+// import { toast } from 'react-toastify';
+// import { loginUser, registerUser } from '../redux/slices/userSlice';
+
+// const initialState = {
+//   username: '',
+//   password: '',
+//   isMember: true,
+// };
+
 
 const Authenticate = () => {
 
-  // const [formData, setFormData] = useState({
-  //   email: "",
-  //   password: "",
-  // });
-
-  // const { email, password } = formData;
-
-  // const navigation = useNavigate();
   // const dispatch = useDispatch();
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   formState: { errors },
+  // } = useForm();
+  // const { user, errorLogin, status } = useSelector(selectAuth);
+
+  // const onSubmit = (data) => {
+  //   try {
+  //     dispatch(loginUserAsync({ email: data.email, password: data.password }));
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // if (user) {
+  //   return <Navigate to="/admin" replace={true} />;
+  // }
+
+  // 02
+  // const [values, setValues] = useState(initialState);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const dispatch = useDispatch();
+  // const { isLoading, isAuthenticated } = useSelector((store) => store.user);
   // const navigate = useNavigate();
 
-  // const { user, isLoading, isError, isSuccess, message } = useSelector(
-  //   (state) => state.auth
-  // );
-
-  // useEffect(() => {
-  //   if (isError) {
-  //     toast.error(message);
-  //   }
-  //   if (isSuccess || user) {
-  //     navigate("/");
-  //   }
-  //   dispatch(reset());
-  // }, [user, isError, isSuccess, message, navigation, dispatch]);
-  // const onChange = (e) => {
-  //   setFormData((prevState) => ({
-  //     ...prevState,
-  //     [e.target.name]: e.target.value,
-  //   }));
+  // const handleChange = (e) => {
+  //   const { name } = e.target;
+  //   const { value } = e.target;
+  //   setValues({ ...values, [name]: value });
   // };
+
   // const onSubmit = (e) => {
   //   e.preventDefault();
-  //   const userData = { email, password };
-  //   dispatch(login());
+  //   const { username, password } = values;
+  //   if (!username || !password) {
+  //     toast.error('Please fill out all Fields');
+  //   } else if (values.isMember) {
+  //     dispatch(loginUser({ username, password }));
+  //   } else {
+  //     dispatch(registerUser({ username, password }));
+  //   }
   // };
-  // if (isLoading) {
-  //   return <Spinner />;
-  // }
+
+  // const toggleMember = () => {
+  //   setValues({ ...values, isMember: !values.isMember });
+  // };
+
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     setIsLoggedIn(true);
+  //     navigate('/');
+  //   }
+  // }, [navigate, isAuthenticated]);
 
   return (
     <div className="section">
@@ -67,18 +96,37 @@ const Authenticate = () => {
             <div className="row">
               <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <div className="signin-container">
-                  <form action="#" name="frm-login" method="post" >
-                  {/* <form action="#" name="frm-login" method="post" onSubmit={onSubmit}> */}
+                  <form action="#" name="frm-login" method="post" onSubmit={handleSubmit(onSubmit)}>
                     <p className="form-row d-grid">
                       <label for="fid-name">Email Address:<span className="requite">*</span></label>
-                      <input type="text" id="fid-name" name="name" placeholder="Email Address" className="txt-input" />
-                      {/* <input type="text" id="fid-name" name="name" placeholder="Email Address" className="txt-input" onChange={onChange} /> */}
+                      <input type="text" id="fid-name" name="name" placeholder="Email Address" className="txt-input" autoComplete="email" required />
                     </p>
+                    {/* <p className="form-row d-grid">
+                      <label for="fid-name">Email Address:<span className="requite">*</span></label>
+                      <input {...register("email", { required: "Email Address is required", })} type="text" id="fid-name" name="name" placeholder="Email Address" className="txt-input" autoComplete="email" required />
+                      <p className="error">{errors.email && errors.email?.message}</p>
+                    </p> */}
                     <p className="form-row d-grid">
                       <label for="fid-pass">Password:<span className="requite">*</span></label>
-                      {/* <input type="text" id="fid-pass" name="password" placeholder="Password" className="txt-input" onChange={onChange} /> */}
-                      <input type="text" id="fid-pass" name="password" placeholder="Password" className="txt-input" />
+                      <input type="text" id="fid-pass" name="password" placeholder="Password" className="txt-input" autoComplete="current-password" required />
                     </p>
+                    {/* <p className="form-row d-grid">
+                      <label for="fid-pass">Password:<span className="requite">*</span></label>
+                      <input {...register("password", { required: "Password is required", })} type="text" id="fid-pass" name="password" placeholder="Password" className="txt-input" autoComplete="current-password" required />
+                      <p className="error">{errors.password && errors.password?.message}</p>
+                    </p> */}
+
+                    {/* 02
+                    <label className="input-group input-group-vertical">
+                    <span className="bg-green-500 text-white font-bold">Password</span>
+                    <input
+                      type="password"
+                      value={values.password}
+                      name="password"
+                      onChange={handleChange}
+                      className="input input-bordered focus:outline-none"
+                    />
+                  </label> */}
                     <p className="form-row wrap-btn">
                       <button className="btn-style" type="submit">sign in</button>
                       <a href="#" className="link-to-help">Forgot your password</a>

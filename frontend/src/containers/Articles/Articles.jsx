@@ -35,7 +35,7 @@ const Articles = () => {
         <ul className="articles-container d-flex">
           
           {articles.map((item, i) => (
-            <li item key={i} className="articles-item">
+            <li key={i} item="true" className="articles-item">
               <div className="article-thumb">
                 <a href="#" className="link-to-post"><img src={item?.image} width={370} height={270} alt="" /></a>
                 <div className="post-date">
