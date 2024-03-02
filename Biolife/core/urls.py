@@ -10,7 +10,7 @@ urlpatterns = [
     path('contactinfo/delete/<int:pk>/',
          DeleteContactinfoView.as_view(), name='delete_contactinfo'),
 
-    path('banner/', GetBannerView.as_view(), name='get_banner'),
+    path('banners/', GetBannerView.as_view(), name='get_banner'),
     path('banner/create/', CreateBannerView.as_view(), name='create_banner'),
     path('banner/update/<int:pk>/',
          UpdateBannerView.as_view(), name='update_banner'),

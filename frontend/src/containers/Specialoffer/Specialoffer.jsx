@@ -1,23 +1,38 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import "./Specialoffer.scss";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
-import bg03 from "../../../../assets/images/home/bg-right-follow.jpg";
+import { useSelector, useDispatch } from "react-redux";
+import { selectIsLoading, selectIsError, selectSpecialoffer, getSpecialofferAsync } from '../../features/root/rootSlice';
+// import bg03 from "../../../../assets/images/home/bg-right-follow.jpg";
 
-const soffer = [
-  {
-    title: "Special Offer!",
-    subtitle: "Special discount for all fruit products",
-    image: bg03,
-  },
-]
+// const soffer = [
+//   {
+//     title: "Special Offer!",
+//     subtitle: "Special discount for all fruit products",
+//     image: bg03,
+//   },
+// ]
 
 
 const Specialoffer = () => {
+
+  const dispatch = useDispatch();
+  const soffer = useSelector(selectSpecialoffer);
+  const loading = useSelector(selectIsLoading);
+  const error = useSelector(selectIsError);
+
+  useEffect(() => {
+    dispatch(getSpecialofferAsync());
+  }, []);
+
+  // console.log("Special Offer:", soffer);
 
   return (
     <div className="special-offer-sec">
       <div className="container">
         <div className="row">
+          {loading && <div>Loading specialoffer...</div>}
+          {error && <div>Error fetching specialoffer: {error.message}</div>}
           {soffer.map((item, i) => (
             <div key={i} item="true" className="special_offer d-flex">
               <div className="col-lg-4 col-md-12">

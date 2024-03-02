@@ -1,40 +1,66 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import "./Articles.scss";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { FaComment, FaFacebook, FaHeart, FaInstagram, FaPinterest, FaShareAlt, FaTwitter, FaYoutube } from "react-icons/fa";
 import author from "../../../../assets/images/about-us/author-02.png";
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { selectIsLoading, selectIsError, selectAllArticles, getAllArticlesAsync } from '../../features/article/articleSlice';
 import post1 from "../../../../assets/images/our-blog/post-thumb-01.jpg";
 import post2 from "../../../../assets/images/our-blog/post-thumb-02.jpg";
 import post3 from "../../../../assets/images/our-blog/post-thumb-03.jpg";
 
-const articles = [
-  {
-    image: post1,
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis, alias?",
-  },
-  {
-    image: post2,
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis, alias?",
-  },
-  {
-    image: post3,
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis, alias?",
-  },
-]
+// const articles = [
+//   {
+//     image: post1,
+//     title: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis, alias?",
+//   },
+//   {
+//     image: post2,
+//     title: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis, alias?",
+//   },
+//   {
+//     image: post3,
+//     title: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis, alias?",
+//   },
+// ]
 
 const Articles = () => {
+
+  const dispatch = useDispatch();
+  const articles = useSelector(selectAllArticles);
+  const loading = useSelector(selectIsLoading);
+  const error = useSelector(selectIsError);
+  const [showAllArticles, setShowAllArticles] = useState(false);
+
+  useEffect(() => {
+    dispatch(getAllArticlesAsync());
+  }, []);
+
+  const toggleShowAllArticles = () => {
+    setShowAllArticles(!showAllArticles);
+  };
+
+  console.log("Articles:", articles);
+
   return (
     <div className="article-sec">
       <div className="container">
         <div className="section-heading d-flex">
           <h3 className="main-title">Our Latest Articles</h3>
-          <a href="#" className="blog-link">View All Articles</a>
+          {!showAllArticles && (
+            <a href="#" className="blog-link" onClick={toggleShowAllArticles}>
+              View All Articles
+            </a>
+          )}
         </div>
 
         <ul className="articles-container d-flex">
+
+          {loading && <div>Loading brands...</div>}
+          {error && <div>Error fetching brands: {error.message}</div>}
           
-          {articles.map((item, i) => (
+          {articles.slice(0, showAllArticles ? articles.length : 3).map((item, i) => (
             <li key={i} item="true" className="articles-item">
               <div className="article-thumb">
                 <a href="#" className="link-to-post"><img src={item?.image} width={370} height={270} alt="" /></a>
@@ -63,7 +89,7 @@ const Articles = () => {
                   </div>
                 </div>
                 <Link className="group-buttons" to={`/blogview-${item?.title}-${item?.id}`}>
-                  <a href="#" className="btn readmore">continue reading</a>
+                  <p className="btn readmore">continue reading</p>
                 </Link>
               </div>
             </li>

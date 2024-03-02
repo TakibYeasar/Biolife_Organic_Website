@@ -4,7 +4,6 @@ from products.models import Product
 
 # Create your models here.
 
-
 class Cart(models.Model):
     customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     total = models.PositiveIntegerField()
@@ -16,11 +15,11 @@ class Cart(models.Model):
 
 
 class CartProduct(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     subtotal = models.DecimalField(decimal_places=2, max_digits=8, default=0)
-    
+
     def get_product_total(self):
         return self.product.price * self.quantity
 
@@ -83,7 +82,7 @@ ORDER_STATUS = (
 
 class Order(models.Model):
     customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    cart = models.OneToOneField(Cart)
+    cart = models.OneToOneField(Cart, on_delete=models.CASCADE, default=None)
     in_processing = models.BooleanField(default=False)
     address = models.ForeignKey(
         Address, on_delete=models.SET_NULL, null=True, blank=True)

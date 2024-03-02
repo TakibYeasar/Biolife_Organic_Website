@@ -1,233 +1,217 @@
-from rest_framework.response import Response
-from rest_framework import views, status
-from rest_framework.views import APIView
 from .models import *
 from .serializers import *
-from rest_framework.authentication import TokenAuthentication
+from rest_framework import status, views, viewsets
+from rest_framework.views import APIView
+from rest_framework.response import Response, JsonResponse
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+from django.conf import settings
 import stripe
-stripe.api_key = "sk_test_1srueIi8nRsob787g1O3pS0z00NR4rSjbb"
+import paypalrestsdk
 
-# Create your views here.
 
-class AddToCartView(APIView):
-    permission_classes = [IsAuthenticated, ]
-    authentication_classes = [TokenAuthentication, ]
+class AddToCartView(views.APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def post(self, request):
-        product_id = request.data['id']
-        product_obj = Product.objects.get(id=product_id)
-        incomplete_cart = Cart.objects.filter(
-            customer=request.user.profile).filter(complete=False).first()
+        product_id = request.data.get('id')
 
         try:
-            if incomplete_cart:
-                this_product_in_cart = incomplete_cart.cartproduct_set.filter(
-                    product=product_obj)
-                if this_product_in_cart.exists():
-                    cart_product = CartProduct.objects.filter(
-                        product=product_obj).filter(cart__complete=False).first()
-                    cart_product.quantity += 1
-                    cart_product.subtotal += product_obj.price
-                    cart_product.save()
-                    incomplete_cart.total += product_obj.price
-                    incomplete_cart.save()
-                else:
-                    new_cart_product = CartProduct.objects.create(
-                        cart=incomplete_cart,
-                        price=product_obj.price,
-                        quantity=1,
-                        subtotal=product_obj.price
-                    )
-                    new_cart_product.product.add(product_obj)
-                    incomplete_cart.total += product_obj.price
-                    incomplete_cart.save()
+            product = Product.objects.get(pk=product_id)
+            user = request.user
+            incomplete_cart, _ = Cart.objects.get_or_create(customer=user, complete=False)
+            cart_product = incomplete_cart.cartproduct_set.filter(product=product).first()
+
+            if cart_product:
+                cart_product.quantity += 1
+                cart_product.subtotal = cart_product.quantity * product.price
+                cart_product.save()
+
+                incomplete_cart.total += product.price
+                incomplete_cart.save()
             else:
-                Cart.objects.create(
-                    customer=request.user.profile, total=0, complete=False)
-                new_cart = Cart.objects.filter(
-                    customer=request.user.profile).filter(complete=False).first()
                 new_cart_product = CartProduct.objects.create(
-                    cart=new_cart,
-                    price=product_obj.price,
+                    cart=incomplete_cart,
+                    product=product,
                     quantity=1,
-                    subtotal=product_obj.price
+                    subtotal=product.price
                 )
-                new_cart_product.product.add(product_obj)
-                new_cart.total += product_obj.price
-                new_cart.save()
 
-            message = {
-                'error': False, 'message': "Product added to Cart", "productid": product_id}
+                incomplete_cart.total += product.price
+                incomplete_cart.save()
+
+            return Response(
+                {'error': False, 'message': "Product added to Cart",
+                    "productid": product_id},
+                status=status.HTTP_201_CREATED
+            )
+
+        except Product.DoesNotExist:
+            return Response(
+                {'error': True, 'message': "Product not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
         except Exception as e:
             print(e)
-            message = {
-                'error': True, 'message': "Product Not added to Cart! Something went Wrong"}
-
-        return Response(message)
-
-
-class MyCart(APIView):
-    authentication_classes = [TokenAuthentication, ]
-    permission_classes = [IsAuthenticated, ]
-
-    def list(self, request):
-        query = Cart.objects.filter(customer=request.user.profile)
-        serializers = CartSerializer(query, many=True)
-        all_data = []
-        for cart in serializers.data:
-            cart_product = CartProduct.objects.filter(cart=cart["id"])
-            cart_product_serializer = CartProductSerializer(
-                cart_product, many=True)
-            cart["cart_product"] = cart_product_serializer.data
-            all_data.append(cart)
-        return Response(all_data)
+            return Response(
+                {'error': True, 'message': "Something went wrong"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
-class IncreaseCartProdQuantity(APIView):
-    permission_classes = [IsAuthenticated, ]
-    authentication_classes = [TokenAuthentication, ]
+class MyCart(views.APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
-    def post(self, request):
-        cp_obj = CartProduct.objects.get(id=request.data["id"])
-        cart_obj = cp_obj.cart
+    def get(self, request):
+        cart = Cart.objects.filter(customer=request.user).first()
 
-        cp_obj.quantity += 1
-        cp_obj.subtotal += cp_obj.price
-        cp_obj.save()
-
-        cart_obj.total += cp_obj.price
-        cart_obj.save()
-        return Response({"message": "CartProduct Add Update", "product": request.data['id']})
+        if cart:
+            serializer = CartSerializer(cart)
+            return Response(serializer.data)
+        else:
+            return Response({'error': 'No cart found.'}, status=status.HTTP_404_NOT_FOUND)
 
 
-class DecreaseCartProdQuantity(APIView):
-    permission_classes = [IsAuthenticated, ]
-    authentication_classes = [TokenAuthentication, ]
-
-    def post(self, request):
-        cp_obj = CartProduct.objects.get(id=request.data["id"])
-        cart_obj = cp_obj.cart
-
-        cp_obj.quantity -= 1
-        cp_obj.subtotal -= cp_obj.price
-        cp_obj.save()
-
-        cart_obj.total -= cp_obj.price
-        cart_obj.save()
-        if cp_obj.quantity == 0:
-            cp_obj.delete()
-        return Response({"message": "CartProduct Add Update", "product": request.data['id']})
-
-
-class DeleteCartProduct(APIView):
-    permission_classes = [IsAuthenticated, ]
-    authentication_classes = [TokenAuthentication, ]
-
-    def post(self, request):
-        cp_obj = CartProduct.objects.get(id=request.data['id'])
-        cp_obj.delete()
-        return Response({"message": "CartProduct Deleted", "product": request.data['id']})
-
-
-class DeleteFullCart(APIView):
-    permission_classes = [IsAuthenticated, ]
-    authentication_classes = [TokenAuthentication, ]
+class IncreaseCartProdQuantity(views.APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def post(self, request):
         try:
-            card_obj = Cart.objects.get(id=request.data['id'])
-            card_obj.delete()
-            message = {"message": "Cart Deleted"}
-        except Exception as e:
-            print(e)
-            message = {"message": "Something went wrong"}
-        return Response(message)
+            cart_product_id = request.data.get('id')
+            cart_product = CartProduct.objects.get(
+                pk=cart_product_id, customer=request.user)
+
+            cart_product.quantity += 1
+            cart_product.subtotal += cart_product.price
+            cart_product.save()
+
+            cart_product.cart.total += cart_product.price
+            cart_product.cart.save()
+
+            return Response({'message': 'Cart product quantity increased.'}, status=status.HTTP_200_OK)
+
+        except CartProduct.DoesNotExist:
+            return Response({'error': 'Cart product not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 
-class AddAddressAPIView(APIView):
-    serializer_class = AddAdressSerializer()
+class DecreaseCartProdQuantity(views.APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def post(self, request):
-        order_qs = Order.objects.filter(buyer=request.user.profile, in_processing=False)
+        try:
+            cart_product_id = request.data.get('id')
+            cart_product = CartProduct.objects.get(
+                pk=cart_product_id, customer=request.user)
 
-        if not order_qs.exists():
-            return Response({'error:': 'No order found for this user'}, status=status.HTTP_400_BAD_REQUEST)
+            if cart_product.quantity > 1:
+                cart_product.quantity -= 1
+                cart_product.subtotal -= cart_product.price
+                cart_product.save()
 
-        order = order_qs.first()
+                cart_product.cart.total -= cart_product.price
+                cart_product.cart.save()
+
+                return Response({'message': 'Cart product quantity decreased.'}, status=status.HTTP_200_OK)
+            else:
+                cart_product.delete()
+                return Response({'message': 'Cart product removed.'}, status=status.HTTP_200_OK)
+
+        except CartProduct.DoesNotExist:
+            return Response({'error': 'Cart product not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class DeleteCartProduct(views.APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def delete(self, request, pk):
+        try:
+            cart_product = CartProduct.objects.get(
+                pk=pk, customer=request.user)
+            cart_product.delete()
+            return Response({"message": "Cart product deleted."}, status=status.HTTP_204_NO_CONTENT)
+        except CartProduct.DoesNotExist:
+            raise NotFound("Cart product not found.")
+
+class DeleteFullCart(views.APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def delete(self, request):
+        try:
+            cart = Cart.objects.get(customer=request.user)
+            cart.delete()
+            return Response({"message": "Cart deleted."}, status=status.HTTP_204_NO_CONTENT)
+        except Cart.DoesNotExist:
+            raise NotFound("Cart not found.")
+
+class AddAddressAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def post(self, request):
+        order = Order.objects.filter(
+            buyer=request.user, in_processing=False).first()
+        if not order:
+            return Response({'error': 'No order found for this user'}, status=status.HTTP_400_BAD_REQUEST)
 
         if request.data.get('use_default', False):
-            address_qs = Address.objects.filter(
-                customer=request.user.profile, is_default=True)
-            if address_qs.exists():
-                address = address_qs.first()
+            address = Address.objects.filter(
+                customer=request.user, is_default=True).first()
+            if address:
                 order.address = address
                 order.save()
-                return Response({'success:': 'User is using the default address'}, status=status.HTTP_200_OK)
+                return Response({'success': 'User is using the default address'}, status=status.HTTP_200_OK)
             else:
-                return Response({'error:': 'User has no default address'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'User has no default address'}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = self.serializer_class(data=request.data)
+        serializer = AddAdressSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        address = serializer.save()
-        address.buyer = request.user.profile
-        address.save()
+        address = serializer.save(buyer=request.user)
 
         if request.data.get('is_default', False):
-            previous_default = Address.objects.filter(
-                customer=request.user.profile, is_default=True).first()
-            if previous_default:
-                previous_default.is_default = False
-                previous_default.save()
+            Address.objects.filter(customer=request.user,
+                                   is_default=True).update(is_default=False)
             address.is_default = True
             address.save()
 
         order.address = address
         order.save()
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
-class OrderViewSet(APIView):
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def list(self, request):
-        queryset = Order.objects.filter(cart__customer=request.user.profile)
-        serializer = OrderSerializer(queryset, many=True)
-        data = serializer.data
-        for order in data:
-            cart_products = CartProduct.objects.filter(
-                cart_id=order['cart']['id'])
-            cart_product_serializer = CartProductSerializer(
-                cart_products, many=True)
-            order['cart_product'] = cart_product_serializer.data
-        return Response(data)
+    def get_queryset(self):
+        return self.queryset.filter(cart__customer=self.request.user)
 
     def retrieve(self, request, pk=None):
         try:
-            order = Order.objects.get(id=pk)
-            serializer = OrderSerializer(order)
-            data = serializer.data
-            cart_products = CartProduct.objects.filter(
-                cart_id=data['cart']['id'])
-            cart_product_serializer = CartProductSerializer(
-                cart_products, many=True)
-            data['cart_product'] = cart_product_serializer.data
-            return Response({"error": False, "data": data})
+            instance = self.get_object()
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
         except Order.DoesNotExist:
-            return Response({"error": True, "data": "No data found for this ID"})
+            raise NotFound("Order not found.")
 
     def destroy(self, request, pk=None):
         try:
-            order = Order.objects.get(id=pk)
-            cart = Cart.objects.get(id=order.cart.id)
-            order.delete()
+            instance = self.get_object()
+            cart = instance.cart
+            instance.delete()
             cart.delete()
-            return Response({"error": False, "message": "Order deleted", "order_id": pk})
+            return Response({"error": False, "message": "Order deleted", "order_id": pk}, status=status.HTTP_204_NO_CONTENT)
         except Order.DoesNotExist:
-            return Response({"error": True, "message": "Order not found"})
+            raise NotFound("Order not found.")
 
     def create(self, request):
         cart_id = request.data["cartId"]
@@ -240,79 +224,101 @@ class OrderViewSet(APIView):
             address=address,
             total=cart.total,
             discount=3,
+            customer=request.user
         )
-        return Response({"message": "Order completed", "cart_id": cart_id, "order_id": order.id})
+        serializer = self.get_serializer(order)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class PaymentAPIView(APIView):
-    serializer_class = PaymentSerializer
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+class PaymentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        order = Order.objects.get(user=request.user, ordered=False)
+        if order.address:
+            serializer = OrderSerializer(order)
+            return Response(serializer.data)
+        else:
+            return Response({"error": "No billing address added"}, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request):
-        token = request.data.get('public_key')
-        payment_method_id = request.data.get('payment_method_id')
-
         try:
-            order = Order.objects.get(
-                customer=request.user.profile, in_processing=False)
-            amount = int(order.get_order_total() * 100)
+            order = Order.objects.get(user=request.user, ordered=False)
 
-            # Check if this customer already exists in Stripe
-            customer_data = stripe.Customer.list(
-                email=request.user.profile.email).data
-            if not customer_data:
-                # Create a new customer if not exists
-                customer = stripe.Customer.create(
-                    email=request.user.profile.email,
-                    payment_method=payment_method_id
+            # Get payment method from request and validate
+            payment_method = request.data.get('payment_method')
+            if not payment_method:
+                return Response({"error": "Missing payment method"}, status=status.HTTP_400_BAD_REQUEST)
+            if payment_method not in ['stripe', 'paypal']:
+                return Response({"error": "Invalid payment method"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Process payment based on chosen method
+            if payment_method == 'stripe':
+                token = request.data.get('stripeToken')
+                amount = int(order.get_total() * 100)
+                charge = stripe.Charge.create(
+                    amount=amount,
+                    currency="usd",
+                    source=token
                 )
-            else:
-                customer = customer_data[0]
 
-            # Charge the customer
-            charge = stripe.PaymentIntent.create(
-                customer=customer,
-                payment_method=payment_method_id,
-                currency='usd',
-                amount=amount,
-                confirm=True
-            )
+                payment = Payment.objects.create(
+                    stripe_charge_id=charge['id'],
+                    user=request.user,
+                    amount=order.get_total()
+                )
 
-            # Save payment details
-            payment = Payment.objects.create(
-                stripe_charge_id=charge['id'],
-                amount=order.get_order_total()
-            )
+            elif payment_method == 'paypal':
+                paypalrestsdk.configure({
+                    "mode": settings.PAYPAL_MODE,
+                    "client_id": settings.PAYPAL_CLIENT_ID,
+                    "client_secret": settings.PAYPAL_CLIENT_SECRET,
+                })
 
-            # Mark ordered items as ordered
-            ordered_items = order.products.all()
-            for item in ordered_items:
-                item.ordered = True
-                item.save()
+                paypal_payment = paypalrestsdk.Payment({
+                    "intent": "sale",
+                    "payer": {
+                        "payment_method": "paypal",
+                    },
+                    "transactions": [
+                        {
+                            "amount": {
+                                "total": str(order.get_total()),
+                                "currency": "USD",  # Adjust as needed
+                            },
+                            "description": "Payment for Order #{}".format(order.id),
+                        }
+                    ],
+                    "redirect_urls": {
+                        "return_url": "YOUR_RETURN_URL",
+                        "cancel_url": "YOUR_CANCEL_URL",
+                    },
+                })
 
-            # Update order details
+                if paypal_payment.create():
+                    payment = Payment.objects.create(
+                        paypal_payment_id=paypal_payment.id,
+                        user=request.user,
+                        amount=order.get_total()
+                    )
+                    # Redirect to PayPal for approval (handle in frontend)
+                    approval_url = next(
+                        link.href for link in paypal_payment.links if link.rel == "approval_url")
+                    return JsonResponse({"approval_url": approval_url}, status=status.HTTP_201_CREATED)
+                else:
+                    return Response({"error": "Failed to create PayPal payment"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Complete order processing
+            order.ordered = True
             order.payment = payment
-            order.in_processing = True
             order.save()
 
-            return Response({'success:': 'Payment successful'}, status=status.HTTP_200_OK)
-
-        except stripe.error.CardError as e:
-            return Response({'error:': 'Card error. Please try again later'}, status=status.HTTP_400_BAD_REQUEST)
-
-        except stripe.error.RateLimitError as e:
-            return Response({'error:': 'Rate limit error. Please try again later'}, status=status.HTTP_400_BAD_REQUEST)
-
-        except stripe.error.InvalidRequestError as e:
-            return Response({'error:': 'Invalid parameters. Please try again later'}, status=status.HTTP_400_BAD_REQUEST)
-
-        except stripe.error.AuthenticationError as e:
-            return Response({'error:': 'Authentication error. Please try again later'}, status=status.HTTP_400_BAD_REQUEST)
-
-        except stripe.error.APIConnectionError as e:
-            return Response({'error:': 'Network error. Please try again later'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Order successful"}, status=status.HTTP_201_CREATED)
 
         except stripe.error.StripeError as e:
-            return Response({'error:': 'Payment error. Please try again later'}, status=status.HTTP_400_BAD_REQUEST)
-
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({'error:': 'Something went wrong. Please try again later'}, status=status.HTTP_400_BAD_REQUEST)
+            # Log the error for debugging
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -5,7 +5,7 @@ import { domain } from "../../env";
 // user registration
 export const registerUser = async (userData) => {
     console.log(userData);
-    const response = await axios.post(`${domain}/auth/register-user/`, userData);
+    const response = await axios.post(`${domain}/api/auth/register-user/`, userData);
 
     if (response.data) {
         localStorage.setItem("user", JSON.stringify(response.data));
@@ -16,7 +16,7 @@ export const registerUser = async (userData) => {
 // login user
 export const loginUser = async (userData) => {
         console.log(userData);
-        const response = await axios.post(`${domain}/auth/login-user`, userData);
+        const response = await axios.post(`${domain}/api/auth/login-user`, userData);
 
         if (response.data) {
             localStorage.setItem("user", JSON.stringify(response.data));
@@ -26,7 +26,7 @@ export const loginUser = async (userData) => {
 
 // logout user
 export const logOutUser = async (_) => {
-        const response = await axios.post(`${domain}/auth/logout/`);
+        const response = await axios.post(`${domain}/api/auth/logout/`);
         if (response.data) {
             localStorage.removeItem("user");
         }
@@ -35,18 +35,18 @@ export const logOutUser = async (_) => {
 
 // forgot password
 export const forgotPasswordRequest = async (data) => {
-        const response = await axios.post(`${domain}/auth/new-password-request/`, data);
+        const response = await axios.post(`${domain}/api/auth/new-password-request/`, data);
         return response.data;
 };
 
 // reset password
 export const resetPassword = async (data) => {
-        const response = await axios.put(`${domain}/auth/reset-password/<str:uidb64>/<str:token>/`, data);
+        const response = await axios.put(`${domain}/api/auth/reset-password/<str:uidb64>/<str:token>/`, data);
         return response.data;
 };
 
 // verify Account
 export const verifyAccount = async (data) => {
-        const response = await axios.post(`${domain}/auth/register/verifing-account/`, data);
+        const response = await axios.post(`${domain}/api/auth/register/verifing-account/`, data);
         return response.data;
 };

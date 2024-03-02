@@ -3,7 +3,7 @@ import {
     getBanners,
     getFeatured,
     getSpecialoffer,
-    getAllbrands,
+    getBrands,
 } from "./rootService";
 import { toast } from "react-toastify";
 
@@ -14,8 +14,7 @@ export const getBannersAsync = createAsyncThunk("api/getBanners",
             return await getBanners();
         } catch (err) {
             toast.error(`Banners not found`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
+            return thunkAPI.rejectWithValue(err.message);
         }
     }
 );
@@ -26,8 +25,7 @@ export const getFeaturedAsync = createAsyncThunk("api/getFeatured",
             return await getFeatured();
         } catch (err) {
             toast.error(`Featured not found`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
+            return thunkAPI.rejectWithValue(err.message);
         }
     }
 );
@@ -38,20 +36,18 @@ export const getSpecialofferAsync = createAsyncThunk("api/getSpecialoffer",
             return await getSpecialoffer();
         } catch (err) {
             toast.error(`Special Offer not found`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
+            return thunkAPI.rejectWithValue(err.message);
         }
     }
 );
 
-export const getAllbrandsAsync = createAsyncThunk("api/getAllbrands",
+export const getBrandsAsync = createAsyncThunk("api/getAllbrands",
     async (_, thunkAPI) => {
         try {
-            return await getAllbrands();
+            return await getBrands();
         } catch (err) {
             toast.error(`Brands not found`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
+            return thunkAPI.rejectWithValue(err.message);
         }
     }
 );
@@ -76,8 +72,7 @@ export const rootSlice = createSlice({
             .addCase(getBannersAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.banners.push(action.payload);
+                state.banners = action.payload;
             })
             .addCase(getBannersAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -90,8 +85,7 @@ export const rootSlice = createSlice({
             .addCase(getFeaturedAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.featureds.push(action.payload);
+                state.featureds = action.payload;
             })
             .addCase(getFeaturedAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -104,24 +98,22 @@ export const rootSlice = createSlice({
             .addCase(getSpecialofferAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.soffer.push(action.payload);
+                state.soffer = action.payload;
             })
             .addCase(getSpecialofferAsync.rejected, (state, action) => {
                 state.isSuccess = false;
                 state.isError = true;
                 toast.error(action.payload);
             })
-            .addCase(getAllbrandsAsync.pending, (state) => {
+            .addCase(getBrandsAsync.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(getAllbrandsAsync.fulfilled, (state, action) => {
+            .addCase(getBrandsAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.brands.push(action.payload);
+                state.brands = action.payload;
             })
-            .addCase(getAllbrandsAsync.rejected, (state, action) => {
+            .addCase(getBrandsAsync.rejected, (state, action) => {
                 state.isSuccess = false;
                 state.isError = true;
                 toast.error(action.payload);
@@ -130,6 +122,8 @@ export const rootSlice = createSlice({
 });
 
 
+export const selectIsLoading = (state) => state.root.isLoading;
+export const selectIsError = (state) => state.root.isError;
 export const selectAllBanners = (state) => state.root.banners;
 export const selectAllFeatureds = (state) => state.root.featureds;
 export const selectSpecialoffer = (state) => state.root.soffer;

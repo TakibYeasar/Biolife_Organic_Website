@@ -20,7 +20,6 @@ class BannerSerializer(serializers.ModelSerializer):
         else:
             return obj.image.url
 
- 
 class FeaturedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Featured

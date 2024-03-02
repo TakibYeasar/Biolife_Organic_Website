@@ -1,61 +1,55 @@
-from django.db.models import fields
-from .models import *
-from products.models import Product
 from rest_framework import serializers
-
-
-class CartSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Cart
-        fields = "__all__"
-        depth = 1
+from .models import *
+from authapi.serializers import CustomUserSerializer
+from products.serializers import ProductSerializer
 
 
 class CartProductSerializer(serializers.ModelSerializer):
+    # Nested read-only product representation
+    product = ProductSerializer(read_only=True)
+
     class Meta:
         model = CartProduct
-        fields = "__all__"
-        depth = 1
+        fields = ('id', 'cart', 'product', 'quantity', 'subtotal')
+
+
+class CartSerializer(serializers.ModelSerializer):
+    # Nested read-only customer representation
+    customer = CustomUserSerializer(read_only=True)
+    total = serializers.IntegerField(
+        read_only=True)  # Calculate total dynamically
+    # Nested read-only list of cart products
+    cart_products = CartProductSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Cart
+        fields = ('id', 'customer', 'total', 'complete',
+                  'created', 'cart_products')
 
 
 class AddAdressSerializer(serializers.ModelSerializer):
-    is_default = serializers.BooleanField()
-
     class Meta:
         model = Address
-        fields = "_all_"
-
-    def validate(self, attrs):
-        print("attrs => ", attrs)
-        data = {
-            "street": attrs.get('street'),
-            "zip_code": attrs.get('zip_code'),
-            "city": attrs.get('city'),
-            "country": attrs.get('country'),
-            "is_default": attrs.get('is_default'),
-        }
-        return data
-
-    def create(self, validate_data):
-        print("validate_data => ", validate_data)
-        address = Address.objects.create(**validate_data)
-        return address
+        fields = '__all__'
 
 
-class AddToCartSerializer(serializers.ModelSerializer):
+class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
-        fields = ['id', ]
+        model = Payment
+        fields = '__all__'
+
 
 class OrderSerializer(serializers.ModelSerializer):
+    # Nested read-only customer representation
+    customer = CustomUserSerializer(read_only=True)
+    # Nested read-only cart representation
+    cart = CartSerializer(read_only=True)
+    # Nested read-only address representation
+    address = AddAdressSerializer(read_only=True)
+    # Nested read-only payment representation
+    payment = PaymentSerializer(read_only=True)
+
     class Meta:
         model = Order
         fields = '__all__'
-        
 
-class PaymentSerializer(serializers.Serializer):
-    token = serializers.CharField(max_length=225)
-
-    class Meta:
-        models: Payment
-        fields = ['token', ]

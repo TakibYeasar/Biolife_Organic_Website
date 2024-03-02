@@ -71,7 +71,7 @@ class CustomUser(AbstractBaseUser):
     def is_staff(self):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
-        return self.is_staff
+        return self.is_admin
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"

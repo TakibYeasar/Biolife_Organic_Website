@@ -18,8 +18,4 @@ urlpatterns = [
          views.DeleteCartProduct.as_view(), name='delete_cart_product'),
     # Delete complete cart
     path('cart/delete/', views.DeleteFullCart.as_view(), name='delete_full_cart'),
-    # Order views (assuming 'orders' app)
-    path('orders/', include('orders.urls', namespace='orders')),
-    # Payment view (assuming 'payments' app)
-    path('payments/', include('payments.urls', namespace='payments')),
 ]

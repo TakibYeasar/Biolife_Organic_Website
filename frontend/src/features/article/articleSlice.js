@@ -20,8 +20,7 @@ export const getArticlesCatAsync = createAsyncThunk("articles/getArticlesCat",
             return await getArticlesCat();
         } catch (err) {
             toast.error(`Article Categories not found`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
+            return thunkAPI.rejectWithValue(err.message);
         }
     }
 );
@@ -32,8 +31,7 @@ export const getSingleCategoryAsync = createAsyncThunk("articles/getSingleCatego
             return await getSingleCategory(catId, thunkAPI);
         } catch (err) {
             toast.error(`Single article category not found`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
+            return thunkAPI.rejectWithValue(err.message);
         }
     }
 );
@@ -44,8 +42,7 @@ export const getAllArticlesAsync = createAsyncThunk("articles/getAllArticles",
             return await getAllArticles();
         } catch (err) {
             toast.error(`Articles not found`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
+            return thunkAPI.rejectWithValue(err.message);
         }
     }
 );
@@ -56,8 +53,7 @@ export const getSingleArticleAsync = createAsyncThunk("articles/getSingleArticle
             return await getSingleArticle(articleId, thunkAPI);
         } catch (err) {
             toast.error(`Single article not found`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
+            return thunkAPI.rejectWithValue(err.message);
         }
     }
 );
@@ -68,32 +64,29 @@ export const commentArticleAsync = createAsyncThunk("articles/commentArticle",
             return await commentArticle(articleId, commentData, thunkAPI);
         } catch (err) {
             toast.error(`Comments not found`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
+            return thunkAPI.rejectWithValue(err.message);
         }
     }
 );
 
 export const updateCommentAsync = createAsyncThunk("articles/updateComment",
-    async (articleId, commentId, commentData, thunkAPI) => {
+    async (commentId, commentData, thunkAPI) => {
         try {
-            return await updateComment(articleId, commentId, commentData, thunkAPI);
+            return await updateComment(commentId, commentData, thunkAPI);
         } catch (err) {
             toast.error(`Update comment failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
+            return thunkAPI.rejectWithValue(err.message);
         }
     }
 );
 
 export const deleteCommentAsync = createAsyncThunk("articles/deleteComment",
-    async (articleId, commentId, thunkAPI) => {
+    async (commentId, thunkAPI) => {
         try {
-            return await deleteComment(articleId, commentId, thunkAPI);
+            return await deleteComment(commentId, thunkAPI);
         } catch (err) {
             toast.error(`Delete comment failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
+            return thunkAPI.rejectWithValue(err.message);
         }
     }
 );
@@ -104,32 +97,29 @@ export const replayCommentArticleAsync = createAsyncThunk("articles/replayCommen
             return await replayCommentArticle(articleId, commentId, commentData, thunkAPI);
         } catch (err) {
             toast.error(`Replay comment failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
+            return thunkAPI.rejectWithValue(err.message);
         }
     }
 );
 
 export const updateReplayCommentAsync = createAsyncThunk("articles/updateReplayComment",
-    async (articleId, commentId, repCmtId, commentData, thunkAPI) => {
+    async (articleId, commentId, commentData, thunkAPI) => {
         try {
-            return await updateReplayComment(articleId, commentId, repCmtId, commentData, thunkAPI);
+            return await updateReplayComment(articleId, commentId, commentData, thunkAPI);
         } catch (err) {
             toast.error(`Replay comment updated failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
+            return thunkAPI.rejectWithValue(err.message);
         }
     }
 );
 
 export const deleteReplayCommentAsync = createAsyncThunk("articles/deleteReplayComment",
-    async (articleId, commentId, repCmtId, thunkAPI) => {
+    async (articleId, commentId, thunkAPI) => {
         try {
-            return await deleteReplayComment(articleId, commentId, repCmtId, thunkAPI);
+            return await deleteReplayComment(articleId, commentId, thunkAPI);
         } catch (err) {
             toast.error(`Replay comment deleted failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
+            return thunkAPI.rejectWithValue(err.message);
         }
     }
 );
@@ -138,7 +128,11 @@ export const articleSlice = createSlice({
     name: "article",
     initialState: {
         categories: [],
+        category: [],
         articles: [],
+        article: [],
+        comments: [],
+        comment: [],
         isError: false,
         isSuccess: false,
         isLoading: false,
@@ -152,8 +146,7 @@ export const articleSlice = createSlice({
             .addCase(getArticlesCatAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.categories.push(action.payload);
+                state.categories = action.payload;
             })
             .addCase(getArticlesCatAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -166,7 +159,7 @@ export const articleSlice = createSlice({
             .addCase(getSingleCategoryAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
+                state.category = action.payload;
             })
             .addCase(getSingleCategoryAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -179,8 +172,7 @@ export const articleSlice = createSlice({
             .addCase(getAllArticlesAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.articles.push(action.payload);
+                state.articles = action.payload;
             })
             .addCase(getAllArticlesAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -193,7 +185,7 @@ export const articleSlice = createSlice({
             .addCase(getSingleArticleAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
+                state.article = action.payload;
             })
             .addCase(getSingleArticleAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -281,6 +273,8 @@ export const articleSlice = createSlice({
     },
 });
 
+export const selectIsLoading = (state) => state.root.isLoading;
+export const selectIsError = (state) => state.root.isError;
 export const selectAllCategories = (state) => state.article.categories;
 export const selectAllArticles = (state) => state.article.articles;
 export default articleSlice.reducer;

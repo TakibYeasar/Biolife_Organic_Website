@@ -13,7 +13,8 @@ class GetContactinfoView(APIView):
     def get(self, request):
         try:
             info_obj = Contactinfo.objects.all()
-            serializer = ContactinfoSerializer(info_obj, many=True)
+            serializer = ContactinfoSerializer(
+                info_obj, context={'request': request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({'error': "No Contactinfo found"}, status=status.HTTP_404_NOT_FOUND)
@@ -38,7 +39,8 @@ class UpdateContactinfoView(APIView):
     def put(self, request, pk):
         try:
             info_obj = Contactinfo.objects.get(pk=pk)
-            serializer = ContactinfoSerializer(info_obj, data=request.data)
+            serializer = ContactinfoSerializer(
+                info_obj, context={'request': request}, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -64,7 +66,8 @@ class GetBannerView(APIView):
     def get(self, request):
         try:
             banner_obj = Banner.objects.all()
-            serializer = BannerSerializer(banner_obj, many=True)
+            serializer = BannerSerializer(
+                banner_obj, context={'request': request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({'error': "No Banner found"}, status=status.HTTP_404_NOT_FOUND)
@@ -89,7 +92,8 @@ class UpdateBannerView(APIView):
     def put(self, request, pk):
         try:
             banner_obj = Banner.objects.get(pk=pk)
-            serializer = BannerSerializer(banner_obj, data=request.data)
+            serializer = BannerSerializer(
+                banner_obj, context={'request': request}, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -115,7 +119,8 @@ class GetFeaturedView(APIView):
     def get(self, request):
         try:
             featured_obj = Banner.objects.all()
-            serializer = BannerSerializer(featured_obj, many=True)
+            serializer = BannerSerializer(
+                featured_obj, context={'request': request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
                 return Response({'error': "No Banner found"}, status=status.HTTP_404_NOT_FOUND)
@@ -140,7 +145,8 @@ class UpdateFeaturedView(APIView):
     def put(self, request, pk):
         try:
             featured_obj = Banner.objects.get(pk=pk)
-            serializer = BannerSerializer(featured_obj, data=request.data)
+            serializer = BannerSerializer(
+                featured_obj, context={'request': request}, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -166,7 +172,8 @@ class GetSpecialOfferView(APIView):
     def get(self, request):
         try:
             soffer_obj = Banner.objects.all()
-            serializer = BannerSerializer(soffer_obj, many=True)
+            serializer = BannerSerializer(
+                soffer_obj, context={'request': request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({'error': "No SpecialOffer found"}, status=status.HTTP_404_NOT_FOUND)
@@ -191,7 +198,8 @@ class UpdateSpecialOfferView(APIView):
     def put(self, request, pk):
         try:
             soffer_obj = Banner.objects.get(pk=pk)
-            serializer = BannerSerializer(soffer_obj, data=request.data)
+            serializer = BannerSerializer(
+                soffer_obj, context={'request': request}, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -217,7 +225,8 @@ class GetBrandsView(APIView):
     def get(self, request):
         try:
             brand_obj = Banner.objects.all()
-            serializer = BannerSerializer(brand_obj, many=True)
+            serializer = BannerSerializer(
+                brand_obj, context={'request': request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({'error': "No Brands found"}, status=status.HTTP_404_NOT_FOUND)
@@ -242,7 +251,8 @@ class UpdateBrandsView(APIView):
     def put(self, request, pk):
         try:
             brand_obj = Banner.objects.get(pk=pk)
-            serializer = BannerSerializer(brand_obj, data=request.data)
+            serializer = BannerSerializer(
+                brand_obj, context={'request': request}, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -268,7 +278,8 @@ class GetAboutView(APIView):
     def get(self, request):
         try:
             about_obj = About.objects.all()
-            serializer = AboutSerializer(about_obj, many=True)
+            serializer = AboutSerializer(
+                about_obj, context={'request': request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({'error': "No About found"}, status=status.HTTP_404_NOT_FOUND)
@@ -293,7 +304,8 @@ class UpdateAboutView(APIView):
     def put(self, request, pk):
         try:
             about_obj = About.objects.get(pk=pk)
-            serializer = AboutSerializer(about_obj, data=request.data)
+            serializer = AboutSerializer(
+                about_obj, context={'request': request}, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -319,7 +331,8 @@ class GetTestimonialView(APIView):
     def get(self, request):
         try:
             test_obj = Testimonial.objects.all()
-            serializer = TestimonialSerializer(test_obj, many=True)
+            serializer = TestimonialSerializer(
+                test_obj, context={'request': request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({'error': "No About found"}, status=status.HTTP_404_NOT_FOUND)
@@ -344,7 +357,8 @@ class UpdateTestimonialView(APIView):
     def put(self, request, pk):
         try:
             test_obj = Testimonial.objects.get(pk=pk)
-            serializer = TestimonialSerializer(test_obj, data=request.data)
+            serializer = TestimonialSerializer(
+                test_obj, context={'request': request}, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)

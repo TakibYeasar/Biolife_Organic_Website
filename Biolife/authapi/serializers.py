@@ -58,7 +58,7 @@ class ActivationResendSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
-    token = serializers.ModelSerializerMethodField()
+    token = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser

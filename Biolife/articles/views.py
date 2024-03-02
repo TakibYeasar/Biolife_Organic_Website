@@ -24,13 +24,13 @@ class GetArticleCategoryView(APIView):
                 category = Articlecategory.objects.get(id=category_id)
                 articles = Article.objects.filter(category=category)
                 serializer = ArticleSerializer(articles, many=True)
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                return Response(serializer.data, context={'request': request}, status=status.HTTP_200_OK)
             except ObjectDoesNotExist:
                 return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
         else:
             category = Articlecategory.objects.all()
             category_data = ArticlecategorySerializer(
-                category, many=True).data
+                category, context={'request': request}, many=True).data
             return Response(data=category_data, status=status.HTTP_200_OK)
 
 
@@ -57,7 +57,8 @@ class UpdateArticleCategoryView(APIView):
         except ObjectDoesNotExist:
             return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
     
-        serializer = ArticlecategorySerializer(category, data=request.data)
+        serializer = ArticlecategorySerializer(
+            category, context={'request': request}, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -96,7 +97,8 @@ class GetArticleView(APIView):
                 return Response({'error': "No article found"}, status=status.HTTP_404_NOT_FOUND)
         else:
             articles = Article.objects.all()
-            articles_data = ArticleSerializer(articles, many=True).data
+            articles_data = ArticleSerializer(
+                articles, context={'request': request}, many=True).data
             return Response(data=articles_data, status=status.HTTP_200_OK)
 
 
@@ -123,7 +125,8 @@ class UpdateArticleView(APIView):
         except ObjectDoesNotExist:
             return Response({'error': 'Article not found'}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = ArticleSerializer(article, data=request.data)
+        serializer = ArticleSerializer(
+            article, context={'request': request}, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
