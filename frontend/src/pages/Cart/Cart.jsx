@@ -9,7 +9,7 @@ import p12 from "../../../../assets/images/products/p-12.jpg";
 import p13 from "../../../../assets/images/products/p-13.jpg";
 import p14 from "../../../../assets/images/products/p-14.jpg";
 import p15 from "../../../../assets/images/products/p-15.jpg";
-import Singleprod from '../../containers/Singleprod/Singleprod';
+import Singleprod from '../../components/Singleprod/Singleprod';
 
 const cartdata = [
   {

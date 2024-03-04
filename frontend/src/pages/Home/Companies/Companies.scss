@@ -1,0 +1,13 @@
+@import "../../../sass/variables";
+
+.companies-sec {
+    background-color: $card-bg;
+
+    .brand-slide {
+        list-style: none;
+
+        li .biolife-brd-container {
+            margin: 25px;
+        }
+    }
+}
