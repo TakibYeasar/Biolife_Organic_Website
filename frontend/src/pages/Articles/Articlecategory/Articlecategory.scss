@@ -1,0 +1,28 @@
+@import "../../../sass/variables";
+
+.category-widget {
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid $secondary-color;
+
+    .main-title {
+        font-size: 25px;
+    }
+
+    .category-content {
+        .cat-list {
+            list-style: none;
+            padding-left: 0;
+
+            .cat-list-item {
+                margin: 0.5rem 0;
+
+                .cat-link {
+                    text-decoration: none;
+                    color: $font-color;
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+}

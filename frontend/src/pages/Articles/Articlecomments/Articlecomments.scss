@@ -1,0 +1,15 @@
+@import "../../../sass/variables";
+
+.post-comments {
+    .cmt-title {
+        margin: 1.5rem 0;
+        font-size: 30px;
+
+        sup {
+            color: $bg-grey;
+            font-size: 20px;
+        }
+    }
+
+
+}

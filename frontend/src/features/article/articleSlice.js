@@ -276,5 +276,6 @@ export const articleSlice = createSlice({
 export const selectIsLoading = (state) => state.root.isLoading;
 export const selectIsError = (state) => state.root.isError;
 export const selectAllCategories = (state) => state.article.categories;
+export const selectArticle = (state) => state.article.article;
 export const selectAllArticles = (state) => state.article.articles;
 export default articleSlice.reducer;

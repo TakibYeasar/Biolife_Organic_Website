@@ -1,0 +1,42 @@
+@import "../../../sass/variables";
+
+.posts-widget {
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid $secondary-color;
+
+    .main-title {
+        font-size: 25px;
+    }
+
+    .post-content .posts {
+        list-style: none;
+        padding-left: 0;
+
+        .post-item {
+            .thumb {
+                margin-right: 10px;
+
+                img {
+                    height: 50px;
+                    width: 130px;
+                }
+            }
+
+            .detail {
+                align-items: baseline;
+
+                .post-name a {
+                    text-decoration: none;
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: $font-color;
+                }
+
+                .post-archive {
+                    font-size: 14px;
+                }
+            }
+        }
+    }
+}
