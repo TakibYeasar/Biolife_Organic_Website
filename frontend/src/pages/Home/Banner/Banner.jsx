@@ -33,15 +33,23 @@ const Banner = () => {
 
   const dispatch = useDispatch();
   const [derection, setDerection] = useState(0);
-  const loading = useSelector(selectIsLoading);
-  const error = useSelector(selectIsError);
   const banners = useSelector(selectAllBanners);
+  const isLoading = useSelector(selectIsLoading);
+  const isError = useSelector(selectIsError);
 
   useEffect(() => {
     dispatch(getBannersAsync());
   }, []);
 
   // console.log("Banners:", banners);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error occurred while fetching article details.</div>;
+  }
 
 
   function nextStep() {
@@ -66,8 +74,6 @@ const Banner = () => {
 
   return (
     <div className="banner-sec col-lg-9 col-md-8">
-      {loading && <div>Loading banners...</div>}
-      {error && <div>Error fetching banners: {error.message}</div>}
       <AnimatePresence initial={false}>
         {banners?.map((item, index) => (
           <motion.div key={item.id || index} className="main-slide" variants={variants} animate="animate" initial="initial" exit="exit" custom={derection} >

@@ -3,100 +3,7 @@ import "./Productslist.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { FaAngleRight, FaHeart, FaRandom } from "react-icons/fa";
 import bg from "../../../../../assets/images/home/biolife-banner__style-01.jpg";
-import p1 from "../../../../../assets/images/products/p-01.jpg";
-import p2 from "../../../../../assets/images/products/p-02.jpg";
-import p3 from "../../../../../assets/images/products/p-03.jpg";
-import p4 from "../../../../../assets/images/products/p-17.jpg";
-import p5 from "../../../../../assets/images/products/p-05.jpg";
-
-import p6 from "../../../../../assets/images/products/p-06.jpg";
-import p7 from "../../../../../assets/images/products/p-07.jpg";
-import p8 from "../../../../../assets/images/products/p-08.jpg";
-import p9 from "../../../../../assets/images/products/p-09.jpg";
-import p10 from "../../../../../assets/images/products/p-10.jpg";
-
 import p11 from "../../../../../assets/images/products/p-11.jpg";
-import p12 from "../../../../../assets/images/products/p-12.jpg";
-import p13 from "../../../../../assets/images/products/p-13.jpg";
-import p14 from "../../../../../assets/images/products/p-14.jpg";
-import p15 from "../../../../../assets/images/products/p-15.jpg";
-import { Singleprod } from "../../../components";
-
-const prod_one = [
-  {
-    image: p1,
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-    category: "Fresh Fruit",
-    price: "450",
-    old_price: "900",
-  },
-  {
-    image: p2,
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-    category: "Fresh Fruit",
-    price: "450",
-    old_price: "900",
-  },
-  {
-    image: p3,
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-    category: "Fresh Fruit",
-    price: "450",
-    old_price: "900",
-  },
-  {
-    image: p4,
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-    category: "Fresh Fruit",
-    price: "450",
-    old_price: "900",
-  },
-  {
-    image: p5,
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-    category: "Fresh Fruit",
-    price: "450",
-    old_price: "900",
-  },
-]
-
-const prod_two = [
-  {
-    image: p11,
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-    category: "Fresh Fruit",
-    price: "450",
-    old_price: "900",
-  },
-  {
-    image: p12,
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-    category: "Fresh Fruit",
-    price: "450",
-    old_price: "900",
-  },
-  {
-    image: p13,
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-    category: "Fresh Fruit",
-    price: "450",
-    old_price: "900",
-  },
-  {
-    image: p14,
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-    category: "Fresh Fruit",
-    price: "450",
-    old_price: "900",
-  },
-  {
-    image: p15,
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-    category: "Fresh Fruit",
-    price: "450",
-    old_price: "900",
-  },
-]
 
 const Productslist = () => {
   return (
@@ -118,18 +25,7 @@ const Productslist = () => {
           <div className="row">
             <div id="main-content" className="main-content col-lg-9 col-md-8 col-sm-12 col-xs-12">
 
-              <div className="block-item recently-products-cat md-margin-bottom-39">
-                <ul className="products-list biolife-carousel nav-center-02 nav-none-on-mobile"  >
-
-                  {prod_one?.map((item, i) => (
-                    <li key={i} item className="product-item col-lg-3 col-md-6 col-sm-12">
-                      <Singleprod product={item?.product} />
-                    </li>
-                  ))}
-
-
-                </ul>
-              </div>
+              <Productstop />
 
               <div className="product-category list-style">
 
@@ -260,146 +156,11 @@ const Productslist = () => {
 
             </div>
             <aside id="sidebar" className="sidebar col-lg-3 col-md-4 col-sm-12 col-xs-12">
-              <div className="biolife-mobile-panels">
-                <span className="biolife-current-panel-title">Sidebar</span>
-                <a className="biolife-close-btn" href="#" data-object="open-mobile-filter">&times;</a>
-              </div>
-              <div className="sidebar-contain">
-                <div className="widget biolife-filter">
-                  <h4 className="wgt-title">Departements</h4>
-                  <div className="wgt-content">
-                    <ul className="cat-list">
-                      <li className="cat-list-item"><a href="#" className="cat-link">Organic Food</a></li>
-                      <li className="cat-list-item"><a href="#" className="cat-link">Fresh Fruit</a></li>
-                      <li className="cat-list-item"><a href="#" className="cat-link">Dried Fruits</a></li>
-                    </ul>
-                  </div>
-                </div>
+              <Sidebar />
 
-                <div className="widget biolife-filter">
-                  <h4 className="wgt-title">Shipping & Pickup</h4>
-                  <div className="wgt-content">
-                    <ul className="cat-list">
-                      <li className="cat-list-item"><a href="#" className="cat-link">Show all</a></li>
-                      <li className="cat-list-item"><a href="#" className="cat-link">2- Day shipping</a></li>
-                      <li className="cat-list-item"><a href="#" className="cat-link">Shop to Home</a></li>
-                      <li className="cat-list-item"><a href="#" className="cat-link">Free Pickup</a></li>
-                    </ul>
-                  </div>
-                </div>
+              <Recentlyviewed />
 
-                <div className="widget price-filter biolife-filter">
-                  <h4 className="wgt-title">Price</h4>
-                  <div className="wgt-content">
-                    <div className="frm-contain">
-                      <form action="#" name="price-filter" id="price-filter" method="get">
-                        <p className="f-item">
-                          <label for="pr-from">$</label>
-                          <input className="input-number" type="number" id="pr-from" value="" name="price-from" />
-                        </p>
-                        <p className="f-item">
-                          <label for="pr-to">to $</label>
-                          <input className="input-number" type="number" id="pr-to" value="" name="price-from" />
-                        </p>
-                        <p className="f-item"><button className="btn-submit" type="submit">go</button></p>
-                      </form>
-                    </div>
-                    <ul className="check-list bold single">
-                      <li className="check-list-item"><a href="#" className="check-link">$0 - $5</a></li>
-                      <li className="check-list-item"><a href="#" className="check-link">$5 - $10</a></li>
-                      <li className="check-list-item"><a href="#" className="check-link">$15 - $20</a></li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="widget biolife-filter">
-                  <h4 className="wgt-title">Brand</h4>
-                  <div className="wgt-content">
-                    <ul className="check-list multiple">
-                      <li className="check-list-item"><a href="#" className="check-link">Great Value Organic</a></li>
-                      <li className="check-list-item"><a href="#" className="check-link">Plum Organic</a></li>
-                      <li className="check-list-item"><a href="#" className="check-link">Shop to Home</a></li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="widget biolife-filter">
-                  <h4 className="wgt-title">Color</h4>
-                  <div className="wgt-content">
-                    <ul className="color-list">
-                      <li className="color-item"><a href="#" className="c-link"><span className="symbol img-color"></span>Multi</a></li>
-                      <li className="color-item"><a href="#" className="c-link"><span className="symbol hex-code color-01"></span>Red</a></li>
-                      <li className="color-item"><a href="#" className="c-link"><span className="symbol hex-code color-02"></span>Orrange</a></li>
-                      <li className="color-item"><a href="#" className="c-link"><span className="symbol hex-code color-03"></span>Other</a></li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="widget biolife-filter">
-                  <h4 className="wgt-title">Popular Size</h4>
-                  <div className="wgt-content">
-                    <ul className="check-list bold multiple">
-                      <li className="check-list-item"><a href="#" className="check-link">8oz</a></li>
-                      <li className="check-list-item"><a href="#" className="check-link">15oz</a></li>
-                      <li className="check-list-item"><a href="#" className="check-link">6oz</a></li>
-                      <li className="check-list-item"><a href="#" className="check-link">30oz</a></li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="widget biolife-filter">
-                  <h4 className="wgt-title">Number of Pieces</h4>
-                  <div className="wgt-content">
-                    <ul className="check-list bold">
-                      <li className="check-list-item"><a href="#" className="check-link">1 to 9</a></li>
-                      <li className="check-list-item"><a href="#" className="check-link">10 to 15</a></li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="widget biolife-filter">
-                  <h4 className="wgt-title">Recently Viewed</h4>
-                  <div className="wgt-content">
-                    <ul className="products">
-
-                      {prod_two?.map((item, i) => {
-                        <li className="pr-item">
-                          <div className="contain-product style-widget">
-                            <div className="product-thumb">
-                              <a href="#" className="link-to-product" tabindex="0">
-                                <img src={item?.image} alt="dd" width={270} height={270} className="product-thumnail" />
-                              </a>
-                            </div>
-                            <div className="info">
-                              <b className="categories">{item?.category}</b>
-                              <h4 className="product-title"><a href="#" className="pr-name" tabindex="0">{item?.title}</a></h4>
-                              <div className="price">
-                                <ins><span className="price-amount"><span className="currencySymbol">£</span>{item?.price}</span></ins>
-                                <del><span className="price-amount"><span className="currencySymbol">£</span>{item?.old_price}</span></del>
-                              </div>
-                            </div>
-                          </div>
-                        </li>
-                      })}
-
-
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="widget biolife-filter">
-                  <h4 className="wgt-title">Product Tags</h4>
-                  <div className="wgt-content">
-                    <ul className="tag-cloud">
-                      <li className="tag-item"><a href="#" className="tag-link">Fresh Fruit</a></li>
-                      <li className="tag-item"><a href="#" className="tag-link">Natural Food</a></li>
-                      <li className="tag-item"><a href="#" className="tag-link">Hot</a></li>
-                      <li className="tag-item"><a href="#" className="tag-link">Organics</a></li>
-                      <li className="tag-item"><a href="#" className="tag-link">Dried Organic</a></li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+              <Producttags />
 
             </aside>
           </div>

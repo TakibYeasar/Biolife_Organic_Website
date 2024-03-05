@@ -8,8 +8,8 @@ const Companies = () => {
 
   const dispatch = useDispatch();
   const brands = useSelector(selectAllBrands);
-  const loading = useSelector(selectIsLoading);
-  const error = useSelector(selectIsError);
+  const isLoading = useSelector(selectIsLoading);
+  const isError = useSelector(selectIsError);
 
   useEffect(() => {
     dispatch(getBrandsAsync());
@@ -17,13 +17,18 @@ const Companies = () => {
 
   // console.log("Brands:", brands);
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error occurred while fetching article details.</div>;
+  }
+
   return (
     <div className="companies-sec">
       <div className="container">
         <ul className="brand-slide d-flex">
-
-          {loading && <div>Loading brands...</div>}
-          {error && <div>Error fetching brands: {error.message}</div>}
 
           {brands.map((item, i) => (
             <li key={i} item="true">

@@ -18,13 +18,13 @@ class GetCategoryView(APIView):
                 category = Category.objects.get(id=category_id)
                 products = Product.objects.filter(category=category)
                 serializer = ProductSerializer(products, many=True)
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                return Response(serializer.data, context={'request': request}, status=status.HTTP_200_OK)
             except ObjectDoesNotExist:
                 return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
         else:
             category = Category.objects.all()
             category_data = CategorySerializer(
-                category, many=True).data
+                category, context={'request': request}, many=True).data
             return Response(data=category_data, status=status.HTTP_200_OK)
 
 
@@ -88,7 +88,8 @@ class GetProductView(APIView):
                 return Response({'error': "No product found"}, status=status.HTTP_404_NOT_FOUND)
         else:
             products = Product.objects.all()
-            products_data = ProductSerializer(products, many=True).data
+            products_data = ProductSerializer(
+                products, context={'request': request}, many=True).data
             return Response(data=products_data, status=status.HTTP_200_OK)
 
 
@@ -194,9 +195,9 @@ class UpdateProductReviewView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
-    def put(self, request, review_product_id):
+    def put(self, request, review_id):
         try:
-            review_product = Review.objects.get(id=review_product_id)
+            review_product = Review.objects.get(id=review_id)
             if review_product.user.id != request.user.id:
                 return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
             serializer = ReviewProductSerializer(
@@ -287,7 +288,8 @@ class GetTopratedProdView(APIView):
     def get(self, request):
         try:
             product_obj = TopratedProd.objects.all()
-            serializer = TopratedprodSerializer(product_obj, many=True)
+            serializer = TopratedprodSerializer(
+                product_obj, context={'request': request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({'error': "No products found"}, status=status.HTTP_404_NOT_FOUND)
@@ -339,7 +341,8 @@ class GetOnsaleProdView(APIView):
     def get(self, request):
         try:
             product_obj = OnsaleProd.objects.all()
-            serializer = OnsaleprodSerializer(product_obj, many=True)
+            serializer = OnsaleprodSerializer(
+                product_obj, context={'request': request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({'error': "No products found"}, status=status.HTTP_404_NOT_FOUND)
@@ -392,7 +395,7 @@ class GetBestsellingView(APIView):
         try:
             product_obj = BestsellingProd.objects.all()
             serializer = BestsellingprodSerializer(
-                product_obj, many=True)
+                product_obj, context={'request': request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({'error': "No products found"}, status=status.HTTP_404_NOT_FOUND)
@@ -444,7 +447,8 @@ class GetDiscountProductView(APIView):
     def get(self, request):
         try:
             product_obj = DiscountProd.objects.all()
-            serializer = DiscountprodSerializer(product_obj, many=True)
+            serializer = DiscountprodSerializer(
+                product_obj, context={'request': request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({'error': "No products found"}, status=status.HTTP_404_NOT_FOUND)

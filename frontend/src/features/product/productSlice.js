@@ -4,7 +4,6 @@ import {
     getSinglecategory,
     getAllproducts,
     getSingleproduct,
-    reactionProd,
     reviewProd,
     updateReview,
     deleteReview,
@@ -64,18 +63,6 @@ export const getSingleproductAsync = createAsyncThunk("review/getSingleproduct",
     }
 );
 
-export const reactionProdAsync = createAsyncThunk("review/reactionProd",
-    async (prodId, reactionData, thunkAPI) => {
-        try {
-            return await reactionProd(prodId, reactionData, thunkAPI);
-        } catch (err) {
-            toast.error(`update reaction failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
 export const reviewProdAsync = createAsyncThunk("review/reviewProd",
     async (prodId, reviewData, thunkAPI) => {
         try {
@@ -89,9 +76,9 @@ export const reviewProdAsync = createAsyncThunk("review/reviewProd",
 );
 
 export const updateReviewAsync = createAsyncThunk("review/updateReview",
-    async (prodId, reviewId, reviewData, thunkAPI) => {
+    async (reviewId, reviewData, thunkAPI) => {
         try {
-            return await updateReview(prodId, reviewId, reviewData, thunkAPI);
+            return await updateReview(reviewId, reviewData, thunkAPI);
         } catch (err) {
             toast.error(`Review updated failed`);
             console.error(err.response.data);
@@ -101,9 +88,9 @@ export const updateReviewAsync = createAsyncThunk("review/updateReview",
 );
 
 export const deleteReviewAsync = createAsyncThunk("review/deleteReview",
-    async (prodId, reviewId, thunkAPI) => {
+    async (reviewId, thunkAPI) => {
         try {
-            return await deleteReview(prodId, reviewId, thunkAPI);
+            return await deleteReview(reviewId, thunkAPI);
         } catch (err) {
             toast.error(`Delete review failed`);
             console.error(err.response.data);
@@ -164,7 +151,9 @@ export const productSlice = createSlice({
     name: "product",
     initialState: {
         categories: [],
+        category: [],
         products: [],
+        product: [],
         reviews: [],
         topratedProd: [],
         onsaleProd: [],
@@ -183,8 +172,7 @@ export const productSlice = createSlice({
             .addCase(getCategoriesAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.categories.push(action.payload);
+                state.categories = action.payload;
             })
             .addCase(getCategoriesAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -197,8 +185,7 @@ export const productSlice = createSlice({
             .addCase(getSinglecategoryAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.categories.push(action.payload);
+                state.category = action.payload;
             })
             .addCase(getSinglecategoryAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -211,8 +198,7 @@ export const productSlice = createSlice({
             .addCase(getAllproductsAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.products.push(action.payload);
+                state.products = action.payload;
             })
             .addCase(getAllproductsAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -225,23 +211,9 @@ export const productSlice = createSlice({
             .addCase(getSingleproductAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.products.push(action.payload);
+                state.product = action.payload;
             })
             .addCase(getSingleproductAsync.rejected, (state, action) => {
-                state.isSuccess = false;
-                state.isError = true;
-                toast.error(action.payload);
-            })
-            .addCase(reactionProdAsync.pending, (state) => {
-                state.isLoading = true;
-            })
-            .addCase(reactionProdAsync.fulfilled, (state, action) => {
-                state.isLoading = false;
-                state.isSuccess = true;
-                toast.success(action.payload);
-            })
-            .addCase(reactionProdAsync.rejected, (state, action) => {
                 state.isSuccess = false;
                 state.isError = true;
                 toast.error(action.payload);
@@ -252,8 +224,7 @@ export const productSlice = createSlice({
             .addCase(reviewProdAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.reviews.push(action.payload);
+                state.reviews = action.payload;
             })
             .addCase(reviewProdAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -266,8 +237,7 @@ export const productSlice = createSlice({
             .addCase(updateReviewAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.reviews.push(action.payload);
+                state.reviews = action.payload;
             })
             .addCase(updateReviewAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -287,28 +257,13 @@ export const productSlice = createSlice({
                 state.isError = true;
                 toast.error(action.payload);
             })
-            .addCase(getSingleProductReviewsAsync.pending, (state) => {
-                state.isLoading = true;
-            })
-            .addCase(getSingleProductReviewsAsync.fulfilled, (state, action) => {
-                state.isLoading = false;
-                state.isSuccess = true;
-                toast.success(action.payload);
-                state.reviews.push(action.payload);
-            })
-            .addCase(getSingleProductReviewsAsync.rejected, (state, action) => {
-                state.isSuccess = false;
-                state.isError = true;
-                toast.error(action.payload);
-            })
             .addCase(getTopratedprodAsync.pending, (state) => {
                 state.isLoading = true;
             })
             .addCase(getTopratedprodAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.topratedProd.push(action.payload);
+                state.topratedProd = action.payload;
             })
             .addCase(getTopratedprodAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -321,8 +276,7 @@ export const productSlice = createSlice({
             .addCase(getOnsaleprodAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.onsaleProd.push(action.payload);
+                state.onsaleProd = action.payload;
             })
             .addCase(getOnsaleprodAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -335,8 +289,7 @@ export const productSlice = createSlice({
             .addCase(getBestsellingprodAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.bestsellingProd.push(action.payload);
+                state.bestsellingProd = action.payload;
             })
             .addCase(getBestsellingprodAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -349,8 +302,7 @@ export const productSlice = createSlice({
             .addCase(getDiscountprodAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                toast.success(action.payload);
-                state.discountProd.push(action.payload);
+                state.discountProd = action.payload;
             })
             .addCase(getDiscountprodAsync.rejected, (state, action) => {
                 state.isSuccess = false;
@@ -360,16 +312,20 @@ export const productSlice = createSlice({
     },
 });
 
+export const selectIsLoading = (state) => state.root.isLoading;
+export const selectIsError = (state) => state.root.isError;
+
 export const selectSinglecategory = (state) => state.product.category;
 export const selectAllCategories = (state) => state.product.categories;
+
 export const selectSingleproduct = (state) => state.product.product;
-export const selectAllproducts = (state) => state.product.products;
-export const selectAllreaction = (state) => state.product.reaction;
+export const selectAllProducts = (state) => state.product.products;
+
 export const selectAllreviews = (state) => state.product.reviews;
-export const selectAllspReviews = (state) => state.product.spReviews;
-export const selectAlltopratedProd = (state) => state.product.topratedProd;
-export const selectAllonsaleProd = (state) => state.product.onsaleProd;
-export const selectAllbestsellingProd = (state) => state.product.bestsellingProd;
-export const selectAlldiscountProd = (state) => state.product.discountProd;
+
+export const selectAllTopratedprod = (state) => state.product.topratedProd;
+export const selectAllOnsaleprod = (state) => state.product.onsaleProd;
+export const selectAllBestsellingprod = (state) => state.product.bestsellingProd;
+export const selectAllDiscountprod = (state) => state.product.discountProd;
 
 export default productSlice.reducer;

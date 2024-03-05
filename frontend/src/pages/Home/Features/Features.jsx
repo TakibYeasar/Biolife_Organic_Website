@@ -10,8 +10,8 @@ const Features = () => {
 
   const dispatch = useDispatch();
   const featureds = useSelector(selectAllFeatureds);
-  const loading = useSelector(selectIsLoading);
-  const error = useSelector(selectIsError);
+  const isLoading = useSelector(selectIsLoading);
+  const isError = useSelector(selectIsError);
 
   useEffect(() => {
     dispatch(getFeaturedAsync());
@@ -19,12 +19,18 @@ const Features = () => {
 
   // console.log("Featureds:", featureds);
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error occurred while fetching article details.</div>;
+  }
+
   return (
     <div className="featured_sec">
       <div className="container">
         <ul className="row ">
-          {loading && <div>Loading featureds...</div>}
-          {error && <div>Error fetching featureds: {error.message}</div>}
           {featureds.map((item, i) => (
             <li className='col-lg-4 featured_item' key={i} item="true">
               <div className="banner-contain">

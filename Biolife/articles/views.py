@@ -249,7 +249,7 @@ class DeleteCommentArticleView(APIView):
 
 
 class GetReplyCommentView(APIView):
-    def get(self, request, article_id, comment_id):
+    def get(self, request, comment_id):
         try:
             parent_comment = ArticleComment.objects.get(id=comment_id)
             reply_comments = parent_comment.get_children()
@@ -263,7 +263,7 @@ class CreateReplyCommentView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
-    def post(self, request, article_id, comment_id):
+    def post(self, request, comment_id):
         try:
             parent_comment = ArticleComment.objects.get(id=comment_id)
             article = parent_comment.article
@@ -283,7 +283,7 @@ class UpdateReplyCommentView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
-    def put(self, request, article_id, comment_id):
+    def put(self, request, comment_id):
         try:
             comment = ArticleComment.objects.get(id=comment_id)
             if comment.user.id != request.user.id:
@@ -303,7 +303,7 @@ class DeleteReplyCommentView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
-    def delete(self, request, article_id, comment_id):
+    def delete(self, request, comment_id):
         try:
             comment = ArticleComment.objects.get(id=comment_id)
             if comment.user.id == request.user.id:

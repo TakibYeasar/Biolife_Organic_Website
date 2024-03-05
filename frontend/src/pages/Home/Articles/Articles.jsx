@@ -9,14 +9,22 @@ const Articles = () => {
 
   const dispatch = useDispatch();
   const articles = useSelector(selectAllArticles);
-  const loading = useSelector(selectIsLoading);
-  const error = useSelector(selectIsError);
+  const isLoading = useSelector(selectIsLoading);
+  const isError = useSelector(selectIsError);
 
   useEffect(() => {
     dispatch(getAllArticlesAsync());
   }, []);
 
-  console.log("Articles:", articles);
+  // console.log("Articles:", articles);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error occurred while fetching article details.</div>;
+  }
 
   return (
     <div className="article-sec">
@@ -29,9 +37,6 @@ const Articles = () => {
         </div>
 
         <ul className="articles-container d-flex">
-
-          {loading && <div>Loading articles...</div>}
-          {error && <div>Error fetching articles: {error.message}</div>}
 
           {articles.slice(0, 3).map((item, i) => (
             <li key={i} item="true" className="articles-item">

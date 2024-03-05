@@ -8,8 +8,8 @@ const Specialoffer = () => {
 
   const dispatch = useDispatch();
   const soffer = useSelector(selectSpecialoffer);
-  const loading = useSelector(selectIsLoading);
-  const error = useSelector(selectIsError);
+  const isLoading = useSelector(selectIsLoading);
+  const isError = useSelector(selectIsError);
 
   useEffect(() => {
     dispatch(getSpecialofferAsync());
@@ -17,12 +17,18 @@ const Specialoffer = () => {
 
   // console.log("Special Offer:", soffer);
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error occurred while fetching article details.</div>;
+  }
+
   return (
     <div className="special-offer-sec">
       <div className="container">
         <div className="row">
-          {loading && <div>Loading specialoffer...</div>}
-          {error && <div>Error fetching specialoffer: {error.message}</div>}
           {soffer.map((item, i) => (
             <div key={i} item="true" className="special_offer d-flex">
               <div className="col-lg-4 col-md-12">

@@ -3,27 +3,12 @@ import "./Singleprod.scss";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { FaEye, FaHeart, FaRandom, FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-// import { useSelector, useDispatch } from "react-redux";
-// import { toggleLike, deletePost } from "../../actions/post";
 
-// const PostItem = ({ post, showActions }) => {
 const Singleprod = ({ item }) => {
-    // const { post, loading } = useSelector(state => state.post);
-    // const dispatch = useDispatch();
-
-    // useEffect(() => {
-    //     dispatch(getPost(match.params.id));
-    // }, [dispatch, match.params.id]);
-
-    // const auth = useSelector(state => state.auth);
     
     const navigate = useNavigate();
     const proddetails = () => {
-        navigate(`/prodview-${item?.title}-${item?.id}`);
-    }
-
-    const addtocart = () => {
-        navigate(`/cart-${item?.title}-${item?.id}`);
+        navigate(`/single/product/${item.id}`);
     }
 
 
@@ -43,7 +28,7 @@ const Singleprod = ({ item }) => {
                   {/* <p className="message">{item?.description}</p> */}
                   <div className="buttons d-flex">
                       <a href="#" className="btn wishlist-btn"><FaHeart className="icon" /></a>
-                      <a href="#" className="btn-style add-to-cart-btn" onClick={addtocart}>add to cart</a>
+                      <a href="#" className="btn-style add-to-cart-btn">add to cart</a>
                       <a href="#" className="btn wishlist-btn" onClick={proddetails}><FaEye className="icon" /></a>
                   </div>
                   {/* {showActions && (
@@ -83,9 +68,5 @@ const Singleprod = ({ item }) => {
       </div>
   )
 }
-
-// PostItem.defaultProps = {
-//     showActions: true
-// };
 
 export default Singleprod
