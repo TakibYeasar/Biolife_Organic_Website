@@ -79,7 +79,8 @@ class GetProductView(APIView):
                 product = Product.objects.get(id=product_id)
                 category = product.category.all().values_list('id', flat=True)
                 reviews = Review.objects.filter(product=product)
-                serializer = ProductSerializer(product)
+                serializer = ProductSerializer(
+                    product, context={'request': request})
                 serializer.data['category'] = list(category)
                 serializer.data['reviews'] = [
                     {'review': review.review_field, 'rating': review.rating} for review in reviews]

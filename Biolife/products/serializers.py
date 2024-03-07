@@ -29,19 +29,6 @@ class ProductSerializer(serializers.ModelSerializer):
             return obj.image.url
 
 
-# class ProductSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Product
-#         fields = "__all__"
-
-#     def to_representation(self, instance):
-#         response = super().to_representation(instance)
-#         request = self.context.get('request')
-#         response['product'] = ProductSerializer(
-#             instance.product, context={'request': request}).data
-#         return response
-
-
 class ReviewProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
@@ -50,48 +37,57 @@ class ReviewProductSerializer(serializers.ModelSerializer):
 
     
 class TopratedprodSerializer(serializers.ModelSerializer):
+    # Adjusted field name to match the model
+    product = ProductSerializer(many=True)
+
     class Meta:
         model = TopratedProd
         fields = "__all__"
-        
+
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        request = self.context.get('request')
-        response['product'] = ProductSerializer(instance.product, context={'request':request}).data
+        response['product'] = ProductSerializer(
+            instance.product.all(), many=True).data  # Adjusted field name
         return response
-    
+
 
 class OnsaleprodSerializer(serializers.ModelSerializer):
+    # Adjusted field name to match the model
+    product = ProductSerializer(many=True)
     class Meta:
         model = OnsaleProd
         fields = "__all__"
         
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        request = self.context.get('request')
-        response['product'] = ProductSerializer(instance.product, context={'request':request}).data
+        response['product'] = ProductSerializer(
+            instance.product.all(), many=True).data  # Adjusted field name
         return response
         
 
 class BestsellingprodSerializer(serializers.ModelSerializer):
+    # Adjusted field name to match the model
+    product = ProductSerializer(many=True)
     class Meta:
         model = BestsellingProd
         fields = "__all__"
         
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        request = self.context.get('request')
-        response['product'] = ProductSerializer(instance.product, context={'request':request}).data
+        response['product'] = ProductSerializer(
+            instance.product.all(), many=True).data  # Adjusted field name
         return response
 
 
 class DiscountprodSerializer(serializers.ModelSerializer):
+    # Adjusted field name to match the model
+    product = ProductSerializer(many=True)
     class Meta:
         model = DiscountProd
         fields = "__all__"
         
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        request = self.context.get('request')
-        response['product'] = ProductSerializer(instance.product, context={'request':request}).data
+        response['product'] = ProductSerializer(
+            instance.product.all(), many=True).data  # Adjusted field name
         return response

@@ -15,10 +15,10 @@ const Singleprod = ({ item }) => {
   return (
       <div className="product-contain">
           <div className="prod-thumb">
-              <a href="#" className="link-to-prod" onClick={proddetails}><img src={item?.photo_main} alt="" height={270} width={270} /></a>
+              <a href="#" className="link-to-prod" onClick={proddetails}><img src={item?.main_image?.image} alt="" height={270} width={270} /></a>
           </div>
           <div className="prod-info text-center">
-              <b className="categories">{item?.category}</b>
+              {/* <b className="categories">{item?.category}</b> */}
               <h4 className="prod-title"><a href="#">{item?.title}</a></h4>
               <div className="price ">
                   <ins><span className="price-amount"><span className="currencySymbol">£</span>{item?.price}</span></ins>

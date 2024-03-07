@@ -171,8 +171,8 @@ class DeleteFeaturedView(APIView):
 class GetSpecialOfferView(APIView):
     def get(self, request):
         try:
-            soffer_obj = Banner.objects.all()
-            serializer = BannerSerializer(
+            soffer_obj = SpecialOffer.objects.all()
+            serializer = SpecialOfferSerializer(
                 soffer_obj, context={'request': request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:

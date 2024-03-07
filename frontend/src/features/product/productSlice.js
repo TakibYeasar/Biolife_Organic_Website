@@ -15,7 +15,7 @@ import {
 import { toast } from "react-toastify";
 
 
-export const getCategoriesAsync = createAsyncThunk("review/getCategories",
+export const getCategoriesAsync = createAsyncThunk("products/getCategories",
     async (_, thunkAPI) => {
         try {
             return await getCategories();
@@ -27,7 +27,7 @@ export const getCategoriesAsync = createAsyncThunk("review/getCategories",
     }
 );
 
-export const getSinglecategoryAsync = createAsyncThunk("review/getSinglecategory",
+export const getSinglecategoryAsync = createAsyncThunk("products/getSinglecategory",
     async (catId, thunkAPI) => {
         try {
             return await getSinglecategory(catId, thunkAPI);
@@ -39,7 +39,7 @@ export const getSinglecategoryAsync = createAsyncThunk("review/getSinglecategory
     }
 );
 
-export const getAllproductsAsync = createAsyncThunk("review/getAllproducts",
+export const getAllproductsAsync = createAsyncThunk("products/getAllproducts",
     async (_, thunkAPI) => {
         try {
             return await getAllproducts();
@@ -51,7 +51,7 @@ export const getAllproductsAsync = createAsyncThunk("review/getAllproducts",
     }
 );
 
-export const getSingleproductAsync = createAsyncThunk("review/getSingleproduct",
+export const getSingleproductAsync = createAsyncThunk("products/getSingleproduct",
     async (prodId, thunkAPI) => {
         try {
             return await getSingleproduct(prodId, thunkAPI);
@@ -63,7 +63,7 @@ export const getSingleproductAsync = createAsyncThunk("review/getSingleproduct",
     }
 );
 
-export const reviewProdAsync = createAsyncThunk("review/reviewProd",
+export const reviewProdAsync = createAsyncThunk("products/reviewProd",
     async (prodId, reviewData, thunkAPI) => {
         try {
             return await reviewProd(prodId, reviewData, thunkAPI);
@@ -75,7 +75,7 @@ export const reviewProdAsync = createAsyncThunk("review/reviewProd",
     }
 );
 
-export const updateReviewAsync = createAsyncThunk("review/updateReview",
+export const updateReviewAsync = createAsyncThunk("products/updateReview",
     async (reviewId, reviewData, thunkAPI) => {
         try {
             return await updateReview(reviewId, reviewData, thunkAPI);
@@ -87,7 +87,7 @@ export const updateReviewAsync = createAsyncThunk("review/updateReview",
     }
 );
 
-export const deleteReviewAsync = createAsyncThunk("review/deleteReview",
+export const deleteReviewAsync = createAsyncThunk("products/deleteReview",
     async (reviewId, thunkAPI) => {
         try {
             return await deleteReview(reviewId, thunkAPI);
@@ -99,7 +99,7 @@ export const deleteReviewAsync = createAsyncThunk("review/deleteReview",
     }
 );
 
-export const getTopratedprodAsync = createAsyncThunk("review/getTopratedprod",
+export const getTopratedprodAsync = createAsyncThunk("products/getTopratedprod",
     async (_, thunkAPI) => {
         try {
             return await getTopratedprod();
@@ -111,7 +111,7 @@ export const getTopratedprodAsync = createAsyncThunk("review/getTopratedprod",
     }
 );
 
-export const getOnsaleprodAsync = createAsyncThunk("review/getOnsaleprod",
+export const getOnsaleprodAsync = createAsyncThunk("products/getOnsaleprod",
     async (_, thunkAPI) => {
         try {
             return await getOnsaleprod();
@@ -123,7 +123,7 @@ export const getOnsaleprodAsync = createAsyncThunk("review/getOnsaleprod",
     }
 );
 
-export const getBestsellingprodAsync = createAsyncThunk("review/getBestsellingprod",
+export const getBestsellingprodAsync = createAsyncThunk("products/getBestsellingprod",
     async (_, thunkAPI) => {
         try {
             return await getBestsellingprod();
@@ -135,7 +135,7 @@ export const getBestsellingprodAsync = createAsyncThunk("review/getBestsellingpr
     }
 );
 
-export const getDiscountprodAsync = createAsyncThunk("review/getDiscountprod",
+export const getDiscountprodAsync = createAsyncThunk("products/getDiscountprod",
     async (_, thunkAPI) => {
         try {
             return await getDiscountprod();
@@ -319,7 +319,7 @@ export const selectSinglecategory = (state) => state.product.category;
 export const selectAllCategories = (state) => state.product.categories;
 
 export const selectSingleproduct = (state) => state.product.product;
-export const selectAllProducts = (state) => state.product.products;
+export const selectAllproducts = (state) => state.product.products;
 
 export const selectAllreviews = (state) => state.product.reviews;
 

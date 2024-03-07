@@ -1,6 +1,6 @@
 import React from 'react';
 import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
-import { Categorylist, Banner, Features, Products, Specialoffer, Bestselling, Companies, Articles, Prodcategories, Prodfeature } from "./index.js";
+import { Categorylist, Banner, Features, Products, Specialoffer, Bestsellingprod, Discountprod, Companies, Articles, Prodcategories} from "./index.js";
 
 const Homepage = () => {
   return (
@@ -15,9 +15,17 @@ const Homepage = () => {
       <Prodcategories />
       <Products />
       <Specialoffer />
-      <Bestselling />
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-4">
+            <Discountprod />
+          </div>
+          <div className="col-lg-8">
+            <Bestsellingprod />
+          </div>
+        </div>
+      </div>
       <Companies />
-      <Prodfeature />
       <Articles />
     </div>
   )

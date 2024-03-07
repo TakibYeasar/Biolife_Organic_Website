@@ -18,7 +18,7 @@ const Topratedprod = () => {
         dispatch(getTopratedprodAsync());
     }, []);
 
-    // console.log("Toprated Products:", topratedprod);
+    console.log("Toprated Products:", topratedprod);
 
     const [width, setWidth] = useState(0);
     const carousel = useRef();

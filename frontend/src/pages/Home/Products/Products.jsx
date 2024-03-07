@@ -3,7 +3,7 @@ import "./Products.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
-import { selectIsLoading, selectIsError, selectAllProducts, getAllproductsAsync } from '../../../features/product/productSlice';
+import { selectIsLoading, selectIsError, selectAllproducts, getAllproductsAsync } from '../../../features/product/productSlice';
 import { Singleprod } from "../../../components";
 import Topratedprod from '../Topratedprod/Topratedprod';
 import Onsaleprod from '../Onsaleprod/Onsaleprod';
@@ -12,7 +12,7 @@ import Onsaleprod from '../Onsaleprod/Onsaleprod';
 const Products = () => {
 
   const dispatch = useDispatch();
-  const allproducts = useSelector(selectAllProducts);
+  const allproducts = useSelector(selectAllproducts);
   const isLoading = useSelector(selectIsLoading);
   const isError = useSelector(selectIsError);
 
