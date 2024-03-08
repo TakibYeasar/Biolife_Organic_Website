@@ -7,7 +7,7 @@ const Articlecategory = ({article}) => {
           <h4 className="main-title">Categories</h4>
           <div className="category-content">
               {article?.category?.map((item, i) => (
-                  <ul className="cat-list" key={i} item>
+                  <ul className="cat-list" key={i} item="true">
                       <li className="cat-list-item"><a href="#" className="cat-link">{item?.cat_name}</a></li>
                   </ul>
               ))}

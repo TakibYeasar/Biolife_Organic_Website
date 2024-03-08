@@ -18,7 +18,7 @@ const Topratedprod = () => {
         dispatch(getTopratedprodAsync());
     }, []);
 
-    console.log("Toprated Products:", topratedprod);
+    // console.log("Toprated Products:", topratedprod);
 
     const [width, setWidth] = useState(0);
     const carousel = useRef();
@@ -40,13 +40,14 @@ const Topratedprod = () => {
         
         <motion.div id="tab_2nd" className="tab-contain">
             <motion.ul ref={carousel} drag="x" dragConstraints={{ right: 0, left: -width }} className="product-list active d-flex">
-
-                {topratedprod.slice(0, 5).map((item, i) => (
-                    <motion.li key={i} item className="product-item col-lg-3 col-md-6 col-sm-12">
-                        <Singleprod item={item} />
-                    </motion.li>
+                {topratedprod.map((topratedItem, index) => (
+                    // Assuming the 'product' field contains an array of products
+                    topratedItem.product.map((productItem, productIndex) => (
+                        <motion.li key={productItem.id} item className="product-item col-lg-3 col-md-6 col-sm-12">
+                            <Singleprod item={productItem} />
+                        </motion.li>
+                    ))
                 ))}
-
             </motion.ul>
         </motion.div>
     )

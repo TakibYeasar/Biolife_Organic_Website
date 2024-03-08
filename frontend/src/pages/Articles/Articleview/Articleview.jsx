@@ -1,4 +1,4 @@
-import React, { useEffect} from 'react';
+import React, { useEffect, useState} from 'react';
 import "./Articleview.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { FaComment, FaEye, FaFacebook, FaInstagram, FaPinterest, FaSearch, FaTwitter, FaYoutube } from "react-icons/fa";
@@ -15,17 +15,18 @@ import Articlecategory from '../Articlecategory/Articlecategory';
 
 const Articleview = () => {
 
-  const { articleId } = useParams();
+  const { id } = useParams();
   const article = useSelector(selectArticle);
   const dispatch = useDispatch();
   const isLoading = useSelector(selectIsLoading);
   const isError = useSelector(selectIsError);
+  const [value, setValue] = useState("");
 
   useEffect(() => {
-    dispatch(getSingleArticleAsync(articleId));
+    dispatch(getSingleArticleAsync(id));
   }, []);
 
-  console.log(article);
+  // console.log("Article:", article);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -34,6 +35,10 @@ const Articleview = () => {
   if (isError) {
     return <div>Error occurred while fetching article details.</div>;
   }
+
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
 
   return (
     <div className="blogview-sec">
@@ -98,7 +103,7 @@ const Articleview = () => {
                 <div className="search-widget">
                   <div className="search-content">
                     <form action="#" name="frm-search" method="get" className="frm-search">
-                      <input type="text" name="s" value="" placeholder="SEACH..." className="input-text" />
+                      <input type="text" name="s" value={value} onChange={handleChange} placeholder="SEACH..." className="input-text" />
                       <button type="submit" name="ok"><FaSearch /></button>
                     </form>
                   </div>

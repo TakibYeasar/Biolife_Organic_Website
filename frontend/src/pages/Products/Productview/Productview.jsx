@@ -1,9 +1,37 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import "./Productview.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { FaAngleRight, FaCaretDown, FaCaretRight, FaCaretUp, FaCartArrowDown, FaFacebook, FaFlag, FaHeart, FaInstagram, FaPinterest, FaPlus, FaRandom, FaShareAlt, FaStar, FaStarHalf, FaThumbsDown, FaThumbsUp, FaTwitter } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import { getSingleproductAsync, selectIsLoading, selectIsError, selectSingleproduct } from "../../../features/product/productSlice";
+import { useParams } from 'react-router-dom';
+import Proddescription from '../Proddescription/Proddescription';
+import Additionalinfo from '../Additionalinfo/Additionalinfo';
+import Shippingfaq from '../Shippingfaq/Shippingfaq';
+import Customerreview from '../Customerreview/Customerreview';
+import Relatedprod from '../Relatedprod/Relatedprod';
 
 const Productview = () => {
+
+  const { id } = useParams();
+  const product = useSelector(selectSingleproduct);
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectIsLoading);
+  const isError = useSelector(selectIsError);
+
+  useEffect(() => {
+    dispatch(getSingleproductAsync(id));
+  }, []);
+
+  console.log("Product:", product);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error occurred while fetching article details.</div>;
+  }
 
   return (
     <section>
@@ -26,19 +54,17 @@ const Productview = () => {
               <div className="row">
                 <div className="media-content col-lg-4 col-md-6 col-12">
                   <ul className="slider-img d-flex" >
-                    <li><img src={product?.photo_main} alt="" width={500} height={500} /></li>
-                    <li><img src={product?.photo_2} alt="" width={500} height={500} /></li>
-                    <li><img src={product?.photo_3} alt="" width={500} height={500} /></li>
-                    <li><img src={product?.photo_4} alt="" width={500} height={500} /></li>
-                    <li><img src={product?.photo_5} alt="" width={500} height={500} /></li>
+                    <li><img src={product?.main_image?.image} alt="" width={500} height={500} /></li>
+                    {product?.images?.map((item, i) => (
+                      <li key={i} item="true"><img src={item?.image} alt="" width={500} height={500} /></li>
+                    ))}
                   </ul>
-                  <ul className="slider-nav d-flex" >
-                    <li><img src={product?.photo_main} alt="" width={88} height={88} /></li>
-                    <li><img src={product?.photo_2} alt="" width={500} height={500} /></li>
-                    <li><img src={product?.photo_3} alt="" width={500} height={500} /></li>
-                    <li><img src={product?.photo_4} alt="" width={500} height={500} /></li>
-                    <li><img src={product?.photo_5} alt="" width={500} height={500} /></li>
-                  </ul>
+                  {/* <ul className="slider-img d-flex" >
+                    <li><img src={product?.main_image?.image} alt="" width={500} height={500} /></li>
+                    {product?.images?.map((item, i) => (
+                      <li key={i} item="true"><img src={item?.image} alt="" width={500} height={500} /></li>
+                    ))}
+                  </ul> */}
                 </div>
                 <div className="product-attribute col-lg-4 col-md-6 col-sm-12">
                   <h3 className="title">{product?.title}</h3>
@@ -125,9 +151,9 @@ const Productview = () => {
 
               <div className="tab-content">
 
-                <Proddescription />
+                <Proddescription product={product} />
                 
-                <Additionalinfo />
+                <Additionalinfo product={product} />
 
                 <Shippingfaq />
 
@@ -135,7 +161,7 @@ const Productview = () => {
               </div>
             </div>
 
-            <Relatedprod />
+            {/* <Relatedprod /> */}
 
           </div>
         </div>

@@ -30,18 +30,21 @@ const Discountprod = () => {
   return (
     <div>
 
-      {discountprod.map((item, i) => (
-        <div key={i} item="true" className='discount_prod'>
-          <div className="boillife-banner">
-            <a href="#" className="banner-img"><img src={item?.photo_main} alt="" /></a>
-            <div className="text-content">
-              <b className="title">{item?.title}</b><br />
-              <b className="price">Only:  <span>{item?.discounted_price}</span></b><br />
-              <a href="#" className="btn-style">shop now</a>
+      {discountprod.map((discountprodItem, index) => (
+        discountprodItem.product.map((productItem, productIndex) => (
+          <div key={productItem.id} item="true" className="discount_prod">
+            <div className="boillife-banner">
+              <a href="#" className="banner-img"><img src={productItem?.main_image.image} alt="" /></a>
+              <div className="text-content">
+                <b className="title">{productItem?.title}</b><br />
+                <b className="price">Only:  <span>{discountprodItem?.discounted_price}</span></b><br />
+                <a href="#" className="btn-style">shop now</a>
+              </div>
             </div>
           </div>
-        </div>
+        ))
       ))}
+
     </div>
 
 

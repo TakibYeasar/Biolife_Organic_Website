@@ -8,7 +8,7 @@ const Singleprod = ({ item }) => {
     
     const navigate = useNavigate();
     const proddetails = () => {
-        navigate(`/single/product/${item.id}`);
+        navigate(`/productview/${item.id}`);
     }
 
 

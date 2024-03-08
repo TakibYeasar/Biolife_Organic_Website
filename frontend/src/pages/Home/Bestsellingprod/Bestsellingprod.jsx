@@ -43,10 +43,12 @@ const Bestsellingprod = () => {
       <motion.div className="bestselling_prodlist">
         <motion.ul ref={carousel} drag="x" dragConstraints={{ right: 0, left: -width }} className="prod-list d-flex">
 
-          {bestsellingprod.map((item, i) => (
-            <motion.li key={i} item className="product-item col-lg-4 col-md-6 col-sm-12">
-              <Singleprod prod={item} />
-            </motion.li>
+          {bestsellingprod.map((bestsellingprodItem, index) => (
+            bestsellingprodItem.product.map((productItem, productIndex) => (
+              <motion.li key={productItem.id} item className="product-item col-lg-4 col-md-6 col-sm-12">
+                <Singleprod item={productItem} />
+              </motion.li>
+            ))
           ))}
 
         </motion.ul>

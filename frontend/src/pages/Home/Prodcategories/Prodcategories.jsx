@@ -2,54 +2,36 @@ import React, { useRef, useEffect, useState } from 'react';
 import "./Prodcategories.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { motion } from "framer-motion";
-import p01 from "../../../../../assets/images/products/p-01.jpg";
-import p02 from "../../../../../assets/images/products/p-02.jpg";
-import p03 from "../../../../../assets/images/products/p-03.jpg";
-import p04 from "../../../../../assets/images/products/p-09.jpg";
-import p05 from "../../../../../assets/images/products/p-05.jpg";
-
-const category = [
-  {
-    image: p01,
-    title: "Lorem ipsum dolor sit amet.",
-  },
-  {
-    image: p02,
-    title: "Lorem ipsum dolor sit amet.",
-  },
-  {
-    image: p03,
-    title: "Lorem ipsum dolor sit amet.",
-  },
-  {
-    image: p04,
-    title: "Lorem ipsum dolor sit amet.",
-  },
-  {
-    image: p05,
-    title: "Lorem ipsum dolor sit amet.",
-  },
-  {
-    image: p03,
-    title: "Lorem ipsum dolor sit amet.",
-  },
-  {
-    image: p04,
-    title: "Lorem ipsum dolor sit amet.",
-  },
-  {
-    image: p05,
-    title: "Lorem ipsum dolor sit amet.",
-  },
-]
+import { useSelector, useDispatch } from "react-redux";
+import { selectIsLoading, selectIsError, selectAllCategories, getCategoriesAsync } from '../../../features/product/productSlice';
 
 const Prodcategories = () => {
+
   const [width, setWidth] = useState(0);
   const carousel = useRef();
+
+  const dispatch = useDispatch();
+  const categories = useSelector(selectAllCategories);
+  const isLoading = useSelector(selectIsLoading);
+  const isError = useSelector(selectIsError);
+
+  useEffect(() => {
+    dispatch(getCategoriesAsync());
+  }, []);
+
+  // console.log("Categories:", categories);
 
   useEffect(() => {
     setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
   }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error occurred while fetching article details.</div>;
+  }
 
   return (
     <div className="categories-sec">
@@ -64,7 +46,7 @@ const Prodcategories = () => {
           <motion.div className="category-type">
             <motion.div ref={carousel} drag="x" dragConstraints={{ right: 0, left: -width }} className="category-item d-flex">
 
-              {category.map((item, i) => (
+              {categories.map((item, i) => (
                 <motion.div key={i} item className="col-lg-3 prod-item">
                   <div className="cat-box-item">
                     <div className="card-thum">
@@ -72,8 +54,8 @@ const Prodcategories = () => {
                     </div>
                     <div className="cat-info text-center" href="#">
                       <a href="#">
-                        <h4 className="cat-name">{item?.title}</h4>
-                        <span className="cat-number">(20 items)</span>
+                        <h4 className="cat-name">{item?.cat_name}</h4>
+                        <span className="cat-number">({item?.product_count} items)</span>
                       </a>
                     </div>
                   </div>

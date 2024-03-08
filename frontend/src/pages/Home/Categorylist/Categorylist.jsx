@@ -1,46 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import "./Categorylist.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { FaAngleRight, FaBars, FaCaretDown } from "react-icons/fa";
-
-const category = [
-    {
-        title: "Fruit & Nut Gifts",
-    },
-    {
-        title: "Vegetables",
-    },
-    {
-        title: "Fresh Berries",
-    },
-    {
-        title: "Ocean Foods",
-    },
-    {
-        title: "Butter & Eggs",
-    },
-    {
-        title: "Fastfood",
-    },
-    {
-        title: "Fresh Meat",
-    },
-    {
-        title: "Fresh Onion",
-    },
-    {
-        title: "Papaya & Crisps",
-    },
-    {
-        title: "Oatmeal",
-    },
-    {
-        title: "Fresh Bananas & Plantains",
-    },
-]
+import { useSelector, useDispatch } from "react-redux";
+import { selectIsLoading, selectIsError, selectAllCategories, getCategoriesAsync } from '../../../features/product/productSlice';
 
 
 const Categorylist = () => {
+
+    const dispatch = useDispatch();
+    const categories = useSelector(selectAllCategories);
+    const isLoading = useSelector(selectIsLoading);
+    const isError = useSelector(selectIsError);
+
+    useEffect(() => {
+        dispatch(getCategoriesAsync());
+    }, []);
+
+    // console.log("Categories:", categories);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (isError) {
+        return <div>Error occurred while fetching article details.</div>;
+    }
 
     return (
         <div className="col-lg-3 col-md-4 hidden-sm">
@@ -52,9 +37,9 @@ const Categorylist = () => {
                 </div>
 
                 <div className="wrap-menu">
-                    {category.map((item, i) => (
+                    {categories.map((item, i) => (
                         <ul key={i} item="true" className="main-menu">
-                            <li className="menu-item"><a href="#">{item?.title} <FaAngleRight className="icon" /></a></li>
+                            <li className="menu-item"><a href="#">{item?.cat_name} <FaAngleRight className="icon" /></a></li>
                         </ul>
                     ))}
                 </div>

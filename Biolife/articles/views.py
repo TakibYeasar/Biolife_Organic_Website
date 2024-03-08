@@ -88,7 +88,9 @@ class GetArticleView(APIView):
                 article = Article.objects.get(id=article_id)
                 category = article.category.all().values_list('id', flat=True)
                 comments = ArticleComment.objects.filter(article=article)
-                serializer = ArticleSerializer(article)
+                serializer = ArticleSerializer(
+                    # Pass request context
+                    article, context={'request': request})
                 serializer.data['category'] = list(category)
                 serializer.data['comments'] = [
                     {'comment': comment.comment_field} for comment in comments]

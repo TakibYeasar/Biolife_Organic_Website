@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import Count
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
@@ -17,15 +18,23 @@ class GetCategoryView(APIView):
             try:
                 category = Category.objects.get(id=category_id)
                 products = Product.objects.filter(category=category)
+                product_count = products.count()  # Count the products under the category
                 serializer = ProductSerializer(products, many=True)
-                return Response(serializer.data, context={'request': request}, status=status.HTTP_200_OK)
+                response_data = {
+                    'category': CategorySerializer(category, context={'request': request}).data,
+                    'product_count': product_count,
+                    'products': serializer.data,
+                }
+                return Response(response_data, status=status.HTTP_200_OK)
             except ObjectDoesNotExist:
                 return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
         else:
-            category = Category.objects.all()
-            category_data = CategorySerializer(
-                category, context={'request': request}, many=True).data
-            return Response(data=category_data, status=status.HTTP_200_OK)
+            # Annotate each category with the product count
+            categories = Category.objects.annotate(
+                product_count=Count('product'))
+            serialized_categories = CategorySerializer(
+                categories, many=True, context={'request': request}).data
+            return Response(serialized_categories, status=status.HTTP_200_OK)
 
 
 class CreateCategoryView(APIView):

@@ -30,7 +30,7 @@ const Recentpost = () => {
               <ul className="posts">
 
                   {articles.slice(0, 5).map((item, i) => (
-                      <li key={i} item>
+                      <li key={i} item="true">
                           <div className="post-item d-flex">
                               <div className="thumb">
                                   <a href="#"><img src={item?.image} alt="" /></a>

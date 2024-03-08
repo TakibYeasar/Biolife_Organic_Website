@@ -90,21 +90,21 @@ const Customerreview = () => {
                                 <p className="form-row wide-half">
                                     <input type="email" name="email" value="" placeholder="Email address" />
                                 </p>
-                                <p className="form-row">
+                                {/* <p className="form-row">
                                     <textarea name="comment" id="txt-comment" cols="30" rows="10" placeholder="Write your review here..." onChange={e => setFormData({ text: e.target.value })}></textarea>
-                                </p>
+                                </p> */}
                                 <p className="form-row">
                                     <button type="submit" name="submit">submit review</button>
                                 </p>
 
-                                {!auth.loading && comment.user === auth.user.id && (
+                                {/* {!auth.loading && comment.user === auth.user.id && (
                                     <button
                                         onClick={e => dispatch(deleteComment(postId, comment.id))}
                                         className="btn btn-danger"
                                     >
                                         <i className="fas fa-times"></i>
                                     </button>
-                                )}
+                                )} */}
                             </form>
                         </div>
                     </div>
@@ -128,7 +128,7 @@ const Customerreview = () => {
                                             <li><a href="#" className="btn-act hate" data-type="dislike"><FaThumbsDown />No (20)</a></li>
                                             <li><a href="#" className="btn-act report" data-type="dislike"><FaFlag />Report</a></li>
                                         </ul>
-                                        <Fragment>
+                                        {/* <Fragment>
                                             <button
                                                 type="button"
                                                 className="btn btn-light"
@@ -157,7 +157,7 @@ const Customerreview = () => {
                                                     <i className="fas fa-times"></i>
                                                 </button>
                                             )}
-                                        </Fragment>
+                                        </Fragment> */}
                                     </div>
                                 </div>
                             </div>

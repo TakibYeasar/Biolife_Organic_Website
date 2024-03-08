@@ -2,7 +2,7 @@ import React from 'react';
 import "./Additionalinfo.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 
-const Additionalinfo = () => {
+const Additionalinfo = ({product}) => {
 
     return (
         <div id="tab_2nd" className="tab-contain addtional-info-tab">
