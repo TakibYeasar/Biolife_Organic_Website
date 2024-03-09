@@ -86,14 +86,14 @@ class GetArticleView(APIView):
         if article_id:
             try:
                 article = Article.objects.get(id=article_id)
-                category = article.category.all().values_list('id', flat=True)
+                category_ids = [
+                    category.id for category in article.category.all()]
                 comments = ArticleComment.objects.filter(article=article)
                 serializer = ArticleSerializer(
-                    # Pass request context
                     article, context={'request': request})
-                serializer.data['category'] = list(category)
-                serializer.data['comments'] = [
-                    {'comment': comment.comment_field} for comment in comments]
+                serializer.data['category'] = category_ids
+                serializer.data['comments'] = ArticleCommentSerializer(
+                    comments, context={'request': request}, many=True).data
                 return Response(serializer.data, status=status.HTTP_200_OK)
             except ObjectDoesNotExist:
                 return Response({'error': "No article found"}, status=status.HTTP_404_NOT_FOUND)

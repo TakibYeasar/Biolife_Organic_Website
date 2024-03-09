@@ -19,7 +19,7 @@ const Singleprod = ({ item }) => {
           </div>
           <div className="prod-info text-center">
               {/* <b className="categories">{item?.category}</b> */}
-              <h4 className="prod-title"><a href="#">{item?.title}</a></h4>
+              <h4 className="prod-title" onClick={proddetails}><a href="#">{item?.title}</a></h4>
               <div className="price ">
                   <ins><span className="price-amount"><span className="currencySymbol">£</span>{item?.price}</span></ins>
                   <del><span className="price-amount"><span className="currencySymbol">£</span>{item?.old_price}</span></del>

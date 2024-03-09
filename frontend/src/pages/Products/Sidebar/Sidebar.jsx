@@ -40,12 +40,12 @@ const Sidebar = () => {
                         <div className="frm-contain">
                             <form action="#" name="price-filter" id="price-filter" method="get">
                                 <p className="f-item">
-                                    <label for="pr-from">$</label>
-                                    <input className="input-number" type="number" id="pr-from" value="" name="price-from" />
+                                    <label htmlFor="pr-from">$</label>
+                                    <input className="input-number" type="number" id="pr-from" name="price-from" />
                                 </p>
                                 <p className="f-item">
-                                    <label for="pr-to">to $</label>
-                                    <input className="input-number" type="number" id="pr-to" value="" name="price-from" />
+                                    <label htmlFor="pr-to">to $</label>
+                                    <input className="input-number" type="number" id="pr-to" name="price-from" />
                                 </p>
                                 <p className="f-item"><button className="btn-submit" type="submit">go</button></p>
                             </form>

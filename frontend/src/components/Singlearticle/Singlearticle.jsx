@@ -15,7 +15,7 @@ const Singlearticle = ({ item }) => {
   return (
     <div>
       <div className="article-thumb">
-        <a href="#" className="link-to-post"><img src={item?.image} width={370} height={270} alt="" /></a>
+        <a href={`/articleview/${item.id}`} className="link-to-post"><img src={item?.image} width={370} height={270} alt="" /></a>
         <div className="post-date">
           <span className="date">{item?.date?.split("-")[2]}</span>
           <span className="month">{item?.date?.split("-")[1]}</span>
@@ -23,7 +23,6 @@ const Singlearticle = ({ item }) => {
       </div>
       <div className="article-content text-center">
         <h4 className="post-name"><Link to={`/articleview/${item.id}`}>{item?.title}</Link></h4>
-        {/* Use Link component for navigation within the app */}
         <div className="post-meta">
           <a href="#" className="post-meta__item author"><img src={author} width={28} height={28} alt="" /><span>Admin</span></a>
           <a href="#" className="post-meta__item btn liked-count">2 <FaHeart className="icon" /></a>

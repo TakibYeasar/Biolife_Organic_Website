@@ -100,8 +100,8 @@ const Navbar = () => {
                             <ul className="d-flex">
                                 <li className="nav-item"><a href="/" className="nav-link">Home</a></li>
                                 <li className="nav-item"><a href="/about" className="nav-link">About</a></li>
-                                <li className="nav-item"><a href="/allprods" className="nav-link">Product</a></li>
-                                <li className="nav-item"><a href="/allblogs" className="nav-link">Articles</a></li>
+                                <li className="nav-item"><a href="/productslist" className="nav-link">Product</a></li>
+                                <li className="nav-item"><a href="/articleslist" className="nav-link">Articles</a></li>
                                 <li className="nav-item"><a href="/contact" className="nav-link">Contact</a></li>
                             </ul>
                         </div>

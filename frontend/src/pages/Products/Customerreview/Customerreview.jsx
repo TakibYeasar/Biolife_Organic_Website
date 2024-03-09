@@ -85,10 +85,10 @@ const Customerreview = () => {
                                     </p>
                                 </div>
                                 <p className="form-row wide-half">
-                                    <input type="text" name="name" value="" placeholder="Your name" />
+                                    <input type="text" name="name" placeholder="Your name" />
                                 </p>
                                 <p className="form-row wide-half">
-                                    <input type="email" name="email" value="" placeholder="Email address" />
+                                    <input type="email" name="email" placeholder="Email address" />
                                 </p>
                                 {/* <p className="form-row">
                                     <textarea name="comment" id="txt-comment" cols="30" rows="10" placeholder="Write your review here..." onChange={e => setFormData({ text: e.target.value })}></textarea>

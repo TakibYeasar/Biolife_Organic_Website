@@ -23,7 +23,7 @@ const Productview = () => {
     dispatch(getSingleproductAsync(id));
   }, []);
 
-  console.log("Product:", product);
+  // console.log("Product:", product);
 
   if (isLoading) {
     return <div>Loading...</div>;

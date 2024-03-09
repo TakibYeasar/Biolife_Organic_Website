@@ -57,7 +57,7 @@ const Articleview = () => {
                   <figure><img src={article?.image} width="870" height="635" alt="" /></figure>
                 </div>
                 <h2 className="post-name">{article?.title}</h2>
-                <p className="post-archive"><span className="post-date"> / {article?.date}</span><span className="author">Posted By: {article?.author_name}</span></p>
+                <p className="post-archive"><span className="post-date">{article?.date}</span><span className="author">Posted By: {article?.author_name || "Admin"}</span></p>
               </div>
 
               <div className="post-content">{article?.description}</div>

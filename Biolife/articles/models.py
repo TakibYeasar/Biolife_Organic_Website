@@ -86,9 +86,9 @@ class ArticleComment(models.Model):
     image = models.FileField(upload_to='comments/', blank=True, null=True)
     link = models.URLField(blank=True, null=True)
     likes = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="likes_article_comment")
+        CustomUser, on_delete=models.CASCADE, related_name="likes_article_comment", blank=True, null=True)
     dislikes = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="dislikes_article_comment")
+        CustomUser, on_delete=models.CASCADE, related_name="dislikes_article_comment", blank=True, null=True)
     created = models.DateField(auto_now_add=True)
 
     class Meta:
