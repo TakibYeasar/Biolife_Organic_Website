@@ -13,6 +13,13 @@ export const registerUser = async (userData) => {
     return response.data;
 };
 
+
+// verify Account
+export const verifyAccount = async (data) => {
+        const response = await axios.post(`${domain}/api/auth/register/verifing-account/`, data);
+        return response.data;
+};
+
 // login user
 export const loginUser = async (userData) => {
         console.log(userData);
@@ -40,13 +47,8 @@ export const forgotPasswordRequest = async (data) => {
 };
 
 // reset password
-export const resetPassword = async (data) => {
+export const changePassword = async (data) => {
         const response = await axios.put(`${domain}/api/auth/reset-password/<str:uidb64>/<str:token>/`, data);
         return response.data;
 };
 
-// verify Account
-export const verifyAccount = async (data) => {
-        const response = await axios.post(`${domain}/api/auth/register/verifing-account/`, data);
-        return response.data;
-};

@@ -102,6 +102,8 @@ const Navbar = () => {
                                 <li className="nav-item"><a href="/about" className="nav-link">About</a></li>
                                 <li className="nav-item"><a href="/productslist" className="nav-link">Product</a></li>
                                 <li className="nav-item"><a href="/articleslist" className="nav-link">Articles</a></li>
+                                <li className="nav-item"><a href="/register" className="nav-link">Registration</a></li>
+                                <li className="nav-item"><a href="/signin" className="nav-link">SignIn</a></li>
                                 <li className="nav-item"><a href="/contact" className="nav-link">Contact</a></li>
                             </ul>
                         </div>
@@ -111,7 +113,7 @@ const Navbar = () => {
                                 <a href="#"><span><FaHeart className="icon" /></span></a>
                             </div>
                             <div className="mincart">
-                                <a href="#"><span><FaCartPlus className="icon" /></span></a>
+                                <a href="/cart"><span><FaCartPlus className="icon" /></span></a>
                                 <span className="title">My Cart -</span>
                                 <span className="sub-total">$0.00</span>
                             </div>

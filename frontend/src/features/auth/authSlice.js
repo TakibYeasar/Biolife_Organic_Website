@@ -1,21 +1,34 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
     registerUser,
+    verifyAccount,
     loginUser,
     logOutUser,
     forgotPasswordRequest,
-    resetPassword,
-    verifyAccount,
+    changePassword,
 } from "./authService";
 import { toast } from "react-toastify";
 
 
 export const registerUserAsync = createAsyncThunk("auth/registerUser",
-    async (data, thunkAPI) => {
+    async (userData, thunkAPI) => {
         try {
-            return await registerUser(data, thunkAPI);
+            return await registerUser(userData, thunkAPI);
         } catch (err) {
             toast.error(`Registration failed`);
+            console.error(err.response.data);
+            return thunkAPI.rejectWithValue(err.response.data);
+        }
+    }
+);
+
+
+export const verifyAccountAsync = createAsyncThunk("auth/verifyAccount",
+    async (data, thunkAPI) => {
+        try {
+            return await verifyAccount(data, thunkAPI);
+        } catch (err) {
+            toast.error(`Email varifyed request failed`);
             console.error(err.response.data);
             return thunkAPI.rejectWithValue(err.response.data);
         }
@@ -57,23 +70,13 @@ export const forgotPasswordRequestAsync = createAsyncThunk("auth/forgotPassword"
         }
     }
 );
-export const resetPasswordAsync = createAsyncThunk("auth/resetPassword",
+
+export const changePasswordAsync = createAsyncThunk("auth/changePassword",
     async (data, thunkAPI) => {
         try {
-            return await resetPassword(data, thunkAPI);
+            return await changePassword(data, thunkAPI);
         } catch (err) {
-            toast.error(`Password reset failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-export const verifyAccountAsync = createAsyncThunk("auth/verifyAccount",
-    async (data, thunkAPI) => {
-        try {
-            return await verifyAccount(data, thunkAPI);
-        } catch (err) {
-            toast.error(`Email varifyed request failed`);
+            toast.error(`Password change failed`);
             console.error(err.response.data);
             return thunkAPI.rejectWithValue(err.response.data);
         }
@@ -83,6 +86,7 @@ export const verifyAccountAsync = createAsyncThunk("auth/verifyAccount",
 export const authSlice = createSlice({
     name: "auth",
     initialState: {
+        user: null,
         isError: false,
         isSuccess: false,
         isLoading: false,
@@ -103,6 +107,19 @@ export const authSlice = createSlice({
                 state.isSuccess = false;
                 state.isError = true;
                 state.user = null;
+                toast.error(action.payload);
+            })
+            .addCase(verifyAccountAsync.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(verifyAccountAsync.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                toast.success(action.payload);
+            })
+            .addCase(verifyAccountAsync.rejected, (state, action) => {
+                state.isSuccess = false;
+                state.isError = true;
                 toast.error(action.payload);
             })
             .addCase(loginUserAsync.pending, (state) => {
@@ -147,28 +164,15 @@ export const authSlice = createSlice({
                 state.isError = true;
                 toast.error(action.payload);
             })
-            .addCase(resetPasswordAsync.pending, (state) => {
+            .addCase(changePasswordAsync.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(resetPasswordAsync.fulfilled, (state, action) => {
+            .addCase(changePasswordAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
                 toast.success(action.payload);
             })
-            .addCase(resetPasswordAsync.rejected, (state, action) => {
-                state.isSuccess = false;
-                state.isError = true;
-                toast.error(action.payload);
-            })
-            .addCase(verifyAccountAsync.pending, (state) => {
-                state.isLoading = true;
-            })
-            .addCase(verifyAccountAsync.fulfilled, (state, action) => {
-                state.isLoading = false;
-                state.isSuccess = true;
-                toast.success(action.payload);
-            })
-            .addCase(verifyAccountAsync.rejected, (state, action) => {
+            .addCase(changePasswordAsync.rejected, (state, action) => {
                 state.isSuccess = false;
                 state.isError = true;
                 toast.error(action.payload);

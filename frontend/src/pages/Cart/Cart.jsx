@@ -133,7 +133,7 @@ const Cart = () => {
                       <tbody>
 
                         {cartdata?.map((item, i) => (
-                          <tr className="cart_item">
+                          <tr className="cart_item" key={i} item="true">
                             <td className="product-thumbnail" data-title="Product Name">
                               <a className="prd-thumb" href="#">
                                 <figure><img height={113} width={113} src={item?.image} alt="shipping cart" /></figure>
@@ -199,7 +199,7 @@ const Cart = () => {
                       <p className="desc">Based on 56789</p>
                     </div>
                     <div className="btn-checkout text-center">
-                      <a href="#" className="btn-style">Check out</a>
+                      <a href="/checkout" className="btn-style">Check out</a>
                     </div>
                     <div className="biolife-progress-bar">
                       <table>
@@ -234,7 +234,7 @@ const Cart = () => {
               <ul className="products-list biolife-carousel d-flex" >
 
                 {data?.map((item, i) => (
-                  <li key={i} item className="product-item col-lg-3 col-md-6 col-sm-12">
+                  <li key={i} item="true" className="product-item col-lg-3 col-md-6 col-sm-12">
                     <Singleprod product={item?.product} />
                   </li>
                 ))}
