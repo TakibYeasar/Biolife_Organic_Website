@@ -1,7 +1,6 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { Homepage, Aboutus, Articleslist, Articleview, Productslist, Productview, Contact, Registration, Signin, Changepassword, Resetpassword, Cart, Checkout } from "../pages";
-// import PrivateRoute from "./PrivateRoute";
 
 const AppRoutes = () => {
   return (
@@ -15,15 +14,13 @@ const AppRoutes = () => {
         <Route path="/productview/:id" element={<Productview />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/register" element={<Registration />} />
-        <Route path="/changepass" element={<Changepassword />} />
-        <Route path="/resetpass" element={<Resetpassword />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        {/* <PrivateRoute path="/changepass" element={<Changepassword />} />
-        <PrivateRoute path="/resetpass" element={<Resetpassword />} />
-        <PrivateRoute path="/cart" element={<Cart />} />
-        <PrivateRoute path="/checkout" element={<Checkout />} /> */}
         <Route path="/contact" element={<Contact />} />
+
+        <Route path="/changepass" element={<Changepassword />}/>
+        <Route path="/resetpass" element={<Resetpassword />}/>
+        <Route path="/cart" element={<Cart />}/>
+        <Route path="/checkout" element={<Checkout />}/>
+
       </Routes>
     </section>
   );

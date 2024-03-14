@@ -130,8 +130,8 @@ const Cart = () => {
                           <th className="product-subtotal">Total</th>
                         </tr>
                       </thead>
-                      <tbody>
 
+                      <tbody>
                         {cartdata?.map((item, i) => (
                           <tr className="cart_item" key={i} item="true">
                             <td className="product-thumbnail" data-title="Product Name">
@@ -140,7 +140,7 @@ const Cart = () => {
                               </a>
                               <a className="prd-name" href="#">National Fresh Fruit</a>
                               <div className="action">
-                                <a href="#" className="edit"><FaPencilAlt className='icon'/></a>
+                                <a href="#" className="edit"><FaPencilAlt className='icon' /></a>
                                 <a href="#" className="remove"><FaTrash className='icon' /></a>
                               </div>
                             </td>
@@ -153,9 +153,9 @@ const Cart = () => {
                             <td className="product-quantity" data-title="Quantity">
                               <div className="quantity-box type1">
                                 <div className="qty-input">
-                                  <input type="text" name="qty12554" value={item?.quantity} data-max_value="20" data-min_value="1" data-step="1"/>
-                                    <a href="#" className="qty-btn btn-up"><FaCaretUp className='icon' /></a>
-                                    <a href="#" className="qty-btn btn-down"><FaCaretDown className='icon' /></a>
+                                  <input type="text" name="qty12554" />
+                                  <a href="#" className="qty-btn btn-up"><FaCaretUp className='icon' /></a>
+                                  <a href="#" className="qty-btn btn-down"><FaCaretDown className='icon' /></a>
                                 </div>
                               </div>
                             </td>
@@ -167,19 +167,19 @@ const Cart = () => {
                             </td>
                           </tr>
                         ))}
-
-                        
-                        <tr className="wrap-buttons">
-                          <td className="wrap-btn-control d-flex" colspan="4">
-                            <a className="btn-style">Back to Shop</a>
-                            <div className="btn-left d-flex">
-                              <button className="btn-outline-border btn-update" type="submit" disabled>update</button>
-                              <button className="btn-outline-border btn-clear" type="reset">clear all</button>
-                            </div>
-                          </td>
-                        </tr>
-
                       </tbody>
+
+
+                      <tr className="wrap-buttons">
+                        <td className="wrap-btn-control d-flex" colSpan="4">
+                          <a className="btn-style">Back to Shop</a>
+                          <div className="btn-left d-flex">
+                            <button className="btn-outline-border btn-update" type="submit" disabled>update</button>
+                            <button className="btn-outline-border btn-clear" type="reset">clear all</button>
+                          </div>
+                        </td>
+                      </tr>
+
                     </table>
                   </form>
                 </div>
@@ -224,7 +224,7 @@ const Cart = () => {
               </div>
             </div>
 
-            
+
             <div className="product-related-box">
               <div className="biolife-title-box text-center">
                 <span className="biolife-icon"></span>
@@ -238,7 +238,7 @@ const Cart = () => {
                     <Singleprod product={item?.product} />
                   </li>
                 ))}
-                
+
               </ul>
             </div>
 

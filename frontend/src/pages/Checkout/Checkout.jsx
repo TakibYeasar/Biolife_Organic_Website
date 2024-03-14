@@ -49,13 +49,13 @@ const Checkout = () => {
                           <div className="login-checkout">
                             <form action="#" name="frm-login" method="post">
                               <p className="form-row-one">
-                                <label for="input_email">Email Address</label><br />
-                                <input type="email" name="email" id="input_email" value="" placeholder="Your email" />
+                                <label htmlFor="input_email">Email Address</label><br />
+                                <input type="email" name="email" id="input_email" placeholder="Your email" />
                                 <button type="submit" name="btn-sbmt" className="btn-style">Continue As Guest</button>
                               </p>
                               <p className="form-row-two">
                                 <input type="checkbox" name="subcribe" id="input_subcribe" />
-                                <label for="input_subcribe">Subscribe to our newsletter</label>
+                                <label htmlFor="input_subcribe">Subscribe to our newsletter</label>
                               </p>
                               <p className="msg">Already have an account? <a href="#" className="link-forward">Sign in now</a></p>
                             </form>
@@ -87,7 +87,7 @@ const Checkout = () => {
                     <ul className="cart-list">
 
                       {data?.map((item, i) => (
-                        <li className="cart-elem">
+                        <li className="cart-elem" key={i} item="true">
                           <div className="cart-item d-flex">
                             <div className="product-thumb">
                               <a className="prd-thumb" href="#">
