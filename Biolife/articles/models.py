@@ -80,8 +80,6 @@ class ArticleComment(models.Model):
     customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     parent = models.ForeignKey('self', on_delete=models.CASCADE,
                                verbose_name="Articles Comments", null=True, blank=True)
-    name = models.CharField(max_length=255, blank=True, null=True)
-    email = models.EmailField(max_length=255, blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
     image = models.FileField(upload_to='comments/', blank=True, null=True)
     link = models.URLField(blank=True, null=True)

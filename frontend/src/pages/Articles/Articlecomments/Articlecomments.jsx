@@ -1,28 +1,61 @@
-import React from 'react';
+import React, { useState } from 'react';
 import "./Articlecomments.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { FaAngleRight, FaComment, FaFileImage, FaPaperclip, FaSmile, FaThumbsDown, FaThumbsUp} from "react-icons/fa";
 import author02 from "../../../../../assets/images/blogpost/author-02.png";
 import author03 from "../../../../../assets/images/blogpost/author-03.png";
 import viewer from "../../../../../assets/images/blogpost/viewer-avt.png";
+import { useDispatch, useSelector } from "react-redux";
+import { selectIsLoading, selectIsError, commentArticleAsync } from "../../../features/article/articleSlice";
 
-const Articlecomments = () => {
+const Articlecomments = ({ articleId }) => {
+
+    const dispatch = useDispatch();
+    const isLoading = useSelector(selectIsLoading);
+    const isError = useSelector(selectIsError);
+
+    const [commentData, setCommentData] = useState({
+        comment: "",
+        image: "",
+        link: "",
+    });
+
+    const handleChange = (e) => {
+        setCommentData({ ...commentData, comment: e.target.value });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        dispatch(commentArticleAsync(articleId, commentData));
+    };
+
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (isError) {
+        return <div>Error occurred while commenting on article....</div>;
+    }
+
+
     return (
         <div className="post-comments">
             <h3 className="cmt-title">Comments<sup>(26)</sup></h3>
 
             <div className="comment-form">
-                <form action="#" method="post" name="frm-post-comment">
+                <form action="#" method="post" name="frm-post-comment" onSubmit={handleSubmit}>
                     <p className="form-row">
-                        <textarea name="txt-comment" id="txt-comment-ath-3364" cols={30} rows={10} placeholder="Write your comment"></textarea>
-                        <a href="#" className="current-author"><img src={viewer} width={41} height={41} alt="" /></a>
+                        <textarea name="txt-comment" id="txt-comment" placeholder="Write your comment" value={commentData.comment} onChange={handleChange}></textarea>
                     </p>
-                    <p className="form-row last-btns">
+                    <div className="form-row-btns">
                         <button type="submit" className="btn-style">post a comment</button>
-                        <a href="#" className="btn btn-fn-1"><FaSmile aria-hidden="true" /></a>
-                        <a href="#" className="btn btn-fn-1"><FaPaperclip aria-hidden="true" /></a>
-                        <a href="#" className="btn btn-fn-1"><FaFileImage aria-hidden="true" /></a>
-                    </p>
+                        <div className="d-flex">
+                            <a href="#" className="btn btn-fn-1"><FaSmile aria-hidden="true" /></a>
+                            <a href="#" className="btn btn-fn-1" value={commentData.link} onChange={handleChange}><FaPaperclip aria-hidden="true" /></a>
+                            <a href="#" className="btn btn-fn-1" value={commentData.image} onChange={handleChange}><FaFileImage aria-hidden="true" /></a>
+                        </div>
+                    </div>
                 </form>
             </div>
 

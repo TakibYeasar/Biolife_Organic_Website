@@ -12,10 +12,10 @@ const Registration = () => {
     const [userData, setUserData] = useState({
         username: "",
         email: "",
-        firstName: "",
-        lastName: "",
+        first_name: "",
+        last_name: "",
         password: "",
-        confirmPassword: "",
+        confirm_password: "",
     });
 
     const handleChange = (e) => {
@@ -92,8 +92,8 @@ const Registration = () => {
                                                     className="form-control unicase-form-control text-input"
                                                     placeholder="First Name"
                                                     id="firstName"
-                                                    name="firstName"
-                                                    value={userData.firstName}
+                                                    name="first_name"
+                                                    value={userData.first_name}
                                                     onChange={handleChange}
                                                 />
                                             </div>
@@ -104,8 +104,8 @@ const Registration = () => {
                                                     className="form-control unicase-form-control text-input"
                                                     placeholder="Last Name"
                                                     id="lastName"
-                                                    name="lastName"
-                                                    value={userData.lastName}
+                                                    name="last_name"
+                                                    value={userData.last_name}
                                                     onChange={handleChange}
                                                 />
                                             </div>
@@ -128,8 +128,8 @@ const Registration = () => {
                                                     className="form-control unicase-form-control text-input"
                                                     placeholder="Confirm Password"
                                                     id="confirmPassword"
-                                                    name="confirmPassword"
-                                                    value={userData.confirmPassword}
+                                                    name="confirm_password"
+                                                    value={userData.confirm_password}
                                                     onChange={handleChange}
                                                 />
                                             </div>

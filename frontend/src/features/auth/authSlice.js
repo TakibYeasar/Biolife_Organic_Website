@@ -86,7 +86,7 @@ export const changePasswordAsync = createAsyncThunk("auth/changePassword",
 export const authSlice = createSlice({
     name: "auth",
     initialState: {
-        user: null,
+        user: [],
         isError: false,
         isSuccess: false,
         isLoading: false,

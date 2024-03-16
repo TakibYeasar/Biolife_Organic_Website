@@ -86,7 +86,7 @@ const Articleview = () => {
 
               </div>
 
-              <Articlecomments />
+              <Articlecomments articleId={id} />
             </div>
 
           </div>

@@ -10,6 +10,24 @@
             font-size: 20px;
         }
     }
+    
+    .comment-form {
+        .form-row {
+            textarea {
+                height: 20rem;
+                width: 100%;
+                padding: 2rem;
+            }
+        }
 
+        .form-row-btns {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .btn-style{
+                border: none;
+            }
+        }
+    }
 
 }

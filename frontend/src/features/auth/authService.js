@@ -5,7 +5,7 @@ import { domain } from "../../env";
 // user registration
 export const registerUser = async (userData) => {
     console.log(userData);
-    const response = await axios.post(`${domain}/api/auth/register-user`, userData);
+    const response = await axios.post(`${domain}/api/auth/register-user/`, userData);
 
     if (response.data) {
         localStorage.setItem("user", JSON.stringify(response.data));
@@ -23,7 +23,7 @@ export const verifyAccount = async (data) => {
 // login user
 export const loginUser = async (userData) => {
         console.log(userData);
-        const response = await axios.post(`${domain}/api/auth/login-user`, userData);
+        const response = await axios.post(`${domain}/api/auth/login-user/`, userData);
 
         if (response.data) {
             localStorage.setItem("user", JSON.stringify(response.data));

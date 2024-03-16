@@ -80,28 +80,43 @@ class DeleteArticleCategoryView(APIView):
         return Response({'message': 'Category deleted successfully'}, status=HTTP_204_NO_CONTENT)
 
 
+
 class GetArticleView(APIView):
     def get(self, request, *args, **kwargs):
         article_id = kwargs.get('id')
         if article_id:
             try:
                 article = Article.objects.get(id=article_id)
-                category_ids = [
-                    category.id for category in article.category.all()]
-                comments = ArticleComment.objects.filter(article=article)
                 serializer = ArticleSerializer(
                     article, context={'request': request})
+                category_ids = [category.id for category in article.category.all()]
                 serializer.data['category'] = category_ids
-                serializer.data['comments'] = ArticleCommentSerializer(
-                    comments, context={'request': request}, many=True).data
+                comments = ArticleComment.objects.filter(article=article).order_by('-created')
+                flat_comments = []
+                for comment in ArticleCommentSerializer(comments, many=True).data:
+                    children = self.get_children(comment['id'])
+                    comment['children'] = children
+                    flat_comments.append(comment)
+                serializer.data['comments'] = flat_comments
+
                 return Response(serializer.data, status=status.HTTP_200_OK)
-            except ObjectDoesNotExist:
+            except Article.DoesNotExist:
                 return Response({'error': "No article found"}, status=status.HTTP_404_NOT_FOUND)
         else:
             articles = Article.objects.all()
             articles_data = ArticleSerializer(
                 articles, context={'request': request}, many=True).data
             return Response(data=articles_data, status=status.HTTP_200_OK)
+
+    def get_children(self, parent_id):
+        """Recursive function to retrieve child comments (replies)"""
+        children = ArticleComment.objects.filter(
+            parent_id=parent_id).order_by('-created')
+        children_data = ArticleCommentSerializer(children, many=True).data
+        for child in children_data:
+            child['children'] = self.get_children(child['id'])
+        return children_data
+
 
 
 class CreateArticleView(APIView):
@@ -187,22 +202,11 @@ class RemoveLikeUnlikeArticleView(APIView):
             return Response({'error': "No article found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-class GetCommentArticleView(APIView):
-    def get(self, request, article_id):
-        try:
-            article = ArticleComment.objects.get(id=article_id)
-            comments = ArticleComment.objects.filter(article=article)
-            serializer = ArticleCommentSerializer(comments, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except ArticleComment.DoesNotExist:
-            return Response({'error': "No article found"}, status=status.HTTP_404_NOT_FOUND)
-
-
 class CreateCommentArticleView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
-    def post(self, request, article_id):
+    def post(self, request, article_id, parent_id=None):
         try:
             article = ArticleComment.objects.get(id=article_id)
         except ArticleComment.DoesNotExist:
@@ -210,10 +214,17 @@ class CreateCommentArticleView(APIView):
 
         serializer = ArticleCommentSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user, article=article)
+            if parent_id:
+                try:
+                    parent_comment = ArticleComment.objects.get(id=parent_id)
+                except ArticleComment.DoesNotExist:
+                    return Response({'error': "No parent comment found"}, status=status.HTTP_404_NOT_FOUND)
+                serializer.save(user=request.user,
+                                article=article, parent=parent_comment)
+            else:
+                serializer.save(user=request.user, article=article)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class UpdateCommentArticleView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -224,84 +235,17 @@ class UpdateCommentArticleView(APIView):
             comment = ArticleComment.objects.get(id=comment_id)
             if comment.user.id != request.user.id:
                 return Response({'error': "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
-            serializer = ArticleCommentSerializer(
-                comment, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except ObjectDoesNotExist:
+        except ArticleComment.DoesNotExist:
             return Response({'error': "No comment found"}, status=status.HTTP_404_NOT_FOUND)
 
-
-class DeleteCommentArticleView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    
-    def delete(self, request, comment_id):
-        try:
-            comment = ArticleComment.objects.get(id=comment_id)
-            if comment.user.id == request.user.id:
-                comment.delete()
-                return Response({'msg': "comment Deleted"}, status=status.HTTP_200_OK)
-            else:
-                return Response({'error': "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
-        except ObjectDoesNotExist:
-            return Response({'error': "No comment found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-class GetReplyCommentView(APIView):
-    def get(self, request, comment_id):
-        try:
-            parent_comment = ArticleComment.objects.get(id=comment_id)
-            reply_comments = parent_comment.get_children()
-            serializer = ArticleCommentSerializer(reply_comments, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except ArticleComment.DoesNotExist:
-            return Response({'error': "No parent comment found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-class CreateReplyCommentView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    
-    def post(self, request, comment_id):
-        try:
-            parent_comment = ArticleComment.objects.get(id=comment_id)
-            article = parent_comment.article
-        except ArticleComment.DoesNotExist:
-            return Response({'error': "No parent comment found"}, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = ArticleCommentSerializer(data=request.data)
+        serializer = ArticleCommentSerializer(
+            comment, data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.save(
-                user=request.user, article=article, parent=parent_comment
-            )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class UpdateReplyCommentView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    
-    def put(self, request, comment_id):
-        try:
-            comment = ArticleComment.objects.get(id=comment_id)
-            if comment.user.id != request.user.id:
-                return Response({'error': "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
-            serializer = ArticleCommentSerializer(
-                comment, data=request.data, partial=True
-            )
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except ArticleComment.DoesNotExist:
-            return Response({'error': "No comment found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-class DeleteReplyCommentView(APIView):
+class DeleteCommentArticleView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     

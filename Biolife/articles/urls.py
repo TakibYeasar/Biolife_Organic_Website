@@ -29,23 +29,12 @@ urlpatterns = [
     path('unlike/article/<int:article_id>/',
          RemoveLikeUnlikeArticleView.as_view(), name='remove_like_article'),
 
-    path('article/<int:article_id>/all_comment/',
-         GetCommentArticleView.as_view(), name='get_article_comment'),
     path('article/<int:article_id>/create/comment/',
          CreateCommentArticleView.as_view(), name='create_article_comment'),
     path('article/update/comment/<int:comment_id>/',
          UpdateCommentArticleView.as_view(), name='update_article_comment'),
     path('article/delete/comment/<int:comment_id>/',
          DeleteCommentArticleView.as_view(), name='delete_article_comment'),
-
-    path('article/reply/comment/<int:comment_id>/',
-         GetReplyCommentView.as_view(), name='get_reply_comment'),
-    path('article/create/reply/comment/<int:comment_id>/',
-         CreateReplyCommentView.as_view(), name='create_reply_comment'),
-    path('article/update/reply/comment/<int:comment_id>/',
-         UpdateReplyCommentView.as_view(), name='update_reply_comment'),
-    path('article/delete/reply/comment/<int:comment_id>/',
-         DeleteReplyCommentView.as_view(), name='delete_reply_comment'),
 
     path('article/comment/<int:comment_id>/create/like_dislike/',
          CreateCommentLikeDislikeView.as_view(), name='create_comment_like_dislike'),

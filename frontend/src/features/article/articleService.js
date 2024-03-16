@@ -27,7 +27,7 @@ export const getSingleArticle = async (articleId) => {
 
 // Comment Article
 export const commentArticle = async (articleId, commentData) => {
-    const response = await axios.post(`${domain}/api/articles/${articleId}/create/comment`, commentData);
+    const response = await axios.post(`${domain}/api/articles/article/${articleId}/create/comment/`, commentData);
     return response.data;
 };
 
@@ -40,24 +40,5 @@ export const updateComment = async (commentId, commentData) => {
 // Delete Comment
 export const deleteComment = async (commentId) => {
     const response = await axios.delete(`${domain}/api/articles/delete/comment/${commentId}`);
-    return response.data;
-};
-
-// Replay Comment Article
-export const replayCommentArticle = async (commentId, commentData) => {
-    console.log(commentData);
-    const response = await axios.post(`${domain}/api/articles/create/reply/comment/${commentId}`, commentData);
-    return response.data;
-};
-
-// Update Replay Comment
-export const updateReplayComment = async (commentId, commentData) => {
-    const response = await axios.put(`${domain}/api/articles/update/reply/comment/${commentId}`, commentData);
-    return response.data;
-};
-
-// Delete Replay Comment
-export const deleteReplayComment = async (commentId) => {
-    const response = await axios.delete(`${domain}/api/articles/delete/reply/comment/${commentId}`);
     return response.data;
 };

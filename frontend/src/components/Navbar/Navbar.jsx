@@ -1,30 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import "./Navbar.scss";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import organic4 from "../../../../assets/images/organic-4.png";
 import { FaCartPlus, FaEnvelope, FaFacebook, FaHeart, FaPinterest, FaShoppingCart, FaTwitter, FaUser } from 'react-icons/fa';
-// import { useDispatch, useSelector } from "react-redux";
-// import { selectAuth, signOutUserAsync } from "../authSlice";
-// import { Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logOutUserAsync, selectUser } from "../../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 
 const Navbar = () => {
 
-    // const navigate = useNavigate();
-    // const dispatch = useDispatch();
-    // const { user } = useSelector((state) => state.auth);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { user } = useSelector(selectUser);
 
-    // const onLogout = () => {
-    //     dispatch(logout());
-    //     dispatch(reset());
-    //     navigate("/");
-    // };
+    const onLogout = () => {
+        dispatch(logOutUserAsync());
+        // dispatch(reset()); // Potentially reset user data in the store
+        navigate("/");
+    };
 
-    // const { user } = useSelector(selectAuth);
-    // const dispatch = useDispatch();
-    // useEffect(() => {
-    //     dispatch(signOutUserAsync());
-    // }, []);
 
 
 
@@ -63,26 +58,12 @@ const Navbar = () => {
                                     </select>
                                 </li>
                                 <li className='d-flex'>
-                                    {/* {user ? (
-                                        <div>
-                                            <a href="#" onClick={onLogout}>
-                                                <span>Logout</span>
-                                            </a>
-                                        </div>
-                                    ) : (
-                                        <>
-                                            <div>
-                                                <a href="/auth">
-                                                    <span>Login</span>
-                                                </a>
-                                            </div>
-                                            <div>
-                                                <a href="/register">
-                                                    <span>Registration</span>
-                                                </a>
-                                            </div>
-                                        </>
-                                    )} */}
+                                    {user ? (<>
+                                        <a href="/register" className="nav-link">Registration</a>
+                                        <a href="/signin" className="nav-link">SignIn</a>
+                                    </>) : (
+                                        <a href="#" className="nav-link" onClick={onLogout}>Logout</a>
+                                    )}
                                 </li>
                             </ul>
                         </div>
@@ -102,8 +83,6 @@ const Navbar = () => {
                                 <li className="nav-item"><a href="/about" className="nav-link">About</a></li>
                                 <li className="nav-item"><a href="/productslist" className="nav-link">Product</a></li>
                                 <li className="nav-item"><a href="/articleslist" className="nav-link">Articles</a></li>
-                                <li className="nav-item"><a href="/register" className="nav-link">Registration</a></li>
-                                <li className="nav-item"><a href="/signin" className="nav-link">SignIn</a></li>
                                 <li className="nav-item"><a href="/contact" className="nav-link">Contact</a></li>
                             </ul>
                         </div>
