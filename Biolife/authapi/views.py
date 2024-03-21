@@ -1,8 +1,10 @@
-from django.conf import settings
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from .models import *
 from .serializers import *
 from .utils import send_email
+from .renderers import UserRenderer
+from django.conf import settings
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.auth import authenticate
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
@@ -12,27 +14,34 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
 
+# Generate Token Manually
+def get_tokens_for_user(user_obj):
+  refresh = RefreshToken.for_user(user_obj)
+  return {
+      'refresh': str(refresh),
+      'access': str(refresh.access_token),
+  }
+
 class UserRegisterView(APIView):
+    renderer_classes = [UserRenderer]
     def post(self, request):
         serializer = UserRegesterationSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            user_obj = serializer.save()
             email = serializer.validated_data["email"]
-            data = {
+            token = get_tokens_for_user(user_obj)
+            data = {'token': token,
                 "detail": "We sent an email to you for verification.", "email": email}
-            user_obj = CustomUser.objects.get(email=email)
-            token = self.get_tokens_for_user(user_obj)
-            send_email("Activate your account!", user_obj.email, {
-                "user": user_obj}, {"token": token})
+            # user_obj = CustomUser.objects.get(email=email)
+            # token = self.get_tokens_for_user(user_obj)
+            # send_email("Activate your account!", user_obj.email, {
+            #     "user": user_obj}, {"token": token})
             return Response(data, status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def get_tokens_for_user(self, user):
-        refresh = RefreshToken.for_user(user)
-        return str(refresh.access_token)
 
 
 class UserAccountVerificationView(APIView):
+    renderer_classes = [UserRenderer]
     def get(self, request):
         try:
             token = request.GET.get('token')
@@ -42,10 +51,9 @@ class UserAccountVerificationView(APIView):
             user_qs = CustomUser.objects.filter(id=user_id)
             if user_qs.exists():
                 user = user_qs[0]
-                user.is_verified = True
                 user.is_active = True
                 user.save()
-                return Response({'success': 'Your account has been verified and activated successfully.'}, status=status.HTTP_200_OK)
+                return Response({'success': 'Your account has been activated successfully.'}, status=status.HTTP_200_OK)
         except jwt.ExpiredSignatureError:
             return Response({'Error': 'Token is expired'}, status=status.HTTP_400_BAD_REQUEST)
         except jwt.exceptions.DecodeError:
@@ -53,6 +61,7 @@ class UserAccountVerificationView(APIView):
 
 
 class ActivationResendView(APIView):
+    renderer_classes = [UserRenderer]
     def post(self, request, *args, **kwargs):
         serializer = ActivationResendSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -60,33 +69,36 @@ class ActivationResendView(APIView):
         token = self.get_tokens_for_user(user_obj)
         send_email("Activate your account!", user_obj.email, {
             "user": user_obj}, {"token": token})
-        return Response(
-            {"detail": "Email verification resent successfully."},
-            status=status.HTTP_200_OK,
-        )
-
-    def get_tokens_for_user(self, user):
-        refresh = RefreshToken.for_user(user)
-        return str(refresh.access_token)
+        return Response({"detail": "Email verification resent successfully."}, status=status.HTTP_200_OK)
 
 
 class LoginUserView(APIView):
+    renderer_classes = [UserRenderer]
     permission_classes = [permissions.AllowAny, ]
-
+    
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        username = serializer.data.get('username')
+        email = serializer.data.get('email')
+        password = serializer.data.get('password')
+        user_obj = authenticate(username=username, email=email, password=password)
+        if user_obj is not None:
+            token = get_tokens_for_user(user_obj)
+            return Response({'token':token, 'msg':'Login Success'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'errors':{'non_field_errors':['Email or Password is not Valid']}}, status=status.HTTP_404_NOT_FOUND)
 
 
 class LogOutView(APIView):
+    renderer_classes = [UserRenderer]
     serializer_class = LogoutSerializer
     permission_classes = [permissions.AllowAny, ]
 
     def post(self, request):
         try:
             refresh_token = request.data.get('refresh_token')
-            print(refresh_token)
+            # print(refresh_token)
             token = RefreshToken(refresh_token)
             token.blacklist()
             return Response({'success': 'Loged Out'}, status=status.HTTP_200_OK)
@@ -95,6 +107,7 @@ class LogOutView(APIView):
 
 
 class ChangePasswordApiView(APIView):
+    renderer_classes = [UserRenderer]
     permission_classes = [IsAuthenticated,]
 
     def put(self, request, *args, **kwargs):
@@ -115,7 +128,7 @@ class ChangePasswordApiView(APIView):
 
 
 class ForgotPasswordView(APIView):
-    
+    renderer_classes = [UserRenderer]
     def post(self, request):
         serializer = ForgotPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -130,6 +143,7 @@ class ForgotPasswordView(APIView):
 
 
 class ResetPasswordView(APIView):
+    renderer_classes = [UserRenderer]
     def post(self, request, *args, **kwargs):
         serializer = ResetPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -137,6 +151,7 @@ class ResetPasswordView(APIView):
 
 
 class UserProfileView(APIView):
+    renderer_classes = [UserRenderer]
     authentication_classes = [TokenAuthentication, ]
     permission_classes = [IsAuthenticated, ]
 
@@ -153,6 +168,7 @@ class UserProfileView(APIView):
 
 
 class UpdateUserProfile(APIView):
+    renderer_classes = [UserRenderer]
     permission_classes = [IsAuthenticated, ]
     authentication_classes = [TokenAuthentication, ]
 

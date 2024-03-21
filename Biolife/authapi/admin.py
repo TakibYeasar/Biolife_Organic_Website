@@ -7,8 +7,7 @@ class CustomUserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ["id", "email", "username",
-                    "first_name", "last_name", "password", "is_admin"]
+    list_display = ["id", "email", "username", "is_admin"]
     list_filter = ["is_admin"]
     fieldsets = [
         ('User Credentials', {"fields": ["email", "password"]}),
@@ -22,7 +21,7 @@ class CustomUserAdmin(BaseUserAdmin):
             None,
             {
                 "classes": ["wide"],
-                "fields": ["email", "username", "first_name", "last_name", "password"],
+                "fields": ["email", "username", "first_name", "last_name", "password", "confirm_password"],
             },
         ),
     ]

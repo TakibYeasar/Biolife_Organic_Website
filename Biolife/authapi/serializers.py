@@ -51,42 +51,31 @@ class ActivationResendSerializer(serializers.ModelSerializer):
             user = CustomUser.objects.get(email=email)
         except CustomUser.DoesNotExist:
             raise serializers.ValidationError({"detail": "User does not exist."})
-        if user.is_verified:
+        if user.is_active:
             raise serializers.ValidationError({"detail": "User is already activated and verified."})
         attrs["user"] = user
         return super().validate(attrs)
 
 
 class LoginSerializer(serializers.ModelSerializer):
-    token = serializers.SerializerMethodField()
-
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'password', 'token']
-
-    def get_token(self, obj):
-        user = CustomUser.objects.get(email=obj['email'])
-
-        return {
-            'refresh': user.tokens()['refresh'],
-            'access': user.tokens()['access'],
-        }
+        fields = ['username', 'email', 'password']
 
     def validate(self, attrs):
-        user = authenticate(username=attrs.get('username'), email=attrs.get('email'), password=attrs.get('password'))
-
-        if not user:
-            raise exceptions.AuthenticationFailed('there is no such user')
+        email = attrs.get("email")
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            raise serializers.ValidationError(
+                {"detail": "User does not exist."})
 
         if not user.is_active:
-            raise exceptions.AuthenticationFailed('Your account is blocked')
-
-        if not user.is_verified:
             raise exceptions.AuthenticationFailed(
-                'Your account is not verfied yet')
+                'Your account is not activated yet')
 
         attrs["user"] = user
-        return attrs
+        return super().validate(attrs)
 
 class LogoutSerializer(serializers.ModelSerializer):
     token = serializers.CharField(max_length=500)

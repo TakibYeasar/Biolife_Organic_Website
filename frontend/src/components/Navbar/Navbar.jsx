@@ -22,7 +22,6 @@ const Navbar = () => {
 
 
 
-
     return (
         <div className="navbar-sec">
             <div className="top-header">
