@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import "./Articles.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { useSelector, useDispatch } from "react-redux";
-import { selectIsLoading, selectIsError, selectAllArticles, getAllArticlesAsync } from '../../../features/article/articleSlice';
+import { getAllArticlesAsync } from '../../../features/article/articleService';
+import { selectIsLoading, selectIsError, selectAllArticles } from '../../../features/article/articleSlice';
 import {Singlearticle} from '../../../components';
 
 const Articles = () => {

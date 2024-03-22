@@ -3,7 +3,8 @@ import "./Onsaleprod.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
-import { selectIsLoading, selectIsError, selectAllOnsaleprod, getOnsaleprodAsync } from '../../../features/product/productSlice';
+import { getOnsaleprodAsync } from '../../../features/product/productService';
+import { selectIsLoading, selectIsError, selectAllOnsaleprod } from '../../../features/product/productSlice';
 import { Singleprod } from "../../../components";
 
 

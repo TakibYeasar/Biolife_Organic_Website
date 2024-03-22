@@ -1,92 +1,21 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {
-    registerUser,
-    verifyAccount,
-    loginUser,
-    logOutUser,
-    forgotPasswordRequest,
-    changePassword,
+    registerUserAsync,
+    verifyAccountAsync,
+    loginUserAsync,
+    logOutUserAsync,
+    forgotPasswordRequestAsync,
+    changePasswordAsync,
 } from "./authService";
 import { toast } from "react-toastify";
 
 
-export const registerUserAsync = createAsyncThunk("auth/registerUser",
-    async (userData, thunkAPI) => {
-        try {
-            return await registerUser(userData, thunkAPI);
-        } catch (err) {
-            toast.error(`Registration failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-
-export const verifyAccountAsync = createAsyncThunk("auth/verifyAccount",
-    async (data, thunkAPI) => {
-        try {
-            return await verifyAccount(data, thunkAPI);
-        } catch (err) {
-            toast.error(`Email varifyed request failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const loginUserAsync = createAsyncThunk("auth/loginUser",
-    async (user, thunkAPI) => {
-        try {
-            return await loginUser(user, thunkAPI);
-        } catch (err) {
-            toast.error(`Login failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const logOutUserAsync = createAsyncThunk("auth/logOutUser",
-    async (_, thunkAPI) => {
-        try {
-            return await logOutUser(_, thunkAPI);
-        } catch (err) {
-            toast.error(`Logout failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const forgotPasswordRequestAsync = createAsyncThunk("auth/forgotPassword",
-    async (data, thunkAPI) => {
-        try {
-            return await forgotPasswordRequest(data, thunkAPI);
-        } catch (err) {
-            toast.error(`Forgot password request failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const changePasswordAsync = createAsyncThunk("auth/changePassword",
-    async (data, thunkAPI) => {
-        try {
-            return await changePassword(data, thunkAPI);
-        } catch (err) {
-            toast.error(`Password change failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
 
 export const authSlice = createSlice({
     name: "auth",
     initialState: {
-        user: [],
+        user: null,
+        token: null,
         isError: false,
         isSuccess: false,
         isLoading: false,
@@ -101,6 +30,7 @@ export const authSlice = createSlice({
                 state.isLoading = false;
                 state.isSuccess = true;
                 state.user = action.payload;
+                state.token = action.payload;
                 toast.success(action.payload);
             })
             .addCase(registerUserAsync.rejected, (state, action) => {
@@ -129,6 +59,7 @@ export const authSlice = createSlice({
                 state.isLoading = false;
                 state.isSuccess = true;
                 state.user = action.payload;
+                state.token = action.payload;
                 toast.success(action.payload);
             })
             .addCase(loginUserAsync.rejected, (state, action) => {
@@ -144,6 +75,7 @@ export const authSlice = createSlice({
                 state.isLoading = false;
                 state.isSuccess = true;
                 state.user = null;
+                state.token = null;
                 toast.success(action.payload);
             })
             .addCase(logOutUserAsync.rejected, (state, action) => {
@@ -182,5 +114,6 @@ export const authSlice = createSlice({
 
 export const selectIsLoading = (state) => state.auth.isLoading;
 export const selectIsError = (state) => state.auth.isError;
-export const selectUser = (state) => state.auth.user || {};
+export const selectCurrentUser = (state) => state.auth.user;
+export const selectToken = (state) => state.auth.token;
 export default authSlice.reducer;

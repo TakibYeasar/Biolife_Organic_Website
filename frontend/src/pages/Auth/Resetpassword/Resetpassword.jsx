@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { forgotPasswordRequestAsync } from "../../../features/auth/authSlice";
+import { forgotPasswordRequestAsync } from "../../../features/auth/authService";
 
 const Resetpassword = () => {
     const dispatch = useDispatch();

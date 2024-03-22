@@ -1,38 +1,12 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {
-    profileView,
-    updateProfile,
-    addAddress,
-    editAddress,
-    removeAddress,
+    profileViewAsync,
+    updateProfileAsync,
+    addAddressAsync,
+    editAddressAsync,
+    removeAddressAsync,
 } from "./userService";
 import { toast } from "react-toastify";
-
-
-export const profileViewAsync = createAsyncThunk(
-    "user/profileView",
-    async () => await profileView()
-);
-
-export const updateProfileAsync = createAsyncThunk(
-    "user/updateProfile",
-    async (userData, thunkAPI) => await updateProfile(userData, thunkAPI)
-);
-
-export const addAddressAsync = createAsyncThunk(
-    "user/addAddress",
-    async (addressData, thunkAPI) => await addAddress(addressData, thunkAPI)
-);
-
-export const editAddressAsync = createAsyncThunk(
-    "user/editAddress",
-    async (addressData, thunkAPI) => await editAddress(addressData, thunkAPI)
-);
-
-export const removeAddressAsync = createAsyncThunk(
-    "user/removeAddress",
-    async () => await removeAddress()
-);
 
 
 export const userSlice = createSlice({

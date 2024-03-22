@@ -3,7 +3,8 @@ import "./Features.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { FaBeer, FaCalendarAlt, FaCarAlt } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
-import { selectIsLoading, selectIsError, selectAllFeatureds, getFeaturedAsync } from '../../../features/root/rootSlice';
+import { getFeaturedAsync } from '../../../features/root/rootService';
+import { selectIsLoading, selectIsError, selectAllFeatureds} from '../../../features/root/rootSlice';
 
 
 const Features = () => {

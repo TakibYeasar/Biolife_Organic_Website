@@ -6,7 +6,8 @@ import author02 from "../../../../../assets/images/blogpost/author-02.png";
 import author03 from "../../../../../assets/images/blogpost/author-03.png";
 import viewer from "../../../../../assets/images/blogpost/viewer-avt.png";
 import { useDispatch, useSelector } from "react-redux";
-import { selectIsLoading, selectIsError, commentArticleAsync } from "../../../features/article/articleSlice";
+import { commentArticleAsync } from "../../../features/article/articleService";
+import { selectIsLoading, selectIsError } from "../../../features/article/articleSlice";
 
 const Articlecomments = ({ articleId }) => {
 

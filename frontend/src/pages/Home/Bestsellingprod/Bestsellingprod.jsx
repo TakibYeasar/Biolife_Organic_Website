@@ -3,7 +3,8 @@ import "./Bestsellingprod.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
-import { selectIsLoading, selectIsError, selectAllBestsellingprod, getBestsellingprodAsync } from '../../../features/product/productSlice';
+import { getBestsellingprodAsync } from '../../../features/product/productService';
+import { selectIsLoading, selectIsError, selectAllBestsellingprod } from '../../../features/product/productSlice';
 import { Singleprod } from "../../../components";
 
 const Bestsellingprod = () => {

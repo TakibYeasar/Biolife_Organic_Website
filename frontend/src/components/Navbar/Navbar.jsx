@@ -4,7 +4,8 @@ import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import organic4 from "../../../../assets/images/organic-4.png";
 import { FaCartPlus, FaEnvelope, FaFacebook, FaHeart, FaPinterest, FaShoppingCart, FaTwitter, FaUser } from 'react-icons/fa';
 import { useDispatch, useSelector } from "react-redux";
-import { logOutUserAsync, selectUser } from "../../features/auth/authSlice";
+import { logOutUserAsync} from "../../features/auth/authService";
+import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 
 
@@ -12,7 +13,7 @@ const Navbar = () => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { user } = useSelector(selectUser);
+    // const { user } = useSelector(selectCurrentUser);
 
     const onLogout = () => {
         dispatch(logOutUserAsync());
@@ -56,14 +57,16 @@ const Navbar = () => {
                                         <option value="jp">Japan (JPY)</option>
                                     </select>
                                 </li>
-                                <li className='d-flex'>
-                                    {user ? (<>
-                                        <a href="/register" className="nav-link">Registration</a>
-                                        <a href="/signin" className="nav-link">SignIn</a>
-                                    </>) : (
+                                {/* <li className='d-flex'>
+                                    {user ? (
                                         <a href="#" className="nav-link" onClick={onLogout}>Logout</a>
+                                    ) : (
+                                        <>
+                                            <a href="/register" className="nav-link">Registration</a>
+                                            <a href="/signin" className="nav-link">SignIn</a>
+                                        </>
                                     )}
-                                </li>
+                                </li> */}
                             </ul>
                         </div>
                     </div>

@@ -3,7 +3,8 @@ import "./Categorylist.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { FaAngleRight, FaBars, FaCaretDown } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
-import { selectIsLoading, selectIsError, selectAllCategories, getCategoriesAsync } from '../../../features/product/productSlice';
+import { getCategoriesAsync } from '../../../features/product/productService';
+import { selectIsLoading, selectIsError, selectAllCategories } from '../../../features/product/productSlice';
 
 
 const Categorylist = () => {

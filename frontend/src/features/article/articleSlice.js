@@ -1,92 +1,15 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import {
-    getArticlesCat,
-    getSingleCategory,
-    getAllArticles,
-    getSingleArticle,
-    commentArticle,
-    updateComment,
-    deleteComment,
+    getArticlesCatAsync,
+    getSingleCategoryAsync,
+    getAllArticlesAsync,
+    getSingleArticleAsync,
+    commentArticleAsync,
+    updateCommentAsync,
+    deleteCommentAsync,
 } from "./articleService";
 
-
-export const getArticlesCatAsync = createAsyncThunk("articles/getArticlesCat",
-    async () => {
-        try {
-            return await getArticlesCat();
-        } catch (err) {
-            toast.error(`Article Categories not found`);
-            return thunkAPI.rejectWithValue(err.message);
-        }
-    }
-);
-
-export const getSingleCategoryAsync = createAsyncThunk("articles/getSingleCategory",
-    async (catId, thunkAPI) => {
-        try {
-            return await getSingleCategory(catId, thunkAPI);
-        } catch (err) {
-            toast.error(`Single article category not found`);
-            return thunkAPI.rejectWithValue(err.message);
-        }
-    }
-);
-
-export const getAllArticlesAsync = createAsyncThunk("articles/getAllArticles",
-    async () => {
-        try {
-            return await getAllArticles();
-        } catch (err) {
-            toast.error(`Articles not found`);
-            return thunkAPI.rejectWithValue(err.message);
-        }
-    }
-);
-
-export const getSingleArticleAsync = createAsyncThunk("articles/getSingleArticle",
-    async (articleId, thunkAPI) => {
-        try {
-            return await getSingleArticle(articleId, thunkAPI);
-        } catch (err) {
-            toast.error(`Single article not found`);
-            return thunkAPI.rejectWithValue(err.message);
-        }
-    }
-);
-
-export const commentArticleAsync = createAsyncThunk("articles/commentArticle",
-    async (articleId, commentData, thunkAPI) => {
-        try {
-            return await commentArticle(articleId, commentData, thunkAPI);
-        } catch (err) {
-            toast.error(`Comments not found`);
-            return thunkAPI.rejectWithValue(err.message);
-        }
-    }
-);
-
-export const updateCommentAsync = createAsyncThunk("articles/updateComment",
-    async (commentId, commentData, thunkAPI) => {
-        try {
-            return await updateComment(commentId, commentData, thunkAPI);
-        } catch (err) {
-            toast.error(`Update comment failed`);
-            return thunkAPI.rejectWithValue(err.message);
-        }
-    }
-);
-
-export const deleteCommentAsync = createAsyncThunk("articles/deleteComment",
-    async (commentId, thunkAPI) => {
-        try {
-            return await deleteComment(commentId, thunkAPI);
-        } catch (err) {
-            toast.error(`Delete comment failed`);
-            return thunkAPI.rejectWithValue(err.message);
-        }
-    }
-);
 
 
 export const articleSlice = createSlice({

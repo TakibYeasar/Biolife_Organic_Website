@@ -5,7 +5,8 @@ import { FaComment, FaEye, FaFacebook, FaInstagram, FaPinterest, FaSearch, FaTwi
 import bg from "../../../../../assets/images/home/biolife-banner__style-01.jpg";
 import author2 from "../../../../../assets/images/blogpost/author-02.png";
 import { useSelector, useDispatch } from "react-redux";
-import { getSingleArticleAsync, selectIsLoading, selectIsError, selectArticle } from "../../../features/article/articleSlice";
+import { getSingleArticleAsync } from "../../../features/article/articleService";
+import { selectIsLoading, selectIsError, selectArticle } from "../../../features/article/articleSlice";
 import { useParams } from 'react-router-dom';
 import Recentcomments from '../Recentcomments/Recentcomments';
 import Recentpost from '../Recentprost/Recentpost';

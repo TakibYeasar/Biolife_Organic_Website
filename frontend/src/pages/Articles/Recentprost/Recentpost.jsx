@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import "./Recentpost.scss";
 import { useSelector, useDispatch } from "react-redux";
-import { getAllArticlesAsync, selectAllArticles, selectIsLoading, selectIsError} from "../../../features/article/articleSlice";
+import { getAllArticlesAsync } from "../../../features/article/articleService";
+import { selectAllArticles, selectIsLoading, selectIsError} from "../../../features/article/articleSlice";
 
 const Recentpost = () => {
 

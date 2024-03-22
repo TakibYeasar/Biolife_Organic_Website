@@ -4,7 +4,8 @@ import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { FaAngleLeft, FaAngleRight, FaBars, FaCaretDown } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
-import { selectIsLoading, selectIsError, selectAllBanners, getBannersAsync } from '../../../features/root/rootSlice';
+import { getBannersAsync } from '../../../features/root/rootService';
+import { selectIsLoading, selectIsError, selectAllBanners } from '../../../features/root/rootSlice';
 
 const variants = {
   initial: derection => {

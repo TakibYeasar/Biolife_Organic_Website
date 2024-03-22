@@ -2,7 +2,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import "./Discountprod.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { useSelector, useDispatch } from "react-redux";
-import { selectIsLoading, selectIsError, selectAllDiscountprod, getDiscountprodAsync } from '../../../features/product/productSlice';
+import { getDiscountprodAsync } from '../../../features/product/productService';
+import { selectIsLoading, selectIsError, selectAllDiscountprod } from '../../../features/product/productSlice';
 
 
 const Discountprod = () => {

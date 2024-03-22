@@ -1,56 +1,13 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {
-    getBanners,
-    getFeatured,
-    getSpecialoffer,
-    getBrands,
+    getBannersAsync,
+    getFeaturedAsync,
+    getSpecialofferAsync,
+    getBrandsAsync,
 } from "./rootService";
 import { toast } from "react-toastify";
 
 
-export const getBannersAsync = createAsyncThunk("api/getBanners",
-    async (_, thunkAPI) => {
-        try {
-            return await getBanners();
-        } catch (err) {
-            toast.error(`Banners not found`);
-            return thunkAPI.rejectWithValue(err.message);
-        }
-    }
-);
-
-export const getFeaturedAsync = createAsyncThunk("api/getFeatured",
-    async (_, thunkAPI) => {
-        try {
-            return await getFeatured();
-        } catch (err) {
-            toast.error(`Featured not found`);
-            return thunkAPI.rejectWithValue(err.message);
-        }
-    }
-);
-
-export const getSpecialofferAsync = createAsyncThunk("api/getSpecialoffer",
-    async (_, thunkAPI) => {
-        try {
-            return await getSpecialoffer();
-        } catch (err) {
-            toast.error(`Special Offer not found`);
-            return thunkAPI.rejectWithValue(err.message);
-        }
-    }
-);
-
-export const getBrandsAsync = createAsyncThunk("api/getAllbrands",
-    async (_, thunkAPI) => {
-        try {
-            return await getBrands();
-        } catch (err) {
-            toast.error(`Brands not found`);
-            return thunkAPI.rejectWithValue(err.message);
-        }
-    }
-);
 
 export const rootSlice = createSlice({
     name: "root",

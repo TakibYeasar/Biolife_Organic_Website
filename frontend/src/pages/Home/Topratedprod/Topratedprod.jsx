@@ -3,7 +3,8 @@ import "./Topratedprod.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
-import { selectIsLoading, selectIsError, selectAllTopratedprod, getTopratedprodAsync } from '../../../features/product/productSlice';
+import { getTopratedprodAsync } from '../../../features/product/productService';
+import { selectIsLoading, selectIsError, selectAllTopratedprod } from '../../../features/product/productSlice';
 import { Singleprod } from "../../../components";
 
 

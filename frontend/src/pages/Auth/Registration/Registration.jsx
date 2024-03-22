@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import "./Registration.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUserAsync, selectUser } from "../../../features/auth/authSlice";
+import { registerUserAsync } from "../../../features/auth/authService";
+import { selectCurrentUser } from "../../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const Registration = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { user } = useSelector(selectUser);
+    const { user } = useSelector(selectCurrentUser);
     const [userData, setUserData] = useState({
         username: "",
         email: "",

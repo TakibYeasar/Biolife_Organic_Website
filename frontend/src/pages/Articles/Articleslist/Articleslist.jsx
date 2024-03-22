@@ -4,7 +4,8 @@ import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { FaAngleRight, FaComment, FaHeart } from "react-icons/fa";
 import bg from "../../../../../assets/images/home/biolife-banner__style-01.jpg";
 import { useSelector, useDispatch } from "react-redux";
-import { selectIsLoading, selectIsError, selectAllArticles, getAllArticlesAsync } from '../../../features/article/articleSlice';
+import { getAllArticlesAsync } from '../../../features/article/articleService';
+import { selectIsLoading, selectIsError, selectAllArticles } from '../../../features/article/articleSlice';
 import { Singlearticle } from '../../../components';
 
 const Articleslist = () => {

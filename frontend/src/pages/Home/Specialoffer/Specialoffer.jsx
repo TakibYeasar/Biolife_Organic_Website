@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import "./Specialoffer.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { useSelector, useDispatch } from "react-redux";
-import { selectIsLoading, selectIsError, selectSpecialoffer, getSpecialofferAsync } from '../../../features/root/rootSlice';
+import { getSpecialofferAsync } from '../../../features/root/rootService';
+import { selectIsLoading, selectIsError, selectSpecialoffer } from '../../../features/root/rootSlice';
 
 const Specialoffer = () => {
 

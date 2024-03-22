@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import "./Companies.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { useSelector, useDispatch } from "react-redux";
-import { selectIsLoading, selectIsError, selectAllBrands, getBrandsAsync } from '../../../features/root/rootSlice';
+import { getBrandsAsync } from '../../../features/root/rootService';
+import { selectIsLoading, selectIsError, selectAllBrands } from '../../../features/root/rootSlice';
 
 const Companies = () => {
 

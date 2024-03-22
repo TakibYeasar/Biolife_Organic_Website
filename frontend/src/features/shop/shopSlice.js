@@ -1,58 +1,15 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {
-    addToCart,
-    updateCart,
-    removeItemFromCart,
-    removeCart,
-    createOrder,
-    updateOrder,
+    addToCartAsync,
+    updateCartItemAsync,
+    removeCartItemAsync,
+    removeCartAsync,
+    createOrderAsync,
+    updateOrderAsync,
 } from "./shopService";
 import { toast } from "react-toastify";
 
-export const addToCartAsync = createAsyncThunk(
-    "cart/addToCart",
-    async (prodId) => {
-        const response = await addToCart(prodId);
-        return response.data;
-    }
-);
 
-export const updateCartItemAsync = createAsyncThunk(
-    "cart/updateCartItem",
-    async (prodId) => {
-        const response = await updateCart(prodId);
-        return response.data;
-    }
-);
-
-export const removeCartItemAsync = createAsyncThunk(
-    "cart/removeCartItem",
-    async (prodId) => {
-        const response = await removeItemFromCart(prodId);
-        return response.data;
-    }
-);
-
-export const removeCartAsync = createAsyncThunk("cart/removeCart", async () => {
-    const response = await removeCart();
-    return response.data;
-});
-
-export const createOrderAsync = createAsyncThunk(
-    "order/createOrder",
-    async (items) => {
-        const response = await createOrder(items);
-        return response.data;
-    }
-);
-
-export const updateOrderAsync = createAsyncThunk(
-    "order/updateOrder",
-    async (order) => {
-        const response = await updateOrder(order);
-        return response.data;
-    }
-);
 
 export const cartSlice = createSlice({
     name: "cart",

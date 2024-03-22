@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { loginUserAsync } from "../../../features/auth/authSlice";
+import { loginUserAsync } from "../../../features/auth/authService";
 
 const Signin = () => {
   const dispatch = useDispatch();

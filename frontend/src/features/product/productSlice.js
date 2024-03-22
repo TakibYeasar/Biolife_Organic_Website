@@ -1,151 +1,20 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {
-    getCategories,
-    getSinglecategory,
-    getAllproducts,
-    getSingleproduct,
-    reviewProd,
-    updateReview,
-    deleteReview,
-    getTopratedprod,
-    getOnsaleprod,
-    getBestsellingprod,
-    getDiscountprod,
+    getCategoriesAsync,
+    getSinglecategoryAsync,
+    getAllproductsAsync,
+    getSingleproductAsync,
+    reviewProdAsync,
+    updateReviewAsync,
+    deleteReviewAsync,
+    getTopratedprodAsync,
+    getOnsaleprodAsync,
+    getBestsellingprodAsync,
+    getDiscountprodAsync,
 } from "./productService";
 import { toast } from "react-toastify";
 
 
-export const getCategoriesAsync = createAsyncThunk("products/getCategories",
-    async (_, thunkAPI) => {
-        try {
-            return await getCategories();
-        } catch (err) {
-            toast.error(`Categories not found`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const getSinglecategoryAsync = createAsyncThunk("products/getSinglecategory",
-    async (catId, thunkAPI) => {
-        try {
-            return await getSinglecategory(catId, thunkAPI);
-        } catch (err) {
-            toast.error(`Single Categories not found`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const getAllproductsAsync = createAsyncThunk("products/getAllproducts",
-    async (_, thunkAPI) => {
-        try {
-            return await getAllproducts();
-        } catch (err) {
-            toast.error(`Get Allproducts failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const getSingleproductAsync = createAsyncThunk("products/getSingleproduct",
-    async (prodId, thunkAPI) => {
-        try {
-            return await getSingleproduct(prodId, thunkAPI);
-        } catch (err) {
-            toast.error(`Get single product failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const reviewProdAsync = createAsyncThunk("products/reviewProd",
-    async (prodId, reviewData, thunkAPI) => {
-        try {
-            return await reviewProd(prodId, reviewData, thunkAPI);
-        } catch (err) {
-            toast.error(`Review created failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const updateReviewAsync = createAsyncThunk("products/updateReview",
-    async (reviewId, reviewData, thunkAPI) => {
-        try {
-            return await updateReview(reviewId, reviewData, thunkAPI);
-        } catch (err) {
-            toast.error(`Review updated failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const deleteReviewAsync = createAsyncThunk("products/deleteReview",
-    async (reviewId, thunkAPI) => {
-        try {
-            return await deleteReview(reviewId, thunkAPI);
-        } catch (err) {
-            toast.error(`Delete review failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const getTopratedprodAsync = createAsyncThunk("products/getTopratedprod",
-    async (_, thunkAPI) => {
-        try {
-            return await getTopratedprod();
-        } catch (err) {
-            toast.error(`Get toprated product failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const getOnsaleprodAsync = createAsyncThunk("products/getOnsaleprod",
-    async (_, thunkAPI) => {
-        try {
-            return await getOnsaleprod();
-        } catch (err) {
-            toast.error(`Get onsale product failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const getBestsellingprodAsync = createAsyncThunk("products/getBestsellingprod",
-    async (_, thunkAPI) => {
-        try {
-            return await getBestsellingprod();
-        } catch (err) {
-            toast.error(`Get bestselling product failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const getDiscountprodAsync = createAsyncThunk("products/getDiscountprod",
-    async (_, thunkAPI) => {
-        try {
-            return await getDiscountprod();
-        } catch (err) {
-            toast.error(`Get discount product failed`);
-            console.error(err.response.data);
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
-    }
-);
 
 export const productSlice = createSlice({
     name: "product",
