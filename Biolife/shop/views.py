@@ -322,3 +322,10 @@ class PaymentView(APIView):
         except Exception as e:
             # Log the error for debugging
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class PaymentSuccessfullView(APIView):
+    pass
+class PaymentFailedView(APIView):
+    pass
+

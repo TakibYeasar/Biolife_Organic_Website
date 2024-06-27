@@ -1,11 +1,11 @@
 from .models import *
 from .serializers import *
-from .utils import send_email
+# from .utils import send_email
 from .renderers import UserRenderer
 from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.auth import authenticate
-from rest_framework import permissions, status
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -24,18 +24,18 @@ def get_tokens_for_user(user_obj):
 
 class UserRegisterView(APIView):
     renderer_classes = [UserRenderer]
+    
     def post(self, request):
         serializer = UserRegesterationSerializer(data=request.data)
-        if serializer.is_valid():
-            user_obj = serializer.save()
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.save()
+            token = get_tokens_for_user(user)
             email = serializer.validated_data["email"]
-            token = get_tokens_for_user(user_obj)
-            data = {'token': token,
-                "detail": "We sent an email to you for verification.", "email": email}
-            # user_obj = CustomUser.objects.get(email=email)
-            # token = self.get_tokens_for_user(user_obj)
+            user_obj = CustomUser.objects.get(email=email)
             # send_email("Activate your account!", user_obj.email, {
             #     "user": user_obj}, {"token": token})
+            data = {'token': token,
+                    "detail": "We sent an email to you for verification.", "email": email}
             return Response(data, status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -67,14 +67,13 @@ class ActivationResendView(APIView):
         serializer.is_valid(raise_exception=True)
         user_obj = serializer.validated_data["user"]
         token = self.get_tokens_for_user(user_obj)
-        send_email("Activate your account!", user_obj.email, {
-            "user": user_obj}, {"token": token})
+        # send_email("Activate your account!", user_obj.email, {
+        #     "user": user_obj}, {"token": token})
         return Response({"detail": "Email verification resent successfully."}, status=status.HTTP_200_OK)
 
 
 class LoginUserView(APIView):
     renderer_classes = [UserRenderer]
-    permission_classes = [permissions.AllowAny, ]
     
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
@@ -85,7 +84,7 @@ class LoginUserView(APIView):
         user_obj = authenticate(username=username, email=email, password=password)
         if user_obj is not None:
             token = get_tokens_for_user(user_obj)
-            return Response({'token':token, 'msg':'Login Success'}, status=status.HTTP_200_OK)
+            return Response({'token':token, 'msg':'Login Successful!'}, status=status.HTTP_200_OK)
         else:
             return Response({'errors':{'non_field_errors':['Email or Password is not Valid']}}, status=status.HTTP_404_NOT_FOUND)
 
@@ -93,7 +92,6 @@ class LoginUserView(APIView):
 class LogOutView(APIView):
     renderer_classes = [UserRenderer]
     serializer_class = LogoutSerializer
-    permission_classes = [permissions.AllowAny, ]
 
     def post(self, request):
         try:
@@ -101,7 +99,7 @@ class LogOutView(APIView):
             # print(refresh_token)
             token = RefreshToken(refresh_token)
             token.blacklist()
-            return Response({'success': 'Loged Out'}, status=status.HTTP_200_OK)
+            return Response({'success': 'Loged Out!'}, status=status.HTTP_200_OK)
         except:
             return Response({'Error': 'something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -110,9 +108,9 @@ class ChangePasswordApiView(APIView):
     renderer_classes = [UserRenderer]
     permission_classes = [IsAuthenticated,]
 
-    def put(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         serializer = ChangePasswordSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             if not self.object.check_password(serializer.data.get("current_password")):
                 return Response(
                     {"current Password": "Wrong password"},
@@ -137,8 +135,8 @@ class ForgotPasswordView(APIView):
         if user_qs.exists():
             user = user_qs[0]
             token = PasswordResetTokenGenerator().make_token(user)
-            send_email("User Email", user.email, {
-                "user": user}, {"token": token})
+            # send_email("User Email", user.email, {
+            #     "user": user}, {"token": token})
             return Response({"message": "Email sent for password reset"}, status=status.HTTP_200_OK)
 
 

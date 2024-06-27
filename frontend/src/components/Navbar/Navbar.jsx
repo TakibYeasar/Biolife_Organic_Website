@@ -4,7 +4,7 @@ import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import organic4 from "../../../../assets/images/organic-4.png";
 import { FaCartPlus, FaEnvelope, FaFacebook, FaHeart, FaPinterest, FaShoppingCart, FaTwitter, FaUser } from 'react-icons/fa';
 import { useDispatch, useSelector } from "react-redux";
-import { logOutUserAsync} from "../../features/auth/authService";
+import { logOutUserAsync } from "../../features/auth/authService";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 
@@ -13,11 +13,11 @@ const Navbar = () => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    // const { user } = useSelector(selectCurrentUser);
+    const user = useSelector(selectCurrentUser);
 
     const onLogout = () => {
         dispatch(logOutUserAsync());
-        // dispatch(reset()); // Potentially reset user data in the store
+        dispatch(reset()); // Potentially reset user data in the store
         navigate("/");
     };
 
@@ -35,11 +35,6 @@ const Navbar = () => {
                             </ul>
                         </div>
                         <div className="col-lg-6 topbar-right d-flex">
-                            <ul className="social-list d-flex">
-                                <li><a href=""><FaFacebook className="icon" /></a></li>
-                                <li><a href=""><FaTwitter className="icon" /></a></li>
-                                <li><a href=""><FaPinterest className="icon" /></a></li>
-                            </ul>
                             <ul className="horizontal-menu d-flex">
                                 <li className="horz-menu-item">
                                     <select name="currency">
@@ -57,16 +52,17 @@ const Navbar = () => {
                                         <option value="jp">Japan (JPY)</option>
                                     </select>
                                 </li>
-                                {/* <li className='d-flex'>
-                                    {user ? (
+                                {user && (
+                                    <li className='d-flex'>
                                         <a href="#" className="nav-link" onClick={onLogout}>Logout</a>
-                                    ) : (
-                                        <>
-                                            <a href="/register" className="nav-link">Registration</a>
-                                            <a href="/signin" className="nav-link">SignIn</a>
-                                        </>
-                                    )}
-                                </li> */}
+                                    </li>
+                                )}
+                                {!user && (
+                                    <>
+                                        <li className='d-flex'><a href="/register" className="nav-link">Registration</a></li>
+                                        <li className='d-flex'><a href="/signin" className="nav-link">SignIn</a></li>
+                                    </>
+                                )}
                             </ul>
                         </div>
                     </div>

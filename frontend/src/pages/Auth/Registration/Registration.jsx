@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 const Registration = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { user } = useSelector(selectCurrentUser);
+    const user = useSelector(selectCurrentUser);
     const [userData, setUserData] = useState({
         username: "",
         email: "",
@@ -47,7 +47,7 @@ const Registration = () => {
                         <div className="row">
                             <div className="breadcrumb-inner">
                                 <ul className="list-inline list-unstyled">
-                                    <li><a href="home.html">Home</a></li>
+                                    <li><a href="/">Home</a></li>
                                     <li className='active'>Registration</li>
                                 </ul>
                             </div>

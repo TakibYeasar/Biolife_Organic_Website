@@ -1,6 +1,5 @@
 from rest_framework import serializers, exceptions
 from .models import *
-from django.contrib.auth import authenticate
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import smart_str
 from django.contrib.auth.password_validation import validate_password

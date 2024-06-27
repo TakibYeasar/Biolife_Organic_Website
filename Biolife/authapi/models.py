@@ -46,9 +46,9 @@ class CustomUser(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
-    username = models.CharField(max_length=200, unique=True, blank=True)
-    first_name = models.CharField(max_length=200, blank=True, null=True)
-    last_name = models.CharField(max_length=200, blank=True, null=True)
+    username = models.CharField(max_length=200, unique=True)
+    first_name = models.CharField(max_length=200, blank=True)
+    last_name = models.CharField(max_length=200, blank=True)
     password = models.CharField(max_length=255)
     confirm_password = models.CharField(max_length=255)
     is_active = models.BooleanField(default=False)
@@ -63,7 +63,7 @@ class CustomUser(AbstractBaseUser):
     USERNAME_FIELD = "email"
 
     def __str__(self):
-        return self.username
+        return self.email
     
     @property
     def is_staff(self):

@@ -10,7 +10,6 @@ import {
 import { toast } from "react-toastify";
 
 
-
 export const authSlice = createSlice({
     name: "auth",
     initialState: {

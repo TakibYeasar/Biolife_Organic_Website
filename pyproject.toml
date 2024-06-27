@@ -17,6 +17,7 @@ pillow = "^10.1.0"
 python-dotenv = "^1.0.0"
 stripe = "^8.4.0"
 paypalrestsdk = "^1.13.3"
+pyproject-toml = "^0.0.10"
 
 
 [build-system]

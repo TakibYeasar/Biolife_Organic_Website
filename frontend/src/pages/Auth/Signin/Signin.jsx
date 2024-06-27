@@ -1,16 +1,25 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useState } from "react";
+import "./Signin.scss";
+import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUserAsync } from "../../../features/auth/authService";
+import { useNavigate } from "react-router-dom";
 
 const Signin = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setUserData({ ...userData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const userData = {
-      email: e.target.name.value,
-      password: e.target.password.value
-    };
     dispatch(loginUserAsync(userData));
   };
 
@@ -34,13 +43,41 @@ const Signin = () => {
               <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <div className="signin-container">
                   <form onSubmit={handleSubmit} name="frm-login" method="post">
-                    <p className="form-row d-grid">
-                      <label htmlFor="fid-name">Email Address:<span className="requite">*</span></label>
-                      <input type="text" id="fid-name" name="name" placeholder="Email Address" className="txt-input" autoComplete="email" required />
+                    <p className="form-group d-grid">
+                      <label className="info-title" htmlFor="username">Username <span>*</span></label>
+                      <input
+                        type="text"
+                        className="form-control unicase-form-control text-input"
+                        placeholder="Username"
+                        id="username"
+                        name="username"
+                        value={userData.username}
+                        onChange={handleChange}
+                      />
                     </p>
-                    <p className="form-row d-grid">
-                      <label htmlFor="fid-pass">Password:<span className="requite">*</span></label>
-                      <input type="password" id="fid-pass" name="password" placeholder="Password" className="txt-input" autoComplete="current-password" required />
+                    <p className="form-group d-grid">
+                      <label className="info-title" htmlFor="email">Email Address <span>*</span></label>
+                      <input
+                        type="email"
+                        className="form-control unicase-form-control text-input"
+                        placeholder="Email Address"
+                        id="email"
+                        name="email"
+                        value={userData.email}
+                        onChange={handleChange}
+                      />
+                    </p>
+                    <p className="form-group d-grid">
+                      <label className="info-title" htmlFor="password">Password <span>*</span></label>
+                      <input
+                        type="password"
+                        className="form-control unicase-form-control text-input"
+                        placeholder="Password"
+                        id="password"
+                        name="password"
+                        value={userData.password}
+                        onChange={handleChange}
+                      />
                     </p>
                     <p className="form-row wrap-btn">
                       <button className="btn-style" type="submit">Sign In</button>
