@@ -1,5 +1,9 @@
 
 
+export { default as AdminDashboard } from "./Admin/AdminDashboard";
+export { default as UserDashboard } from "./User/UserDashboard";
+
+
 export { default as Homepage } from "./Home/Homepage";
 export { default as Aboutus } from "./Aboutus/Aboutus";
 export { default as Articleslist } from "./Articles/Articleslist/Articleslist";

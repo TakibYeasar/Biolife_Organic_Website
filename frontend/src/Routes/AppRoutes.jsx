@@ -1,11 +1,15 @@
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-import { Homepage, Aboutus, Articleslist, Articleview, Productslist, Productview, Contact, Registration, Signin, Changepassword, Resetpassword, Cart, Checkout } from "../pages";
+import { Homepage, Aboutus, Articleslist, Articleview, Productslist, Productview, Contact, Registration, Signin, Changepassword, Resetpassword, Cart, Checkout, AdminDashboard, UserDashboard } from "../pages";
 
 const AppRoutes = () => {
   return (
     <section className="container">
       <Routes>
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/user" element={<UserDashboard />} />
+
+
         <Route path="/" element={<Homepage />} />
         <Route path="/about" element={<Aboutus />} />
         <Route path="/articleslist" element={<Articleslist />} />
