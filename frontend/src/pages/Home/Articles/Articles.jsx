@@ -1,54 +1,71 @@
-import React, { useEffect, useState } from 'react';
-import "./Articles.scss";
+import React, { useEffect } from 'react';
+import "./Articleslist.scss";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
+import { FaAngleRight, FaComment, FaHeart } from "react-icons/fa";
+import bg from "../../../../../assets/images/home/biolife-banner__style-01.jpg";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllArticlesAsync } from '../../../features/article/articleService';
 import { selectIsLoading, selectIsError, selectAllArticles } from '../../../features/article/articleSlice';
-import {Singlearticle} from '../../../components';
+import { Singlearticle } from '../../../components';
 
-const Articles = () => {
+const Articleslist = () => {
 
-  const dispatch = useDispatch();
-  const articles = useSelector(selectAllArticles);
-  const isLoading = useSelector(selectIsLoading);
-  const isError = useSelector(selectIsError);
+    const dispatch = useDispatch();
+    const articles = useSelector(selectAllArticles);
+    const loading = useSelector(selectIsLoading);
+    const error = useSelector(selectIsError);
+    // const [showAllArticles, setShowAllArticles] = useState(false);
 
-  useEffect(() => {
-    dispatch(getAllArticlesAsync());
-  }, []);
+    useEffect(() => {
+        dispatch(getAllArticlesAsync());
+    }, []);
 
-  // console.log("Articles:", articles);
+    // const toggleShowAllArticles = () => {
+    //   setShowAllArticles(!showAllArticles);
+    // };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+    console.log("Articles:", articles);
 
-  if (isError) {
-    return <div>Error occurred while fetching article details.</div>;
-  }
+    return (
+        <div className="allblog-sec">
+            <div className="breadcrumb">
+                <img src={bg} alt="" className='img-fluid' />
+                <h1 className='title'>Organic Fruits</h1>
+            </div>
+            <div className="container">
+                <div className="boillife-nav d-flex">
+                    <a href="/">Home</a>
+                    <span>/</span>
+                    <a href="/Articleslist">Our Blog</a>
+                </div>
 
-  return (
-    <div className="article-sec">
-      <div className="container">
-        <div className="section-heading d-flex">
-          <h3 className="main-title">Our Latest Articles</h3>
-          <a href="/articleslist" className="blog-link">
-            View All Articles
-          </a>
+                <div className="page-contain blog-page">
+                    <div className="posts-elem main-post-list d-flex flex-wrap">
+                        {loading && <div>Loading articles...</div>}
+                        {error && <div>Error fetching articles: {error.message}</div>}
+
+                        {articles?.map((item, i) => (
+                            <div key={i} item="true" className="articles-item">
+                                <Singlearticle item={item} />
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="biolife-panigations-block text-center">
+                        <div className="panigation-contain d-flex">
+                            <div><span className="current-page">1</span></div>
+                            <div><a href="#" className="link-page">2</a></div>
+                            <div><a href="#" className="link-page">3</a></div>
+                            <div><span className="sep">....</span></div>
+                            <div><a href="#" className="link-page">20</a></div>
+                            <div><a href="#" className="link-page next"><FaAngleRight aria-hidden="true" /></a></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
-
-        <ul className="articles-container d-flex">
-
-          {articles.slice(0, 3).map((item, i) => (
-            <li key={i} item="true" className="articles-item">
-              <Singlearticle item={item} />
-            </li>
-          ))}
-
-        </ul>
-      </div>
-    </div>
-  )
+    )
 }
 
-export default Articles
+export default Articleslist
