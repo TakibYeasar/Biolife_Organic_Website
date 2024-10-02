@@ -1,30 +1,45 @@
 import React from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
-import { Homepage, Aboutus, Articleslist, Articleview, Productslist, Productview, Contact, Registration, Signin, Changepassword, Resetpassword, Cart, Checkout, AdminDashboard, UserDashboard } from "../pages";
+import { Route, Routes } from "react-router-dom";
+import {
+  AdminDashboard,
+  CustomerDashboard,
+  ProducerDashboard,
+  Homepage,
+  About,
+  Articles,
+  ArticleDetails,
+  Products,
+  ProductDetails,
+  Cart,
+  Checkout,
+  Contact,
+  Signup,
+  Signin,
+  Changepassword,
+  Forgotpassword,
+} from "../pages";
 
 const AppRoutes = () => {
   return (
     <section className="container">
       <Routes>
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/user" element={<UserDashboard />} />
-
+        <Route path="/customer" element={<CustomerDashboard />} />
+        <Route path="/producer" element={<ProducerDashboard />} />
 
         <Route path="/" element={<Homepage />} />
-        <Route path="/about" element={<Aboutus />} />
-        <Route path="/articleslist" element={<Articleslist />} />
-        <Route path="/articleview/:id" element={<Articleview />} />
-        <Route path="/productslist" element={<Productslist />} />
-        <Route path="/productview/:id" element={<Productview />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/articles" element={<Articles />} />
+        <Route path="/article/:id" element={<ArticleDetails />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/signin" element={<Signin />} />
-        <Route path="/register" element={<Registration />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/contact" element={<Contact />} />
-
-        <Route path="/changepass" element={<Changepassword />}/>
-        <Route path="/resetpass" element={<Resetpassword />}/>
-        <Route path="/cart" element={<Cart />}/>
-        <Route path="/checkout" element={<Checkout />}/>
-
+        <Route path="/changepassword" element={<Changepassword />} />
+        <Route path="/forgotpassword" element={<Forgotpassword />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </section>
   );

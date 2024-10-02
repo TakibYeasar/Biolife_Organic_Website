@@ -1,98 +1,122 @@
 import React from 'react';
-import "./Contact.scss";
-import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
-import { FaFacebook, FaInstagram, FaPinterest, FaTwitter, FaYoutube } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaPinterest, FaTwitter, FaYoutube } from 'react-icons/fa';
 
 const Contact = () => {
+  // Dummy data
+  const contactInfo = {
+    address: '7563 St. Vicent Place, Glasgow, Greater Newyork NH7689, UK',
+    phone: '(800) 123 456789',
+    email: 'organic@example.com',
+    storeOpen: '8am - 08pm, Mon - Sat',
+  };
+
   return (
-    <section>
-      <div className="breadcrumb">
-        <h1>Organic Fruits</h1>
+    <section className="py-10">
+      <div className="bg-primary text-white py-6">
+        <h1 className="text-3xl text-center font-bold">Organic Fruits</h1>
       </div>
-      <div className="contact-sec">
-        <div className="container">
-          <div className="boillife-nav d-flex">
-            <a href="/" className="home-page">Home</a>
-            <span>/</span>
-            <a href="/contact" className="nav-item d-flex">Contact us</a>
-          </div>
+
+      <div className="container mx-auto my-8">
+        <div className="breadcrumbs text-sm mb-6">
+          <ul className="flex space-x-2">
+            <li>
+              <a href="/" className="text-primary hover:underline">Home</a>
+            </li>
+            <li>/</li>
+            <li className="text-gray-600">Contact us</li>
+          </ul>
         </div>
 
-        <div className="contact-us-sec">
-          <div className="container">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          {/* Contact Information Section */}
+          <div className="bg-white shadow-lg p-6 rounded-lg">
+            <h4 className="text-2xl font-semibold mb-4">Our Contact</h4>
+            <p className="mb-6">
+              Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.
+            </p>
 
-            <div className="row">
+            <ul className="space-y-4">
+              <li className="flex items-center space-x-2">
+                <strong className="font-semibold">Address:</strong>
+                <span>{contactInfo.address}</span>
+              </li>
+              <li className="flex items-center space-x-2">
+                <strong className="font-semibold">Phone:</strong>
+                <span>{contactInfo.phone}</span>
+              </li>
+              <li className="flex items-center space-x-2">
+                <strong className="font-semibold">Email:</strong>
+                <span>{contactInfo.email}</span>
+              </li>
+              <li className="flex items-center space-x-2">
+                <strong className="font-semibold">Store Open:</strong>
+                <span>{contactInfo.storeOpen}</span>
+              </li>
+            </ul>
 
-              <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                <div className="contact-info">
-                  <h4 className="box-title">Our Contact</h4>
-                  <p className="frst-desc">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.</p>
-                  <ul className="addr-info">
-                    <li>
-                      <div className="if-item d-flex">
-                        <b className="tie">Addess:</b>
-                        <p className="dsc">7563 St. Vicent Place, Glasgow, Greater<br />Newyork NH7689, UK</p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="if-item d-flex">
-                        <b className="tie">Phone:</b>
-                        <p className="dsc">(800) 123 456789</p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="if-item d-flex">
-                        <b className="tie">Email:</b>
-                        <p className="dsc">Organic@example.com</p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="if-item d-flex">
-                        <b className="tie">Store Open:</b>
-                        <p className="dsc">8am - 08pm, Mon - Sat</p>
-                      </div>
-                    </li>
-                  </ul>
-                  <div className="biolife-social inline">
-                    <ul className="socials d-flex">
-                      <li><a href="#" title="twitter" className="socail-btn"><FaTwitter aria-hidden="true" /></a></li>
-                      <li><a href="#" title="facebook" className="socail-btn"><FaFacebook aria-hidden="true" /></a></li>
-                      <li><a href="#" title="pinterest" className="socail-btn"><FaPinterest aria-hidden="true" /></a></li>
-                      <li><a href="#" title="youtube" className="socail-btn"><FaYoutube aria-hidden="true" /></a></li>
-                      <li><a href="#" title="instagram" className="socail-btn"><FaInstagram aria-hidden="true" /></a></li>
-                    </ul>
-                  </div>
-                </div>
+            <div className="mt-6">
+              <h5 className="font-semibold">Follow Us</h5>
+              <div className="flex space-x-4 mt-2">
+                <a href="#" className="text-gray-500 hover:text-primary">
+                  <FaTwitter size={24} />
+                </a>
+                <a href="#" className="text-gray-500 hover:text-primary">
+                  <FaFacebook size={24} />
+                </a>
+                <a href="#" className="text-gray-500 hover:text-primary">
+                  <FaPinterest size={24} />
+                </a>
+                <a href="#" className="text-gray-500 hover:text-primary">
+                  <FaYoutube size={24} />
+                </a>
+                <a href="#" className="text-gray-500 hover:text-primary">
+                  <FaInstagram size={24} />
+                </a>
               </div>
-
-              <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                <div className="contact-form">
-                  <form action="#" name="frm-contact" >
-                    <p className="form-row">
-                      <input type="text" name="name" value="" placeholder="Your Name" className="txt-input" />
-                    </p>
-                    <p className="form-row">
-                      <input type="email" name="email" value="" placeholder="Email Address" className="txt-input" />
-                    </p>
-                    <p className="form-row">
-                      <input type="tel" name="phone" value="" placeholder="Phone Number" className="txt-input" />
-                    </p>
-                    <p className="form-row">
-                      <textarea name="mes" id="mes-1" cols="30" rows="9" placeholder="Leave Message"></textarea>
-                    </p>
-                    <p className="form-row">
-                      <button className="btn-style" type="submit">send message</button>
-                    </p>
-                  </form>
-                </div>
-              </div>
-
             </div>
+          </div>
+
+          {/* Contact Form Section */}
+          <div className="bg-white shadow-lg p-6 rounded-lg">
+            <h4 className="text-2xl font-semibold mb-4">Send Us a Message</h4>
+            <form>
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Your Name</span>
+                </label>
+                <input type="text" placeholder="Your Name" className="input input-bordered w-full" />
+              </div>
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Email Address</span>
+                </label>
+                <input type="email" placeholder="Email Address" className="input input-bordered w-full" />
+              </div>
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Phone Number</span>
+                </label>
+                <input type="tel" placeholder="Phone Number" className="input input-bordered w-full" />
+              </div>
+              <div className="form-control mb-6">
+                <label className="label">
+                  <span className="label-text">Leave Message</span>
+                </label>
+                <textarea
+                  placeholder="Leave Message"
+                  className="textarea textarea-bordered w-full"
+                  rows="6"
+                ></textarea>
+              </div>
+              <button type="submit" className="btn btn-primary w-full">
+                Send Message
+              </button>
+            </form>
           </div>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Contact
+export default Contact;

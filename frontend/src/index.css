@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+body {
+    @apply font-cairo text-[14px] leading-[24px] text-gray-500 font-light antialiased overflow-x-hidden;
+}
+
+a {
+    @apply transition-all duration-500 ease-in-out;
+}
+
+a:hover,
+a:focus {
+    @apply text-inherit no-underline;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    @apply m-0 p-0 text-fontColor;
+}
+
+img {
+    @apply max-w-full;
+}
+
+p {
+    @apply m-0 p-0 pb-0 text-[18px] leading-[28px] text-fontColor opacity-80 no-underline;
+}
+
+li {
+    @apply no-underline;
+}
+
+.btn-style {
+    @apply px-8 py-2.5 m-1 text-[16px] leading-[30px] font-semibold transition ease-in duration-300 rounded-full bg-primary text-bgColor;
+
+    &:hover {
+        @apply bg-secondary text-bgColor border-transparent;
+    }
+}
+
+.btn-outline-border {
+    @apply px-8 py-2.5 m-1 text-[16px] leading-[30px] font-semibold transition ease-in duration-300 rounded-full border-2 border-primary text-fontColor bg-transparent;
+
+    &:hover {
+        @apply bg-secondary text-bgColor border-transparent;
+    }
+}
+
+.main-title {
+    @apply text-[38px] leading-[48px] font-bold text-fontColor;
+}
+
+.title-two {
+    @apply text-[30px] leading-[40px] font-semibold text-fontColor;
+}
+
+/* Media Queries */
+@media (max-width: 1080px) {
+    .main-title {
+        @apply text-[32px] leading-[40px];
+    }
+}
+
+@media (max-width: 736px) {
+    .title-two {
+        @apply text-[26px] leading-[36px];
+    }
+}
+
+@media (max-width: 568px) {
+    .main-title {
+        @apply text-[30px] leading-[38px];
+    }
+
+    p {
+        @apply text-[16px];
+    }
+}
+
+@media (max-width: 440px) {
+    .main-title {
+        @apply text-[28px] leading-[36px];
+    }
+
+    p {
+        @apply text-[16px];
+    }
+
+    .btn-style {
+        @apply px-8 py-2.5 text-[16px];
+    }
+
+    .title-two {
+        @apply text-[22px] leading-[32px];
+    }
+}
+
+@media (max-width: 375px) {
+    .btn-style {
+        @apply text-[16px];
+    }
+
+    .main-title {
+        @apply text-[26px] leading-[32px];
+    }
+}
+
