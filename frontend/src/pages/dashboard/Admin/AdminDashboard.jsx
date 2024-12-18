@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import { ManageUsers, OrderFulfillment, ManageProducts, ManagePromotions, SalesAnalytics } from '../../components';
+import ManageUsers from './components/ManageUsers';
+import OrderFulfillment from './components/OrderFulfillment';
+import ManageProducts from './components/ManageProducts';
+import ManagePromotions from './components/ManagePromotions';
+import SalesAnalytics from './components/SalesAnalytics';
 
 const AdminDashboard = () => {
   const [activeComponent, setActiveComponent] = useState('Dashboard');

@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { CustomerInquiries, InventoryManagement, Orders, PayoutSettings, ProductListings, PromotionsDiscounts, SalesReports } from '../../components';
+import CustomerInquiries from './components/CustomerInquiries';
+import InventoryManagement from './components/InventoryManagement';
+import Orders from './components/Orders';
+import ProductListings from './components/ProductListings';
+import PayoutSettings from './components/PayoutSettings';
+import PromotionsDiscounts from './components/PromotionsDiscounts';
+import SalesReports from './components/SalesReports';
 
 const ProducerDashboard = () => {
   const [activeComponent, setActiveComponent] = useState('Product Listings');

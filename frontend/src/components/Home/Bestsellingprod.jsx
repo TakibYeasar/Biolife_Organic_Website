@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion } from "framer-motion";
-import {ProductCard} from "../../../components";
+import {ProductCard} from "../index";
 
 // Dummy data
 const bestsellingprod = [

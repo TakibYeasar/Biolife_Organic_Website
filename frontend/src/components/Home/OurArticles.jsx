@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArticleCard } from '../../../components';
+import { ArticleCard } from '../index';
 
 // Dummy data for articles
 const articles = [

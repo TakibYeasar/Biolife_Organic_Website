@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { AccountSettings, OrderHistory, OrderTracking, RateAndReview, RecurringPurchases, Wishlists } from '../../components';
+import AccountSettings from './components/AccountSettings';
+import OrderHistory from './components/OrderHistory';
+import OrderTracking from './components/OrderTracking';
+import RateAndReview from './components/RateAndReview';
+import RecurringPurchases from './components/RecurringPurchases';
+import Wishlists from './components/Wishlists';
 
 const CustomerDashboard = () => {
   const [activeComponent, setActiveComponent] = useState('Browse Products');

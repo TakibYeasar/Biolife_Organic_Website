@@ -1,5 +1,5 @@
 import React from 'react';
-import { Categorylist, Banner, Features, OurProducts, Specialoffer, Bestsellingprod, Discountprod, Companies, OurArticles, FeaturedCategory } from "../../components";
+import { Categorylist, Banner, Features, OurProducts, Specialoffer, Bestsellingprod, Discountprod, Companies, OurArticles, FeaturedCategory } from "../../../components";
 
 const Homepage = () => {
   return (

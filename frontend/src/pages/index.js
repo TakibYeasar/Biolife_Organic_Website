@@ -1,22 +1,22 @@
 
 
-export { default as AdminDashboard } from "./Admin/AdminDashboard";
-export { default as CustomerDashboard } from "./Customer/CustomerDashboard";
-export { default as ProducerDashboard } from "./Producer/ProducerDashboard";
+export { default as AdminDashboard } from "./dashboard/Admin/AdminDashboard";
+export { default as CustomerDashboard } from "./dashboard/Customer/CustomerDashboard";
+export { default as ProducerDashboard } from "./dashboard/Producer/ProducerDashboard";
 
 
-export { default as Homepage } from "./Home/Homepage";
-export { default as About } from "./Home/About/About";
-export { default as Articles } from "./Home/Articles/Articles";
-export { default as ArticleDetails } from "./Home/Articles/ArticleDetails/ArticleDetails";
-export { default as Products } from "./Home/Products/Products";
-export { default as ProductDetails } from "./Home/Products/ProductDetails/ProductDetails";
-export { default as Cart } from "./Home/Cart/Cart";
-export { default as Checkout } from "./Home/Cart/Checkout/Checkout";
-export { default as Contact } from "./Home/Contact/Contact";
+export { default as Homepage } from "./root/Home/Homepage";
+export { default as About } from "./root/About/About";
+export { default as Articles } from "./root/Articles/Articles";
+export { default as ArticleDetails } from "./root/Articles/ArticleDetails/ArticleDetails";
+export { default as Products } from "./root/Products/Products";
+export { default as ProductDetails } from "./root/Products/ProductDetails/ProductDetails";
+export { default as Cart } from "./root/Cart/Cart";
+export { default as Checkout } from "./root/Cart/Checkout/Checkout";
+export { default as Contact } from "./root/Contact/Contact";
 
-export { default as Signup } from "./Auth/Signup";
-export { default as Signin } from "./Auth/Signin";
-export { default as Changepassword } from "./Auth/Changepassword";
-export { default as Forgotpassword } from "./Auth/Forgotpassword";
+export { default as Signup } from "./auth/Signup";
+export { default as Signin } from "./auth/Signin";
+export { default as Changepassword } from "./auth/Changepassword";
+export { default as Forgotpassword } from "./auth/Forgotpassword";
 
