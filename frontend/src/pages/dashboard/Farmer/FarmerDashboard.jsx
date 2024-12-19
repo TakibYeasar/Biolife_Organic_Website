@@ -7,7 +7,7 @@ import PayoutSettings from './components/PayoutSettings';
 import PromotionsDiscounts from './components/PromotionsDiscounts';
 import SalesReports from './components/SalesReports';
 
-const ProducerDashboard = () => {
+const FarmerDashboard = () => {
   const [activeComponent, setActiveComponent] = useState('Product Listings');
 
   const components = [
@@ -68,4 +68,4 @@ const ProducerDashboard = () => {
   );
 };
 
-export default ProducerDashboard;
+export default FarmerDashboard;

@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import {
   AdminDashboard,
   CustomerDashboard,
-  ProducerDashboard,
+  FarmerDashboard,
   Homepage,
   About,
   Articles,
@@ -23,9 +23,9 @@ const AppRoutes = () => {
   return (
     <section className="container">
       <Routes>
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/customer" element={<CustomerDashboard />} />
-        <Route path="/producer" element={<ProducerDashboard />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/customer-dashboard" element={<CustomerDashboard />} />
+        <Route path="/farmer-dashboard" element={<FarmerDashboard />} />
 
         <Route path="/" element={<Homepage />} />
         <Route path="/about" element={<About />} />

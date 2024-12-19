@@ -2,7 +2,7 @@
 
 export { default as AdminDashboard } from "./dashboard/Admin/AdminDashboard";
 export { default as CustomerDashboard } from "./dashboard/Customer/CustomerDashboard";
-export { default as ProducerDashboard } from "./dashboard/Producer/ProducerDashboard";
+export { default as FarmerDashboard } from "./dashboard/Farmer/FarmerDashboard";
 
 
 export { default as Homepage } from "./root/Home/Homepage";
