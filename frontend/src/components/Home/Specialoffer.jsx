@@ -21,33 +21,42 @@ const dummySpecialOffers = [
 
 const Specialoffer = () => {
   return (
-    <div className="bg-gray-100 py-12">
+    <section className="bg-gray-50 py-16">
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {dummySpecialOffers.map((item, i) => (
-            <div key={i} className="bg-white rounded-lg shadow-lg flex flex-col p-6">
-              <div className="text-center mb-6">
-                <span className="text-xl font-semibold text-blue-600">{item.title}</span>
-                <br />
-                <b className="text-2xl font-bold">{item.subtitle}</b>
-                <div className="mt-4">
-                  <p className="text-gray-600">Limited time only!</p>
-                </div>
+            <div key={i} className="bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition duration-300">
+              {/* Offer Content */}
+              <div className="p-6 flex flex-col items-center text-center">
+                <span className="text-xl font-semibold text-primary">{item.title}</span>
+                <h3 className="text-2xl font-extrabold text-gray-800 mt-2">{item.subtitle}</h3>
+                <p className="text-gray-500 mt-4">Limited time only!</p>
+
                 <div className="mt-6">
-                  <a href="#" className="btn btn-primary">See Offer Now!</a>
+                  <a
+                    href="#"
+                    className="inline-block bg-primary text-white py-2 px-6 rounded-full text-lg font-semibold hover:bg-opacity-80 transition duration-200"
+                  >
+                    See Offer Now!
+                  </a>
                 </div>
               </div>
 
-              <div className="flex-grow flex items-center justify-center">
-                <a href="#" className="block">
-                  <img src={item.image} alt="Special Offer" className="w-full h-auto rounded-lg" />
+              {/* Offer Image */}
+              <div className="relative group-hover:scale-105 transition-transform duration-300 ease-in-out">
+                <a href="#">
+                  <img
+                    src={item.image}
+                    alt="Special Offer"
+                    className="w-full h-64 object-cover rounded-b-xl"
+                  />
                 </a>
               </div>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

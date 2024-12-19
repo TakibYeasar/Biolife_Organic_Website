@@ -25,43 +25,62 @@ const articles = [
 
 const Articles = () => {
     return (
-        <div className="allblog-sec">
-            <div className="breadcrumb relative">
-                <img src={bg} alt="" className="h-[30vh] w-full object-cover" />
-                <h1 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-white">
+        <div className="bg-white">
+            {/* Breadcrumb Section */}
+            <div className="relative">
+                <img src={bg} alt="Banner" className="w-full h-[30vh] object-cover" />
+                <h1 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl font-semibold text-white text-center">
                     Organic Fruits
                 </h1>
             </div>
-            <div className="container mx-auto px-4">
-                <div className="boillife-nav flex space-x-2">
-                    <a href="/" className="text-lg font-medium text-gray-700">Home</a>
-                    <span>/</span>
-                    <a href="/Articleslist" className="text-lg font-medium text-gray-700">Our Blog</a>
+
+            {/* Breadcrumb Navigation */}
+            <div className="container mx-auto px-4 mt-6">
+                <nav className="flex items-center space-x-2 text-lg font-medium text-gray-700">
+                    <a href="/" className="hover:text-blue-600">Home</a>
+                    <span className="text-gray-500">/</span>
+                    <a href="/Articleslist" className="hover:text-blue-600">Our Blog</a>
+                </nav>
+            </div>
+
+            {/* Blog Content */}
+            <div className="container mx-auto px-4 mt-6">
+                <div className="flex flex-wrap -mx-2">
+                    {articles.map((item) => (
+                        <div key={item.id} className="w-full md:w-1/3 px-2 mb-6">
+                            <ArticleCard item={item} />
+                        </div>
+                    ))}
                 </div>
 
-                <div className="page-contain blog-page mt-4">
-                    <div className="posts-elem main-post-list flex flex-wrap">
-                        {articles.map((item) => (
-                            <div key={item.id} className="articles-item w-full md:w-1/3 p-2">
-                                <ArticleCard item={item} />
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="biolife-panigations-block text-center mt-4">
-                        <div className="panigation-contain flex justify-center items-center space-x-2">
-                            <div><span className="current-page text-lg font-semibold">1</span></div>
-                            <div><a href="#" className="link-page text-lg text-blue-600">2</a></div>
-                            <div><a href="#" className="link-page text-lg text-blue-600">3</a></div>
-                            <div><span className="sep">....</span></div>
-                            <div><a href="#" className="link-page text-lg text-blue-600">20</a></div>
-                            <div><a href="#" className="link-page next text-lg text-blue-600"><FaAngleRight aria-hidden="true" /></a></div>
+                {/* Pagination */}
+                <div className="text-center mt-8">
+                    <div className="flex justify-center items-center space-x-3">
+                        <div>
+                            <span className="text-lg font-semibold">1</span>
+                        </div>
+                        <div>
+                            <a href="#" className="text-lg text-blue-600 hover:text-blue-800">2</a>
+                        </div>
+                        <div>
+                            <a href="#" className="text-lg text-blue-600 hover:text-blue-800">3</a>
+                        </div>
+                        <div>
+                            <span className="text-gray-500">...</span>
+                        </div>
+                        <div>
+                            <a href="#" className="text-lg text-blue-600 hover:text-blue-800">20</a>
+                        </div>
+                        <div>
+                            <a href="#" className="text-lg text-blue-600 hover:text-blue-800">
+                                <FaAngleRight aria-hidden="true" />
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Articles;

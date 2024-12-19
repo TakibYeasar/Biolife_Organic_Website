@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion } from "framer-motion";
-import {ProductCard} from "../index";
+import { ProductCard } from "../index";
 
 // Dummy data
 const bestsellingprod = [
@@ -25,9 +25,9 @@ const Bestsellingprod = () => {
   }, []);
 
   return (
-    <div className="my-10">
-      <div className="text-center mb-5">
-        <h3 className="text-2xl font-bold">Bestselling Products</h3>
+    <section className="my-16">
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-semibold text-gray-800">Bestselling Products</h2>
       </div>
 
       <motion.div className="overflow-hidden">
@@ -35,13 +35,13 @@ const Bestsellingprod = () => {
           ref={carousel}
           drag="x"
           dragConstraints={{ right: 0, left: -width }}
-          className="flex"
+          className="flex space-x-6 px-4 md:px-6 lg:px-8"
         >
           {bestsellingprod.map((bestsellingprodItem, index) => (
             bestsellingprodItem.product.map((productItem) => (
               <motion.li
                 key={productItem.id}
-                className="flex-shrink-0 w-60 mx-2 p-4 border rounded-lg shadow-lg transition-transform duration-200 hover:scale-105"
+                className="flex-shrink-0 w-60 sm:w-72 lg:w-80 xl:w-96 p-4 border border-gray-200 rounded-xl shadow-lg transition-transform duration-300 ease-in-out hover:scale-105"
               >
                 <ProductCard item={productItem} />
               </motion.li>
@@ -49,7 +49,7 @@ const Bestsellingprod = () => {
           ))}
         </motion.ul>
       </motion.div>
-    </div>
+    </section>
   );
 };
 

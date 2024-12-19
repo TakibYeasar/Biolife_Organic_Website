@@ -48,24 +48,27 @@ const Onsaleprod = () => {
     }, []);
 
     return (
-        <motion.div id="tab_3rd" className="tab-contain py-8">
-            <motion.ul
+        <motion.div id="tab_3rd" className="py-8">
+            <motion.h2 className="text-2xl font-semibold mb-4">On Sale Products</motion.h2>
+            <motion.div
                 ref={carousel}
                 drag="x"
                 dragConstraints={{ right: 0, left: -width }}
-                className="product-list flex space-x-4 overflow-x-hidden"
+                className="overflow-x-hidden"
             >
-                {onsaleprod.map((onsaleprodItem) =>
-                    onsaleprodItem.product.map((productItem) => (
-                        <motion.li
-                            key={productItem.id}
-                            className="product-item w-1/4 sm:w-1/3 md:w-1/4"
-                        >
-                            <ProductCard item={productItem} />
-                        </motion.li>
-                    ))
-                )}
-            </motion.ul>
+                <motion.ul className="product-list flex space-x-4">
+                    {onsaleprod.map((onsaleprodItem) =>
+                        onsaleprodItem.product.map((productItem) => (
+                            <motion.li
+                                key={productItem.id}
+                                className="product-item w-64 sm:w-72 lg:w-80 xl:w-96"
+                            >
+                                <ProductCard item={productItem} />
+                            </motion.li>
+                        ))
+                    )}
+                </motion.ul>
+            </motion.div>
         </motion.div>
     );
 };

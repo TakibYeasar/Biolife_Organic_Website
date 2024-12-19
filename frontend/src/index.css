@@ -4,7 +4,7 @@
 
 /* Custom styles */
 body {
-    @apply font-cairo text-[14px] leading-[24px] text-gray-500 font-light antialiased overflow-x-hidden;
+    @apply font-cairo text-base leading-24 text-fontColor font-light antialiased overflow-x-hidden;
 }
 
 a {
@@ -30,7 +30,7 @@ img {
 }
 
 p {
-    @apply m-0 p-0 pb-0 text-[18px] leading-[28px] text-fontColor opacity-80 no-underline;
+    @apply m-0 p-0 pb-0 text-p-md leading-28 text-fontColor opacity-80 no-underline;
 }
 
 li {
@@ -54,11 +54,11 @@ li {
 }
 
 .main-title {
-    @apply text-[38px] leading-[48px] font-bold text-fontColor;
+    @apply text-main-title leading-48 font-bold text-fontColor;
 }
 
 .title-two {
-    @apply text-[30px] leading-[40px] font-semibold text-fontColor;
+    @apply text-title-two leading-40 font-semibold text-fontColor;
 }
 
 /* Media Queries */
@@ -111,4 +111,3 @@ li {
         @apply text-[26px] leading-[32px];
     }
 }
-

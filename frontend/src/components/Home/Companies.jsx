@@ -11,15 +11,19 @@ const brands = [
 
 const Companies = () => {
   return (
-    <div className="bg-gray-100 py-8">
-      <div className="container mx-auto">
-        <ul className="flex flex-wrap justify-center">
+    <section className="bg-gray-100 py-16">
+      <div className="container mx-auto px-6">
+        <ul className="flex flex-wrap justify-center gap-8">
           {brands.map((item) => (
-            <li key={item.id} className="m-4">
-              <div className="biolife-brd-container">
+            <li key={item.id} className="w-full sm:w-1/2 lg:w-1/5">
+              <div className="bg-white p-4 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
                 <a href="#" className="block">
-                  <figure>
-                    <img src={item.image} width={214} height={163} alt={`Brand ${item.id}`} className="rounded-lg shadow-md" />
+                  <figure className="flex justify-center">
+                    <img
+                      src={item.image}
+                      alt={`Brand ${item.id}`}
+                      className="rounded-lg shadow-md w-full h-auto object-contain"
+                    />
                   </figure>
                 </a>
               </div>
@@ -27,7 +31,7 @@ const Companies = () => {
           ))}
         </ul>
       </div>
-    </div>
+    </section>
   );
 };
 

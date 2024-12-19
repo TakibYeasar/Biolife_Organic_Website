@@ -14,20 +14,22 @@ const categories = [
 const Categorylist = () => {
     return (
         <div className="hidden lg:block md:block col-lg-3 col-md-4">
-            <div className="border border-gray-300 rounded-lg shadow-md">
-                <div className="flex items-center bg-blue-600 p-4 rounded-t-lg">
-                    <FaBars className="text-white text-2xl mr-3" />
-                    <span className="text-white text-lg font-semibold flex-1">All Departments</span>
-                    <FaCaretDown className="text-white text-lg" />
+            <div className="bg-white border border-borderColorLight rounded-lg shadow-lg">
+                {/* Header */}
+                <div className="flex items-center bg-navColor p-4 rounded-t-lg">
+                    <FaBars className="text-fontLight text-2xl mr-3" />
+                    <span className="text-fontLight text-lg font-semibold flex-1">All Departments</span>
+                    <FaCaretDown className="text-fontLight text-lg" />
                 </div>
 
+                {/* Category List */}
                 <div className="p-4">
                     <ul className="space-y-2">
                         {categories.map((item, index) => (
-                            <li key={index} className="border-b border-gray-200 pb-2">
-                                <a href="#" className="flex items-center text-gray-700 font-medium text-base hover:text-blue-600">
+                            <li key={index} className="border-b border-borderColorLight pb-2">
+                                <a href="#" className="flex items-center text-fontColor font-medium text-base hover:text-primary">
                                     {item.cat_name}
-                                    <FaAngleRight className="ml-auto text-gray-500" />
+                                    <FaAngleRight className="ml-auto text-fontColor" />
                                 </a>
                             </li>
                         ))}

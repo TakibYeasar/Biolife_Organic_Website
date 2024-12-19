@@ -11,24 +11,24 @@ const ArticleCard = ({ item }) => {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg overflow-hidden">
+    <div className="bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="relative">
         <a href={`/articleview/${item.id}`} className="block">
-          <img src={item?.image} width={370} height={270} alt="" className="w-full h-64 object-cover" />
+          <img src={item?.image} width={370} height={270} alt={item?.title} className="w-full h-64 object-cover" />
         </a>
         <div className="absolute top-4 left-4 bg-primary text-white rounded-full w-12 h-12 flex flex-col items-center justify-center">
-          <span className="text-sm font-bold">{item?.date?.split("-")[2]}</span>
-          <span className="text-sm font-bold">{item?.date?.split("-")[1]}</span>
+          <span className="text-sm font-semibold">{item?.date?.split("-")[2]}</span>
+          <span className="text-sm font-semibold">{item?.date?.split("-")[1]}</span>
         </div>
       </div>
       <div className="p-6 text-center">
-        <h4 className="text-lg font-bold text-gray-900 mb-4">
-          <Link to={`/articleview/${item.id}`}>{item?.title}</Link>
+        <h4 className="text-xl font-semibold text-gray-900 mb-4">
+          <Link to={`/articleview/${item.id}`} className="hover:text-primary transition duration-300">{item?.title}</Link>
         </h4>
-        <div className="flex justify-center items-center space-x-4 mb-4">
+        <div className="flex justify-center items-center space-x-6 mb-4">
           <a href="#" className="flex items-center space-x-2">
             <img src={author} width={28} height={28} alt="author" className="rounded-full" />
-            <span className="font-bold text-gray-800">Admin</span>
+            <span className="font-semibold text-gray-800">Admin</span>
           </a>
           <a href="#" className="flex items-center space-x-2 text-secondary">
             2 <FaHeart className="text-lg" />
@@ -49,7 +49,7 @@ const ArticleCard = ({ item }) => {
             </div>
           </div>
         </div>
-        <button onClick={handleReadMore} className="btn btn-primary mt-4">
+        <button onClick={handleReadMore} className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition duration-300">
           Continue Reading
         </button>
       </div>

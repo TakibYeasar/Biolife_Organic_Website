@@ -25,17 +25,19 @@ const Topratedprod = () => {
     }, []);
 
     return (
-        <div className="py-12">
+        <div className="py-12 px-4 sm:px-6 md:px-8 bg-bgGrey">
+            <h2 className="text-main-title font-bold text-center mb-8">Top Rated Products</h2>
+
             <motion.div className="overflow-hidden">
                 <motion.ul
                     ref={carousel}
                     drag="x"
                     dragConstraints={{ right: 0, left: -width }}
-                    className="flex space-x-4"
+                    className="flex space-x-6 overflow-x-scroll scrollbar-hide"
                 >
-                    {dummyTopRatedProducts.map((topratedItem, index) => (
+                    {dummyTopRatedProducts.map((topratedItem) => (
                         topratedItem.product.map((productItem) => (
-                            <motion.li key={productItem.id} className="w-48 flex-shrink-0">
+                            <motion.li key={productItem.id} className="w-64 sm:w-72 md:w-80 lg:w-96 flex-shrink-0 rounded-lg shadow-lg bg-white">
                                 <ProductCard item={productItem} />
                             </motion.li>
                         ))

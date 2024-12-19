@@ -38,11 +38,11 @@ const FeaturedCategory = () => {
   }, []);
 
   return (
-    <div className="py-8">
-      <div className="text-center mb-6">
-        <p className="text-primary mb-2">HOT CATEGORIES 2019</p>
-        <h4 className="text-3xl font-bold">Featured Categories</h4>
-        <p className="italic max-w-xl mx-auto">
+    <section className="py-16 bg-gray-50">
+      <div className="text-center mb-10">
+        <p className="text-primary text-sm font-semibold mb-2">HOT CATEGORIES 2019</p>
+        <h4 className="text-4xl font-extrabold text-gray-800 mb-4">Featured Categories</h4>
+        <p className="italic text-lg max-w-3xl mx-auto text-gray-500">
           Natural food is taken from the world's most modern farms with strict safety cycles
         </p>
       </div>
@@ -52,18 +52,22 @@ const FeaturedCategory = () => {
           ref={carousel}
           drag="x"
           dragConstraints={{ right: 0, left: -width }}
-          className="flex space-x-4"
+          className="flex space-x-6 overflow-x-auto py-4"
         >
-          {categories.map((item, i) => (
-            <motion.div key={i} className="flex-none w-1/4">
-              <div className="border border-gray-300 rounded-lg shadow-md overflow-hidden">
+          {categories.map((item) => (
+            <motion.div key={item.id} className="flex-none w-64">
+              <div className="border border-gray-300 rounded-xl shadow-lg overflow-hidden bg-white transition-all transform hover:scale-105 hover:shadow-xl">
                 <a href="#" className="block">
-                  <img src={item.image} alt={item.cat_name} className="w-full h-32 object-cover" />
+                  <img
+                    src={item.image}
+                    alt={item.cat_name}
+                    className="w-full h-40 object-cover rounded-t-xl"
+                  />
                 </a>
-                <div className="p-4 text-center">
-                  <a href="#" className="no-underline">
-                    <h4 className="text-lg font-semibold">{item.cat_name}</h4>
-                    <span className="text-gray-500">({item.product_count} items)</span>
+                <div className="p-6 text-center">
+                  <a href="#" className="no-underline text-gray-800">
+                    <h4 className="text-xl font-semibold">{item.cat_name}</h4>
+                    <span className="text-gray-500 text-sm">({item.product_count} items)</span>
                   </a>
                 </div>
               </div>
@@ -71,7 +75,7 @@ const FeaturedCategory = () => {
           ))}
         </motion.div>
       </motion.div>
-    </div>
+    </section>
   );
 };
 
