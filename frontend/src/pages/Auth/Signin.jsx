@@ -1,112 +1,121 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useLoginMutation } from '../../redux/features/auth/authApi';
+import { toast } from 'react-toastify';
 
-const Signin = () => {
-  const [userData, setUserData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
+const SignIn = () => {
+    const navigate = useNavigate(); // Corrected hook for navigation in React Router v6
+    const [login, { isLoading, error, data }] = useLoginMutation();
 
-  const handleChange = (e) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
-  };
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Dummy data submission simulation
-    console.log("User Data Submitted:", userData);
-    // Here you could navigate to another page or show a success message
-  };
+    useEffect(() => {
+        if (data) {
+            toast.success('Login successful!');
+            navigate('/'); // Navigate to home on success
+        }
 
-  return (
-    <div className="section">
-      <div className="breadcrumb">
-        <h1 className="text-3xl font-bold">Organic Fruits</h1>
-      </div>
-      <div className="auth-sec py-10">
-        <div className="container mx-auto px-4">
-          <nav className="flex mb-4">
-            <a href="/" className="text-blue-600 hover:underline">
-              Home
-            </a>
-            <span className="mx-2">/</span>
-            <a href="/register" className="text-blue-600 hover:underline">
-              Authentication
-            </a>
-          </nav>
+        if (error) {
+            toast.error(error.data?.detail || 'Login failed!');
+        }
+    }, [data, error, navigate]);
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Sign In Container */}
-            <div className="signin-container p-6 border border-gray-300 rounded-lg shadow-md">
-              <h2 className="text-2xl font-semibold mb-4">Sign In</h2>
-              <form onSubmit={handleSubmit}>
-                <div className="form-group mb-4">
-                  <label className="block text-sm font-medium mb-2" htmlFor="username">
-                    Username <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className="input input-bordered w-full"
-                    placeholder="Username"
-                    id="username"
-                    name="username"
-                    value={userData.username}
-                    onChange={handleChange}
-                  />
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        login({ email, password, rememberMe });
+    };
+
+    const handleClose = () => {
+        navigate('/'); // Close modal and go back to home
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="relative w-full max-w-md bg-white shadow-lg rounded-lg p-8 bg-gradient-to-br from-white via-gray-50 to-gray-100">
+                {/* Close Button */}
+                <button
+                    onClick={handleClose}
+                    className="absolute top-2 right-4 text-gray-500 hover:text-gray-700 transition-colors"
+                >
+                    &#x2715; {/* Close icon */}
+                </button>
+
+                <h2 className="text-3xl font-semibold text-gray-800 mb-6 text-center">Sign In</h2>
+                <p className="text-gray-600 text-center mb-8">
+                    Welcome back! Please enter your credentials to access your account.
+                </p>
+
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Email Address <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full p-4 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition duration-300"
+                            placeholder="Enter your email"
+                            required
+                        />
+                    </div>
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Password <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full p-4 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition duration-300"
+                            placeholder="Enter your password"
+                            required
+                        />
+                    </div>
+
+                    <div className="flex justify-between items-center mb-6">
+                        <label className="inline-flex items-center text-gray-700">
+                            <input
+                                type="checkbox"
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                                className="form-checkbox h-4 w-4 text-primary transition duration-300"
+                            />
+                            <span className="ml-2 text-sm">Remember me</span>
+                        </label>
+                        <a
+                            href="/forgot-pass"
+                            className="text-sm text-primary hover:text-secondary transition duration-300"
+                        >
+                            Forgot your password?
+                        </a>
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={isLoading}
+                        className={`w-full bg-primary text-white py-3 rounded-md shadow-lg font-medium transition duration-300 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-secondary'}`}
+                    >
+                        {isLoading ? 'Logging in...' : 'Login'}
+                    </button>
+                </form>
+
+                <div className="text-center mt-6">
+                    <p className="text-sm text-gray-600">
+                        Don't have an account?
+                        <a
+                            href="/sign-up"
+                            className="text-primary font-medium ml-1 hover:text-secondary transition duration-300"
+                        >
+                            Sign up
+                        </a>
+                    </p>
                 </div>
-                <div className="form-group mb-4">
-                  <label className="block text-sm font-medium mb-2" htmlFor="email">
-                    Email Address <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    className="input input-bordered w-full"
-                    placeholder="Email Address"
-                    id="email"
-                    name="email"
-                    value={userData.email}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="form-group mb-4">
-                  <label className="block text-sm font-medium mb-2" htmlFor="password">
-                    Password <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    className="input input-bordered w-full"
-                    placeholder="Password"
-                    id="password"
-                    name="password"
-                    value={userData.password}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="form-row flex justify-between items-center mb-4">
-                  <button className="btn btn-primary" type="submit">Sign In</button>
-                  <a href="#" className="text-blue-600 hover:underline">Forgot your password?</a>
-                </div>
-              </form>
             </div>
-
-            {/* Register Container */}
-            <div className="register-container p-6 border border-gray-300 rounded-lg shadow-md">
-              <h4 className="text-xl font-semibold mb-4">New Customer?</h4>
-              <p className="mb-2">Create an account with us and you’ll be able to:</p>
-              <ul className="list-disc list-inside mb-4">
-                <li>Check out faster</li>
-                <li>Save multiple shipping addresses</li>
-                <li>Access your order history</li>
-                <li>Track new orders</li>
-                <li>Save items to your Wishlist</li>
-              </ul>
-              <a href="/register" className="btn btn-secondary">Create an account</a>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
-export default Signin;
+export default SignIn;

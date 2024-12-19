@@ -1,85 +1,207 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { FaBars, FaTimes, FaEnvelope } from 'react-icons/fa';
+import { BsSun, BsMoon } from 'react-icons/bs';
 import organic4 from '/assets/images/organic-4.png';
-import { FaCartPlus, FaEnvelope, FaHeart } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { useLogoutMutation } from '../redux/features/auth/authApi';
+import { toast } from 'react-toastify';
 
-const Navbar = () => {
-    // Dummy data for user
-    const user = null; // Change to an object like { name: "John" } to simulate a logged-in user
+const Navbar = ({ user, isAuthenticated }) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [theme, setTheme] = useState('light-theme');
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+    const handleScroll = () => {
+        setIsScrolled(window.scrollY >= 80);
+    };
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const toggleTheme = () => {
+        setTheme((prev) => (prev === 'dark-theme' ? 'light-theme' : 'dark-theme'));
+    };
+
+    useEffect(() => {
+        document.body.className = theme;
+    }, [theme]);
+
+    const getDashboardPath = () => {
+        if (user?.role === 'admin') return '/admin-dashboard';
+        if (user?.role === 'customer') return '/customer-dashboard';
+        if (user?.role === 'farmer') return '/farmer-dashboard';
+        return '/sign-in';
+    };
+
+    const handleDashboardClick = () => {
+        const path = getDashboardPath();
+        navigate(path);
+    };
+
+    const handleLogout = async () => {
+        try {
+            await dispatch(useLogoutMutation()).unwrap();
+            localStorage.clear();
+            sessionStorage.clear();
+            toast.success('Logged out successfully');
+            navigate('/');
+        } catch (error) {
+            toast.error('Failed to log out. Please try again.');
+        }
+    };
 
     return (
-        <div className="bg-primary p-4">
-            <div className="container mx-auto">
-                <div className="flex justify-between">
-                    {/* Top Header */}
-                    <div className="flex space-x-6 items-center">
-                        <div className="flex items-center">
-                            <FaEnvelope className="text-white" />
-                            <span className="ml-2 text-white">Organic@company.com</span>
+        <header
+            className={`bg-primary ${isScrolled ? 'shadow-md' : ''} fixed top-0 left-0 w-full z-50 transition-shadow duration-300`}
+        >
+            {/* Top Bar */}
+            <div className="bg-secondary py-2 text-sm">
+                <div className="container mx-auto flex justify-between items-center text-white">
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                            <FaEnvelope />
+                            <span>Organic@company.com</span>
                         </div>
-                        <span className="text-white">Free Shipping for all Order of $99</span>
+                        <span>Free Shipping for Orders over $99</span>
                     </div>
-                    <div className="flex items-center space-x-4">
-                        <select className="select select-bordered select-sm">
-                            <option value="eur">€ EUR (Euro)</option>
-                            <option value="usd">$ USD (Dollar)</option>
-                            <option value="gbp">£ GBP (Pound)</option>
-                            <option value="jpy">¥ JPY (Yen)</option>
+                    <div className="flex items-center gap-4">
+                        <select className="bg-transparent border border-white px-2 py-1 rounded text-white">
+                            <option value="eur">€ EUR</option>
+                            <option value="usd">$ USD</option>
+                            <option value="gbp">£ GBP</option>
+                            <option value="jpy">¥ JPY</option>
                         </select>
-                        <select className="select select-bordered select-sm">
-                            <option value="fr">French (EUR)</option>
-                            <option value="en">English (USD)</option>
-                            <option value="ger">Germany (GBP)</option>
-                            <option value="jp">Japan (JPY)</option>
+                        <select className="bg-transparent border border-white px-2 py-1 rounded text-white">
+                            <option value="en">English</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="jp">Japanese</option>
                         </select>
-                        {user ? (
-                            <button className="btn btn-outline" onClick={() => alert('Logged out!')}>
+                        {isAuthenticated ? (
+                            <button
+                                onClick={handleLogout}
+                                className="bg-white text-primary px-4 py-1 rounded hover:bg-secondary hover:text-white transition"
+                            >
                                 Logout
                             </button>
                         ) : (
-                            <>
-                                <a href="/register" className="btn btn-outline">
-                                    Registration
-                                </a>
-                                <a href="/signin" className="btn btn-outline">
-                                    SignIn
-                                </a>
-                            </>
+                            <div className="flex gap-2">
+                                <Link
+                                    to="/sign-up"
+                                    className="bg-white text-primary px-4 py-1 rounded hover:bg-secondary hover:text-white transition"
+                                >
+                                    Sign Up
+                                </Link>
+                                <Link
+                                    to="/sign-in"
+                                    className="bg-white text-primary px-4 py-1 rounded hover:bg-secondary hover:text-white transition"
+                                >
+                                    Sign In
+                                </Link>
+                            </div>
                         )}
                     </div>
                 </div>
             </div>
-            {/* Main Header */}
-            <div className="container mx-auto my-4">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center">
-                        <a href="/" className="flex items-center">
-                            <img src={organic4} alt="Logo" className="h-12" />
-                        </a>
-                    </div>
-                    <nav className="hidden md:flex space-x-4">
-                        <a href="/" className="text-lg font-medium hover:text-primary">Home</a>
-                        <a href="/about" className="text-lg font-medium hover:text-primary">About</a>
-                        <a href="/productslist" className="text-lg font-medium hover:text-primary">Product</a>
-                        <a href="/articleslist" className="text-lg font-medium hover:text-primary">Articles</a>
-                        <a href="/contact" className="text-lg font-medium hover:text-primary">Contact</a>
-                    </nav>
-                    <div className="flex items-center space-x-4">
-                        <a href="#" className="text-2xl text-white">
-                            <FaHeart />
-                        </a>
-                        <div className="relative">
-                            <a href="/cart" className="text-2xl text-white">
-                                <FaCartPlus />
-                            </a>
-                            <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                                0
-                            </span>
-                            <span className="ml-2 text-white">My Cart - $0.00</span>
-                        </div>
-                    </div>
+
+            {/* Main Navbar */}
+            <div className="container mx-auto flex justify-between items-center py-4">
+                {/* Logo */}
+                <Link to="/">
+                    <img src={organic4} alt="Organic Farm Logo" className="h-12" />
+                </Link>
+
+                {/* Desktop Links */}
+                <nav className="hidden lg:flex gap-8 text-white">
+                    {['Home', 'About', 'Products', 'Articles', 'Contact'].map((item) => (
+                        <Link
+                            to={`/${item.toLowerCase()}`}
+                            key={item}
+                            className="hover:text-secondary transition"
+                        >
+                            {item}
+                        </Link>
+                    ))}
+                    {isAuthenticated && (
+                        <button
+                            onClick={handleDashboardClick}
+                            className="hover:text-secondary transition"
+                        >
+                            Dashboard
+                        </button>
+                    )}
+                </nav>
+
+                {/* Right Section */}
+                <div className="flex items-center gap-4">
+                    <button onClick={toggleTheme} className="text-white text-2xl">
+                        {theme === 'dark-theme' ? <BsSun /> : <BsMoon />}
+                    </button>
+                    <button onClick={toggleMenu} className="text-white text-2xl lg:hidden">
+                        {isMenuOpen ? <FaTimes /> : <FaBars />}
+                    </button>
                 </div>
             </div>
-        </div>
+
+            {/* Mobile Menu */}
+            {isMenuOpen && (
+                <div className="bg-primary lg:hidden">
+                    <ul className="flex flex-col items-center py-4 text-white">
+                        {['Home', 'About', 'Products', 'Articles', 'Contact'].map((item) => (
+                            <li key={item}>
+                                <Link to={`/${item.toLowerCase()}`} onClick={toggleMenu}>
+                                    {item}
+                                </Link>
+                            </li>
+                        ))}
+                        {isAuthenticated ? (
+                            <>
+                                <li>
+                                    <button
+                                        onClick={() => {
+                                            handleDashboardClick();
+                                            toggleMenu();
+                                        }}
+                                    >
+                                        Dashboard
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        onClick={() => {
+                                            handleLogout();
+                                            toggleMenu();
+                                        }}
+                                    >
+                                        Logout
+                                    </button>
+                                </li>
+                            </>
+                        ) : (
+                            <>
+                                <li>
+                                    <Link to="/sign-in" onClick={toggleMenu}>
+                                        Sign In
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/sign-up" onClick={toggleMenu}>
+                                        Sign Up
+                                    </Link>
+                                </li>
+                            </>
+                        )}
+                    </ul>
+                </div>
+            )}
+        </header>
     );
 };
 

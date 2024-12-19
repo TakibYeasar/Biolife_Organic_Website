@@ -1,10 +1,10 @@
 
-
+// dashboard
 export { default as AdminDashboard } from "./dashboard/Admin/AdminDashboard";
 export { default as CustomerDashboard } from "./dashboard/Customer/CustomerDashboard";
 export { default as FarmerDashboard } from "./dashboard/Farmer/FarmerDashboard";
 
-
+// Pages
 export { default as Homepage } from "./root/Home/Homepage";
 export { default as About } from "./root/About/About";
 export { default as Articles } from "./root/Articles/Articles";
@@ -15,8 +15,11 @@ export { default as Cart } from "./root/Cart/Cart";
 export { default as Checkout } from "./root/Cart/Checkout/Checkout";
 export { default as Contact } from "./root/Contact/Contact";
 
-export { default as Signup } from "./auth/Signup";
-export { default as Signin } from "./auth/Signin";
-export { default as Changepassword } from "./auth/Changepassword";
-export { default as Forgotpassword } from "./auth/Forgotpassword";
+// Auth pages
+export { default as SignUp } from "./auth/SignUp";
+export { default as EmailVerification } from "./auth/EmailVerification";
+export { default as SignIn } from "./auth/SignIn";
+export { default as ForgotPassword } from "./auth/ForgotPassword";
+export { default as ResetPassword } from "./auth/ResetPassword";
+export { default as ChangePassword } from "./auth/ChangePassword";
 

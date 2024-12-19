@@ -7,19 +7,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#ffac1e',
-        secondary: '#4d4d4d',
-        fontColor: '#0f1113',
-        fontLight: '#fff',
-        bgColor: '#fff',
-        borderColorLight: '#eee',
-        navColor: '#292922',
-        dropdownColor: '#fff',
-        bgLight: 'rgba(130, 115, 252, .05)',
-        bgLayer: 'rgba(0, 0, 0, 0.55)',
-        bgGrey: '#bab8b8',
-        footerBg: '#0f1113',
-        cardBg: '#f5f5f5',
+        primary: '#4caf50', // Fresh green for primary accents
+        secondary: '#2e7d32', // Vibrant green for secondary elements
+        fontColor: '#1b5e20', // Rich green for text
+        fontLight: '#ffffff', // Bright white for contrast
+        bgColor: '#f1f8e9', // Soft greenish-white for a clean background
+        borderColorLight: '#dcedc8', // Light green for borders
+        navColor: '#388e3c', // Eye-catching green for navigation
+        dropdownColor: '#e8f5e9', // Light green tint for dropdowns
+        bgLight: 'rgba(76, 175, 80, 0.1)', // Subtle green tint for backgrounds
+        bgLayer: 'rgba(0, 0, 0, 0.3)', // Softer overlay for contrast
+        bgGrey: '#c8e6c9', // Gentle green-grey for subtle backgrounds
+        footerBg: '#1b5e20', // Rich green for footer
+        cardBg: '#e0f2f1', // Refreshing teal for card backgrounds
       },
       borderRadius: {
         DEFAULT: '6px',

@@ -8,99 +8,89 @@ import card05 from "/assets/images/card5.jpg";
 
 const Footer = () => {
     return (
-        <div className="bg-gray-200 py-12">
-            <div className="container mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <footer className="bg-gray-100 py-16">
+            <div className="container mx-auto px-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
                     {/* Transport Offices Section */}
-                    <section className="footer-item">
-                        <h3 className="text-xl font-semibold mb-4">Transport Offices</h3>
-                        <div className="contact-info">
-                            <ul className="list-none p-0">
-                                <li className="flex items-center mb-2">
-                                    <FaSearchLocation className="text-2xl text-secondary mr-2" />
-                                    <p className="text-gray-700">
-                                        <b>7563 St. Vicent Place, Glasgow, Greater Newyork NH7689, UK</b>
-                                    </p>
-                                </li>
-                                <li className="flex items-center mb-2">
-                                    <FaPhone className="text-2xl text-secondary mr-2" />
-                                    <p className="text-gray-700">
-                                        <b>Phone: (+067) 234 789  (+068) 222 888</b>
-                                    </p>
-                                </li>
-                                <li className="flex items-center mb-2">
-                                    <FaMailBulk className="text-2xl text-secondary mr-2" />
-                                    <p className="text-gray-700">
-                                        <b>Email: contact@company.com</b>
-                                    </p>
-                                </li>
-                                <li className="flex items-center mb-2">
-                                    <FaClock className="text-2xl text-secondary mr-2" />
-                                    <p className="text-gray-700">
-                                        <b>Hours: 7 Days a week from 10:00 am</b>
-                                    </p>
-                                </li>
-                            </ul>
-                        </div>
-                    </section>
+                    <div>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Transport Offices</h3>
+                        <ul className="space-y-3">
+                            <li className="flex items-start">
+                                <FaSearchLocation className="text-primary text-xl mr-3" />
+                                <p className="text-gray-600">7563 St. Vicent Place, Glasgow, Greater Newyork NH7689, UK</p>
+                            </li>
+                            <li className="flex items-start">
+                                <FaPhone className="text-primary text-xl mr-3" />
+                                <p className="text-gray-600">Phone: (+067) 234 789, (+068) 222 888</p>
+                            </li>
+                            <li className="flex items-start">
+                                <FaMailBulk className="text-primary text-xl mr-3" />
+                                <p className="text-gray-600">Email: contact@company.com</p>
+                            </li>
+                            <li className="flex items-start">
+                                <FaClock className="text-primary text-xl mr-3" />
+                                <p className="text-gray-600">Hours: 7 Days a week from 10:00 am</p>
+                            </li>
+                        </ul>
+                    </div>
 
                     {/* Company Section */}
-                    <section className="footer-item">
-                        <h3 className="text-xl font-semibold mb-4">Company</h3>
-                        <ul className="list-none p-0">
-                            <li><a href="#" className="text-secondary hover:underline">Terms & Conditions</a></li>
-                            <li><a href="#" className="text-secondary hover:underline">Privacy Policy</a></li>
-                            <li><a href="#" className="text-secondary hover:underline">Project Protection</a></li>
-                            <li><a href="#" className="text-secondary hover:underline">Delivery Information</a></li>
-                            <li><a href="#" className="text-secondary hover:underline">FAQs</a></li>
+                    <div>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Company</h3>
+                        <ul className="space-y-2">
+                            <li><a href="#" className="text-gray-600 hover:text-primary transition">Terms & Conditions</a></li>
+                            <li><a href="#" className="text-gray-600 hover:text-primary transition">Privacy Policy</a></li>
+                            <li><a href="#" className="text-gray-600 hover:text-primary transition">Project Protection</a></li>
+                            <li><a href="#" className="text-gray-600 hover:text-primary transition">Delivery Information</a></li>
+                            <li><a href="#" className="text-gray-600 hover:text-primary transition">FAQs</a></li>
                         </ul>
-                    </section>
+                    </div>
 
                     {/* Product Section */}
-                    <section className="footer-item">
-                        <h3 className="text-xl font-semibold mb-4">Product</h3>
-                        <ul className="list-none p-0">
-                            <li><a href="#" className="text-secondary hover:underline">Pricing</a></li>
-                            <li><a href="#" className="text-secondary hover:underline">Features</a></li>
-                            <li><a href="#" className="text-secondary hover:underline">Customers</a></li>
-                            <li><a href="#" className="text-secondary hover:underline">One Click Apps</a></li>
-                            <li><a href="#" className="text-secondary hover:underline">Feedback</a></li>
+                    <div>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Product</h3>
+                        <ul className="space-y-2">
+                            <li><a href="#" className="text-gray-600 hover:text-primary transition">Pricing</a></li>
+                            <li><a href="#" className="text-gray-600 hover:text-primary transition">Features</a></li>
+                            <li><a href="#" className="text-gray-600 hover:text-primary transition">Customers</a></li>
+                            <li><a href="#" className="text-gray-600 hover:text-primary transition">One Click Apps</a></li>
+                            <li><a href="#" className="text-gray-600 hover:text-primary transition">Feedback</a></li>
                         </ul>
-                    </section>
+                    </div>
 
                     {/* Newsletter Signup Section */}
-                    <section className="footer-item">
-                        <h3 className="text-xl font-semibold mb-4">Newsletter Signup</h3>
-                        <div className="newsletter-block mb-4">
-                            <form action="#" className="flex">
-                                <input type="email" className="input-text email border border-gray-300 rounded-l-full p-2 flex-1" placeholder="Your email here..." />
-                                <button type="submit" className="btn-submit bg-primary text-white rounded-r-full p-2">Sign up</button>
-                            </form>
+                    <div>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Newsletter Signup</h3>
+                        <form className="flex items-center mb-6">
+                            <input type="email" placeholder="Your email here..." className="flex-1 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary" />
+                            <button type="submit" className="px-4 py-2 bg-primary text-white rounded-r-md hover:bg-primary-dark transition">Sign up</button>
+                        </form>
+
+                        <div className="flex space-x-4 mb-4">
+                            <a href="#" className="text-gray-600 hover:text-primary transition"><FaTwitter className="text-2xl" /></a>
+                            <a href="#" className="text-gray-600 hover:text-primary transition"><FaFacebook className="text-2xl" /></a>
+                            <a href="#" className="text-gray-600 hover:text-primary transition"><FaPinterest className="text-2xl" /></a>
+                            <a href="#" className="text-gray-600 hover:text-primary transition"><FaYoutube className="text-2xl" /></a>
+                            <a href="#" className="text-gray-600 hover:text-primary transition"><FaInstagram className="text-2xl" /></a>
                         </div>
-                        <div className="biolife-social inline-block">
-                            <ul className="flex space-x-4 mb-4">
-                                <li><a href="#" title="twitter" className="text-secondary hover:text-primary"><FaTwitter className="text-2xl" /></a></li>
-                                <li><a href="#" title="facebook" className="text-secondary hover:text-primary"><FaFacebook className="text-2xl" /></a></li>
-                                <li><a href="#" title="pinterest" className="text-secondary hover:text-primary"><FaPinterest className="text-2xl" /></a></li>
-                                <li><a href="#" title="youtube" className="text-secondary hover:text-primary"><FaYoutube className="text-2xl" /></a></li>
-                                <li><a href="#" title="instagram" className="text-secondary hover:text-primary"><FaInstagram className="text-2xl" /></a></li>
-                            </ul>
+
+                        <div>
+                            <h4 className="text-lg font-semibold text-gray-800 mb-2">Payments System:</h4>
+                            <div className="flex space-x-3">
+                                <img src={card01} alt="Card 1" className="w-12 h-8 object-contain" />
+                                <img src={card02} alt="Card 2" className="w-12 h-8 object-contain" />
+                                <img src={card03} alt="Card 3" className="w-12 h-8 object-contain" />
+                                <img src={card04} alt="Card 4" className="w-12 h-8 object-contain" />
+                                <img src={card05} alt="Card 5" className="w-12 h-8 object-contain" />
+                            </div>
                         </div>
-                        <div className="payment-methods">
-                            <h4 className="text-lg font-semibold">Payments System:</h4>
-                            <ul className="flex space-x-2 mt-2">
-                                <li><a href="#" className="payment-link"><img src={card01} width={51} height={36} alt="Card 1" /></a></li>
-                                <li><a href="#" className="payment-link"><img src={card02} width={51} height={36} alt="Card 2" /></a></li>
-                                <li><a href="#" className="payment-link"><img src={card03} width={51} height={36} alt="Card 3" /></a></li>
-                                <li><a href="#" className="payment-link"><img src={card04} width={51} height={36} alt="Card 4" /></a></li>
-                                <li><a href="#" className="payment-link"><img src={card05} width={51} height={36} alt="Card 5" /></a></li>
-                            </ul>
-                        </div>
-                    </section>
+                    </div>
+
                 </div>
             </div>
-        </div>
+        </footer>
     );
-}
+};
 
 export default Footer;

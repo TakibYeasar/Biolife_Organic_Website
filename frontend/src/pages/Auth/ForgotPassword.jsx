@@ -1,53 +1,58 @@
-import React, { useState } from 'react';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
-    const [email, setEmail] = useState('');
-    const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Simulate a successful email submission
-        setMessage(`Password reset link sent to ${email}`);
-        // Reset the email input
-        setEmail('');
-    };
-
-    const handleChange = (e) => {
-        setEmail(e.target.value);
+    const handleClose = () => {
+        navigate("/"); // Redirect to home on close
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-            <div className="bg-white shadow-md rounded-lg px-8 py-6 w-full max-w-md">
-                <h1 className="text-2xl font-bold mb-4">Reset Password</h1>
-                {message && <p className="text-green-600 mb-4">{message}</p>}
-                <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="relative w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+                {/* Close Button */}
+                <button
+                    onClick={handleClose}
+                    className="absolute top-2 right-4 text-gray-500 hover:text-gray-700 transition-colors"
+                >
+                    &#x2715; {/* Close icon */}
+                </button>
+
+                <h2 className="text-2xl font-semibold text-gray-800 text-center mb-6">
+                    Forgot Password
+                </h2>
+                <p className="text-center text-gray-600 mb-4">
+                    Enter your email address below, and we’ll send you a link to reset your password.
+                </p>
+
+                <form className="space-y-6">
                     <div>
-                        <label htmlFor="fid-email" className="block text-sm font-medium text-gray-700">
-                            Email Address:<span className="text-red-500">*</span>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Email Address
                         </label>
                         <input
                             type="email"
-                            id="fid-email"
-                            name="email"
-                            placeholder="Email Address"
-                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"
-                            value={email}
-                            onChange={handleChange}
-                            required
+                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition duration-300"
+                            placeholder="Enter your email"
                         />
                     </div>
-                    <div className="flex justify-end">
-                        <button
-                            className="btn btn-primary"
-                            type="submit"
-                        >
-                            Submit
-                        </button>
-                    </div>
+
+                    <button
+                        type="submit"
+                        className="w-full bg-primary text-white py-3 rounded-md font-medium hover:bg-secondary transition duration-300"
+                    >
+                        Send Reset Link
+                    </button>
                 </form>
-                <div className="mt-4 text-center">
-                    <a href="/" className="text-blue-500 hover:underline">Back to Home</a>
+
+                <div className="text-center mt-6">
+                    <a
+                        href="/sign-in"
+                        className="text-sm text-primary hover:text-secondary transition duration-300"
+                    >
+                        Remember your password? Sign in
+                    </a>
                 </div>
             </div>
         </div>
