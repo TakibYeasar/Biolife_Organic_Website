@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     "payment",
 ]
 
-# AUTH_USER_MODEL = 'authapi.CustomUser'
+AUTH_USER_MODEL = 'authapi.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -152,8 +152,14 @@ MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:5173',
+)
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://127.0.0.1:8000",
+    "http://localhost:5173",
 ]
 
 
@@ -180,3 +186,18 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+
+# Stripe
+STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+
+# paypal
+PAYPAL_MODE = os.environ.get('PAYPAL_MODE')
+PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID')
+PAYPAL_CLIENT_SECRET = os.environ.get('PAYPAL_CLIENT_SECRET')
+
+PAYPAL_RECEIVER_EMAIL = os.environ.get('PAYPAL_RECEIVER_EMAIL')
+PAYPAL_TEST = os.environ.get('PAYPAL_TEST')
+
+

@@ -1,3 +1,15 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import (
+    ArticleCategory,
+    ArticleTag,
+    Article,
+    ArticleComment,
+)
+
+admin.site.register([
+    ArticleCategory,
+    ArticleTag,
+    Article,
+    ArticleComment,
+])
