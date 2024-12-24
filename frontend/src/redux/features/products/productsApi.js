@@ -6,14 +6,14 @@ export const productsApi = apiSlice.injectEndpoints({
         // Fetch Product Categories
         fetchCategory: builder.query({
             query: () => ({
-                url: `${PRODUCTS_URL}/product_categories/`,
+                url: `${PRODUCTS_URL}/all-prod_categories/`,
             }),
         }),
 
         // Fetch Single Category
         fetchSingleCategory: builder.query({
             query: (id) => ({
-                url: `${PRODUCTS_URL}/single/category/${id}/`,
+                url: `${PRODUCTS_URL}/single-prd_category/${id}/`,
             }),
         }),
 

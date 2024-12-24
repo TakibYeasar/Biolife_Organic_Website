@@ -17,7 +17,9 @@ class GetCategoryView(APIView):
         if category_id:
             try:
                 category = Category.objects.get(id=category_id)
-                products = Product.objects.filter(category=category)
+                products = Product.objects.filter(
+                    categories=category  # Use the correct field to filter
+                )
                 product_count = products.count()
                 serializer = ProductSerializer(products, many=True)
                 response_data = {
@@ -29,12 +31,16 @@ class GetCategoryView(APIView):
             except ObjectDoesNotExist:
                 return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
         else:
-            # Annotate each category with the product count
+            # Annotate each category with the correct product count
             categories = Category.objects.annotate(
-                product_count=Count('product'))
+                # Use the 'products' related_name
+                product_count=Count('products')
+            )
             serialized_categories = CategorySerializer(
-                categories, many=True, context={'request': request}).data
+                categories, many=True, context={'request': request}
+            ).data
             return Response(serialized_categories, status=status.HTTP_200_OK)
+
 
 
 class CreateCategoryView(APIView):

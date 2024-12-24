@@ -1,0 +1,72 @@
+[
+    {
+        "name": "Fruits",
+        "parent": null,
+        "icon": "categories/icons/fruits.png",
+        "image": "categories/images/fruits.jpg",
+        "is_active": true
+    },
+    {
+        "name": "Vegetables",
+        "parent": null,
+        "icon": "categories/icons/vegetables.png",
+        "image": "categories/images/vegetables.jpg",
+        "is_active": true
+    },
+    {
+        "name": "Dairy Products",
+        "parent": null,
+        "icon": "categories/icons/dairy.png",
+        "image": "categories/images/dairy.jpg",
+        "is_active": true
+    },
+    {
+        "name": "Herbs & Spices",
+        "parent": null,
+        "icon": "categories/icons/herbs.png",
+        "image": "categories/images/herbs.jpg",
+        "is_active": true
+    },
+    {
+        "name": "Organic Snacks",
+        "parent": null,
+        "icon": "categories/icons/snacks.png",
+        "image": "categories/images/snacks.jpg",
+        "is_active": true
+    },
+    {
+        "name": "Leafy Greens",
+        "parent": 2,
+        "icon": "categories/icons/leafy_greens.png",
+        "image": "categories/images/leafy_greens.jpg",
+        "is_active": true
+    },
+    {
+        "name": "Root Vegetables",
+        "parent": 2,
+        "icon": "categories/icons/root_vegetables.png",
+        "image": "categories/images/root_vegetables.jpg",
+        "is_active": true
+    },
+    {
+        "name": "Juices",
+        "parent": 1,
+        "icon": "categories/icons/juices.png",
+        "image": "categories/images/juices.jpg",
+        "is_active": true
+    },
+    {
+        "name": "Bakery",
+        "parent": null,
+        "icon": "categories/icons/bakery.png",
+        "image": "categories/images/bakery.jpg",
+        "is_active": true
+    },
+    {
+        "name": "Cereals",
+        "parent": null,
+        "icon": "categories/icons/cereals.png",
+        "image": "categories/images/cereals.jpg",
+        "is_active": true
+    }
+]

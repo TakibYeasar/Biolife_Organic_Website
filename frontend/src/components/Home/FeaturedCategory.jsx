@@ -1,41 +1,27 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-
-// Dummy data for categories
-const categories = [
-  {
-    id: 1,
-    cat_name: 'Fruits',
-    product_count: 120,
-    image: 'https://via.placeholder.com/150?text=Fruits',
-  },
-  {
-    id: 2,
-    cat_name: 'Vegetables',
-    product_count: 95,
-    image: 'https://via.placeholder.com/150?text=Vegetables',
-  },
-  {
-    id: 3,
-    cat_name: 'Dairy',
-    product_count: 80,
-    image: 'https://via.placeholder.com/150?text=Dairy',
-  },
-  {
-    id: 4,
-    cat_name: 'Snacks',
-    product_count: 60,
-    image: 'https://via.placeholder.com/150?text=Snacks',
-  },
-];
+import { useFetchCategoryQuery } from '../../redux/features/products/productsApi';
 
 const FeaturedCategory = () => {
+  const { data: categoriesData, error, isLoading } = useFetchCategoryQuery();
   const [width, setWidth] = useState(0);
   const carousel = useRef();
 
   useEffect(() => {
-    setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
-  }, []);
+    if (carousel.current) {
+      setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
+    }
+  }, [categoriesData]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  const categories = categoriesData || []; // Ensure categories is always an array
 
   return (
     <section className="py-16 bg-gray-50">
@@ -60,13 +46,13 @@ const FeaturedCategory = () => {
                 <a href="#" className="block">
                   <img
                     src={item.image}
-                    alt={item.cat_name}
+                    alt={item.name}
                     className="w-full h-40 object-cover rounded-t-xl"
                   />
                 </a>
                 <div className="p-6 text-center">
                   <a href="#" className="no-underline text-gray-800">
-                    <h4 className="text-xl font-semibold">{item.cat_name}</h4>
+                    <h4 className="text-xl font-semibold">{item.name}</h4>
                     <span className="text-gray-500 text-sm">({item.product_count} items)</span>
                   </a>
                 </div>

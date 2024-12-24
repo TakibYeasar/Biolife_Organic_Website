@@ -46,7 +46,8 @@ function App() {
   };
 
   return (
-      <BrowserRouter>
+    <BrowserRouter>
+      <Routes></Routes>
       {/* Navbar receives user and authentication status */}
       <Navbar user={user} isAuthenticated={isAuthenticated} />
       <Routes>
