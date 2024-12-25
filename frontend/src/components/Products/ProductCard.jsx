@@ -2,24 +2,11 @@ import React from 'react';
 import { FaEye, FaHeart } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
-// Example usage with dummy data
-const dummyProduct = {
-    id: 1,
-    title: "Sample Product",
-    category: "Category Name",
-    price: "19.99",
-    old_price: "29.99",
-    description: "This is a sample product description.",
-    main_image: {
-        image: "https://via.placeholder.com/270"
-    }
-};
-
 const ProductCard = ({ item }) => {
     const navigate = useNavigate();
 
     const proddetails = () => {
-        navigate(`/productview/${item.id}`);
+        navigate(`/product/${item.id}`);
     };
 
     return (

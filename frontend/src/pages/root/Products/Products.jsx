@@ -1,38 +1,23 @@
 import React, { useState } from 'react';
 import { FaAngleRight, FaHeart, FaRandom } from 'react-icons/fa';
 import bg from "/assets/images/home/biolife-banner__style-01.jpg";
-import p11 from "/assets/images/products/p-11.jpg";
 import { Sortproduct, Sidebar, RecentlyViewed, ProductTags } from '../../../components';
+import { useFetchAllProductsQuery } from '../../../redux/features/products/productsApi';
 
 const Products = () => {
-  // Dummy data for products
-  const [allproducts] = useState([
-    {
-      id: 1,
-      title: 'Fresh Apple',
-      main_image: { image: p11 },
-      price: '10.00',
-      old_price: '15.00',
-    },
-    {
-      id: 2,
-      title: 'Organic Banana',
-      main_image: { image: p11 },
-      price: '8.00',
-      old_price: '12.00',
-    },
-    {
-      id: 3,
-      title: 'Fresh Mango',
-      main_image: { image: p11 },
-      price: '12.00',
-      old_price: '18.00',
-    },
-  ]);
+  const { data: allproducts, error, isLoading } = useFetchAllProductsQuery();
 
   const navigate = (id) => {
     console.log(`Navigating to product with id: ${id}`);
   };
+
+  if (isLoading) {
+    return <div className="text-center py-8">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-primary">Error: {error.message}</div>;
+  }
 
   return (
     <div className="bg-white">

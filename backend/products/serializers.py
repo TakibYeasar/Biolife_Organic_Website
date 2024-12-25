@@ -8,6 +8,7 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name', 'slug', 'icon', 'image', 'product_count']
+        read_only_fields = ['user']
         depth = 1
 
     def get_image_url(self, obj):

@@ -22,12 +22,9 @@ import {
   ChangePassword,
   ResetPassword
 } from "./pages";
-import { useDispatch } from 'react-redux';
 import { useCurrentUserQuery } from './redux/features/auth/authApi';
 
 function App() {
-
-  const dispatch = useDispatch();
   const { data: user, isLoading, error } = useCurrentUserQuery();
 
   const isAuthenticated = !!user; // Boolean indicating authentication status

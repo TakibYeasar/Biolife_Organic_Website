@@ -1,116 +1,133 @@
-import React, { useState } from 'react';
-import { FaAngleRight, FaCaretDown, FaCaretUp, FaCartArrowDown, FaHeart, FaPlus, FaShareAlt, FaStar, FaStarHalf } from 'react-icons/fa';
-import { Shippingfaq, ProdReview, Relatedprod } from '../../../../components';
+import React, { useState } from "react";
+import {
+  FaCaretDown,
+  FaCaretUp,
+  FaCartArrowDown,
+  FaHeart,
+  FaPlus,
+} from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import {
+  Shippingfaq,
+  ProdReview,
+  Relatedprod,
+} from "../../../../components";
+import { useFetchSingleProductQuery } from "../../../../redux/features/products/productsApi";
 
-const ProductDetails = () => {
+const ProductDetails = ({ id }) => {
+  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
+  const { data: product, error, isLoading } = useFetchSingleProductQuery({ id });
 
-  const product = {
-    title: "Organic Fruit",
-    description: "This is a high-quality organic fruit.",
-    price: 15.99,
-    old_price: 19.99,
-    color: "Red",
-    size: "Large",
-    main_image: { image: "https://via.placeholder.com/500" },
-    images: [{ image: "https://via.placeholder.com/500" }],
-    rating: 4.5,
-  };
+  const incrementQuantity = () => setQuantity((prevQty) => prevQty + 1);
+  const decrementQuantity = () => setQuantity((prevQty) => (prevQty > 1 ? prevQty - 1 : 1));
+  const navigateToProducts = () => navigate("/products");
 
-  const incrementQuantity = () => {
-    setQuantity((prevQty) => prevQty + 1);
-  };
+  if (isLoading) {
+    return <div className="text-center py-8">Loading...</div>;
+  }
 
-  const decrementQuantity = () => {
-    setQuantity((prevQty) => (prevQty > 1 ? prevQty - 1 : 1));
-  };
+  if (error) {
+    return <div className="text-center py-8 text-primary">Error: {error.message}</div>;
+  }
 
   return (
-    <section className="py-8">
+    <section className="py-8 bg-gray-50 font-cairo text-gray-800">
       <div className="container mx-auto px-4">
         {/* Breadcrumb */}
-        <div className="text-sm breadcrumbs">
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/products">Our Products</a></li>
+        <nav className="text-sm breadcrumbs mb-6 text-gray-500">
+          <ul className="flex space-x-2">
+            <li>
+              <a href="/" className="hover:text-primary">
+                Home
+              </a>
+            </li>
+            <span>/</span>
+            <li>
+              <a onClick={navigateToProducts} className="hover:text-primary cursor-pointer">
+                Our Products
+              </a>
+            </li>
+            <span>/</span>
             <li>{product.title}</li>
           </ul>
-        </div>
+        </nav>
 
         {/* Product Details */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Product Images */}
-          <div className="lg:col-span-1">
-            <img src={product.main_image.image} alt={product.title} className="rounded-lg w-full" />
+          <div className="relative">
+            <img
+              src={product.main_image?.image}
+              alt={product.title}
+              className="rounded-lg w-full bg-white shadow-lg object-cover"
+            />
             <div className="flex space-x-4 mt-4">
-              {product.images.map((item, i) => (
-                <img key={i} src={item.image} alt={`Product Image ${i}`} className="w-1/4 rounded-lg" />
+              {product.images?.map((item, i) => (
+                <img
+                  key={i}
+                  src={item.image}
+                  alt={`Product Image ${i}`}
+                  className="w-16 h-16 rounded-lg border border-gray-200 object-cover"
+                />
               ))}
             </div>
           </div>
 
           {/* Product Info */}
-          <div className="lg:col-span-1">
-            <h2 className="text-3xl font-bold mb-4">{product.title}</h2>
-            <div className="flex items-center mb-4">
-              <div className="flex space-x-1 text-yellow-500">
-                {[...Array(4)].map((_, i) => (
-                  <FaStar key={i} />
-                ))}
-                <FaStarHalf />
-              </div>
-              <span className="ml-2 text-sm text-gray-500">(4.5 Rating)</span>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">{product.title}</h2>
+            <p className="text-gray-600 mb-4">{product.description}</p>
+            <div className="text-xl font-bold text-primary">
+              ${product.price}
+              {product.old_price && (
+                <span className="text-red-500 line-through ml-2">${product.old_price}</span>
+              )}
             </div>
-            <p className="text-gray-700 mb-4">{product.description}</p>
-            <div className="text-lg mb-4">
-              <span className="font-bold text-2xl text-green-600">${product.price}</span>
-              <span className="ml-2 line-through text-red-500">${product.old_price}</span>
-            </div>
-            <p className="text-sm text-gray-500">Color: {product.color}</p>
-            <p className="text-sm text-gray-500">Size: {product.size}</p>
+            {product.color && <p className="mt-2 text-sm text-gray-600">Color: {product.color}</p>}
+            {product.size && <p className="mt-1 text-sm text-gray-600">Size: {product.size}</p>}
           </div>
 
           {/* Actions */}
-          <div className="lg:col-span-1">
-            <div className="bg-gray-100 p-6 rounded-lg">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-lg">Quantity:</span>
-                <div className="flex items-center space-x-2">
-                  <button className="btn btn-circle" onClick={decrementQuantity}>
-                    <FaCaretDown />
-                  </button>
-                  <span>{quantity}</span>
-                  <button className="btn btn-circle" onClick={incrementQuantity}>
-                    <FaCaretUp />
-                  </button>
-                </div>
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-lg">Quantity:</span>
+              <div className="flex items-center space-x-2">
+                <button
+                  className="p-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                  onClick={decrementQuantity}
+                >
+                  <FaCaretDown />
+                </button>
+                <span className="text-lg">{quantity}</span>
+                <button
+                  className="p-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                  onClick={incrementQuantity}
+                >
+                  <FaCaretUp />
+                </button>
               </div>
-              <button className="btn btn-primary w-full mb-4">Add to Cart <FaCartArrowDown className="ml-2" /></button>
-              <div className="flex justify-between">
-                <button className="btn btn-outline">Wishlist <FaHeart className="ml-2" /></button>
-                <button className="btn btn-outline">Compare <FaPlus className="ml-2" /></button>
-              </div>
+            </div>
+            <button className="w-full py-2 bg-primary text-white rounded hover:bg-primary-dark mb-4">
+              Add to Cart <FaCartArrowDown className="ml-2 inline" />
+            </button>
+            <div className="flex justify-between">
+              <button className="px-4 py-2 bg-secondary text-white rounded hover:bg-secondary-dark">
+                Wishlist <FaHeart className="ml-2 inline" />
+              </button>
+              <button className="px-4 py-2 bg-secondary text-white rounded hover:bg-secondary-dark">
+                Compare <FaPlus className="ml-2 inline" />
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Product Tabs */}
-        <div className="mt-8">
-          <div className="tabs">
-            <a className="tab tab-bordered tab-active">Description</a>
-            <a className="tab tab-bordered">Additional Information</a>
-            <a className="tab tab-bordered">Shipping & Delivery</a>
-            <a className="tab tab-bordered">Customer Reviews</a>
-          </div>
-          <div className="mt-4">
-            <p className="text-gray-700">{product.description}</p>
-          </div>
+        {/* Additional Sections */}
+        <div className="mt-12">
+          <Shippingfaq />
+          <ProdReview />
+          <Relatedprod />
         </div>
-
-        {/* Shipping FAQ and Customer Review */}
-        <Shippingfaq />
-        <ProdReview />
-        <Relatedprod />
       </div>
     </section>
   );

@@ -5,70 +5,95 @@ import ManageProducts from './components/ManageProducts';
 import ManagePromotions from './components/ManagePromotions';
 import SalesAnalytics from './components/SalesAnalytics';
 
+
 const AdminDashboard = () => {
-  const [activeComponent, setActiveComponent] = useState('Dashboard');
+  const [activeSection, setActiveSection] = useState('users');
 
-  const components = [
-    'Dashboard',
-    'Manage Users',
-    'Product Listings',
-    'Order Fulfillment',
-    'Sales Analytics',
-    'Promotions & Discounts',
-  ];
-
-  // Sidebar component
-  const Sidebar = () => (
-    <div className="h-full w-64 bg-base-200 p-4">
-      <ul className="menu bg-base-100 p-4 rounded-box">
-        {components.map((component, index) => (
-          <li key={index} className={`cursor-pointer ${activeComponent === component ? 'bg-primary text-white' : ''}`}>
-            <a onClick={() => setActiveComponent(component)}>{component}</a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-
-  // Content component
-  const Content = () => {
-    switch (activeComponent) {
-      case 'Dashboard':
-        return <DashboardContent />;
-      case 'Manage Users':
-        return <ManageUsers />;
-      case 'Product Listings':
-        return <ManageProducts />;
-      case 'Order Fulfillment':
-        return <OrderFulfillment />;
-      case 'Sales Analytics':
-        return <SalesAnalytics />;
-      case 'Promotions & Discounts':
-        return <ManagePromotions />;
-      default:
-        return <DashboardContent />;
-    }
+  const handleSectionChange = (section) => {
+    setActiveSection(section);
   };
 
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <Sidebar />
+    <div className="flex mt-32">
+      <div className="w-1/4 bg-gray-800 text-white min-h-screen p-5">
+        <h2 className="text-2xl font-bold mb-5">Admin Dashboard</h2>
+        <ul className="space-y-4">
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'users' ? 'bg-gray-600' : ''}`}
+              onClick={() => handleSectionChange('users')}
+            >
+              Manage Users
+            </button>
+          </li>
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'products' ? 'bg-gray-600' : ''}`}
+              onClick={() => handleSectionChange('products')}
+            >
+              Manage Products
+            </button>
+          </li>
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'orders' ? 'bg-gray-600' : ''}`}
+              onClick={() => handleSectionChange('orders')}
+            >
+              Manage Orders
+            </button>
+          </li>
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'promotions' ? 'bg-gray-600' : ''}`}
+              onClick={() => handleSectionChange('promotions')}
+            >
+              Manage Promotions
+            </button>
+          </li>
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'analytics' ? 'bg-gray-600' : ''}`}
+              onClick={() => handleSectionChange('analytics')}
+            >
+              Sales & Analytics
+            </button>
+          </li>
+        </ul>
+      </div>
 
-      {/* Main content area */}
-      <div className="flex-1 p-6 bg-base-100">
-        <Content />
+      <div className="w-3/4 p-5 bg-gray-100 min-h-screen">
+        {activeSection === 'users' && (
+          <div>
+            <ManageUsers />
+          </div>
+        )}
+
+        {activeSection === 'products' && (
+          <div>
+            <ManageProducts />
+          </div>
+        )}
+
+        {activeSection === 'orders' && (
+          <div>
+            <OrderFulfillment />
+          </div>
+        )}
+
+        {activeSection === 'promotions' && (
+          <div>
+            <ManagePromotions />
+          </div>
+        )}
+
+        {activeSection === 'analytics' && (
+          <div>
+            <SalesAnalytics />
+          </div>
+        )}
       </div>
     </div>
   );
 };
-
-// Example content components for each section (You can replace these with actual content)
-const DashboardContent = () => (
-  <div>
-    <h2 className="text-2xl font-semibold">Admin Dashboard</h2>
-    <p>Overview of the admin dashboard</p>
-  </div>
-);
 
 export default AdminDashboard;

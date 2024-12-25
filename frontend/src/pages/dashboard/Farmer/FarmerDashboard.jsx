@@ -8,61 +8,118 @@ import PromotionsDiscounts from './components/PromotionsDiscounts';
 import SalesReports from './components/SalesReports';
 
 const FarmerDashboard = () => {
-  const [activeComponent, setActiveComponent] = useState('Product Listings');
+  const [activeSection, setActiveSection] = useState('inquiries');
 
-  const components = [
-    'Product Listings',
-    'Inventory Management',
-    'Sales Reports',
-    'Customer Inquiries',
-    'Orders',
-    'Promotions & Discounts',
-    'Payout Settings',
-  ];
-
-  // Sidebar component
-  const Sidebar = () => (
-    <div className="h-full w-64 bg-base-200 p-4">
-      <ul className="menu bg-base-100 p-4 rounded-box">
-        {components.map((component, index) => (
-          <li key={index} className={`cursor-pointer ${activeComponent === component ? 'bg-primary text-white' : ''}`}>
-            <a onClick={() => setActiveComponent(component)}>{component}</a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-
-  // Content component
-  const Content = () => {
-    switch (activeComponent) {
-      case 'Product Listings':
-        return <ProductListings />;
-      case 'Inventory Management':
-        return <InventoryManagement />;
-      case 'Sales Reports':
-        return <SalesReports />;
-      case 'Customer Inquiries':
-        return <CustomerInquiries />;
-      case 'Orders':
-        return <Orders />;
-      case 'Promotions & Discounts':
-        return <PromotionsDiscounts />;
-      case 'Payout Settings':
-        return <PayoutSettings />;
-      default:
-        return <ProductListings />;
-    }
+  const handleSectionChange = (section) => {
+    setActiveSection(section);
   };
 
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <Sidebar />
+    <div className="flex mt-32">
+      <div className="w-1/4 bg-gray-800 text-white min-h-screen p-5">
+        <h2 className="text-2xl font-bold mb-5">Admin Dashboard</h2>
+        <ul className="space-y-4">
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'inquiries' ? 'bg-gray-600' : ''}`}
+              onClick={() => handleSectionChange('inquiries')}
+            >
+              Customer Inquiries
+            </button>
+          </li>
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'inventory' ? 'bg-gray-600' : ''}`}
+              onClick={() => handleSectionChange('inventory')}
+            >
+              Inventory Management
+            </button>
+          </li>
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'orders' ? 'bg-gray-600' : ''}`}
+              onClick={() => handleSectionChange('orders')}
+            >
+              Orders
+            </button>
+          </li>
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'products' ? 'bg-gray-600' : ''}`}
+              onClick={() => handleSectionChange('products')}
+            >
+              Product Listings
+            </button>
+          </li>
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'payouts' ? 'bg-gray-600' : ''}`}
+              onClick={() => handleSectionChange('payouts')}
+            >
+              Payout Settings
+            </button>
+          </li>
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'promotions' ? 'bg-gray-600' : ''}`}
+              onClick={() => handleSectionChange('promotions')}
+            >
+              Promotions & Discounts
+            </button>
+          </li>
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'analytics' ? 'bg-gray-600' : ''}`}
+              onClick={() => handleSectionChange('analytics')}
+            >
+              Sales Reports
+            </button>
+          </li>
+        </ul>
+      </div>
 
-      {/* Main content area */}
-      <div className="flex-1 p-6 bg-base-100">
-        <Content />
+      <div className="w-3/4 p-5 bg-gray-100 min-h-screen">
+        {activeSection === 'inquiries' && (
+          <div>
+            <CustomerInquiries />
+          </div>
+        )}
+
+        {activeSection === 'inventory' && (
+          <div>
+            <InventoryManagement />
+          </div>
+        )}
+
+        {activeSection === 'orders' && (
+          <div>
+            <Orders />
+          </div>
+        )}
+
+        {activeSection === 'products' && (
+          <div>
+            <ProductListings />
+          </div>
+        )}
+
+        {activeSection === 'payouts' && (
+          <div>
+            <PayoutSettings />
+          </div>
+        )}
+
+        {activeSection === 'promotions' && (
+          <div>
+            <PromotionsDiscounts />
+          </div>
+        )}
+
+        {activeSection === 'analytics' && (
+          <div>
+            <SalesReports />
+          </div>
+        )}
       </div>
     </div>
   );
