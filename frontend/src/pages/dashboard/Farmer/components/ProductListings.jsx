@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
 const ProductListings = () => {
     const [products, setProducts] = useState([]);
@@ -9,10 +10,13 @@ const ProductListings = () => {
         image: '',
     });
 
+    const [showAddProduct, setShowAddProduct] = useState(false);
+
     const handleAddProduct = (e) => {
         e.preventDefault();
         setProducts([...products, { ...newProduct, id: Date.now() }]);
         setNewProduct({ name: '', description: '', price: '', image: '' });
+        setShowAddProduct(false);
     };
 
     const handleDeleteProduct = (id) => {
@@ -21,49 +25,70 @@ const ProductListings = () => {
     };
 
     return (
-        <div className="p-6 bg-base-100 min-h-screen">
+        <div className="p-6 bg-white shadow rounded-lg">
             <h1 className="text-2xl font-semibold mb-6">Product Listings</h1>
 
-            {/* Add New Product Form */}
-            <form onSubmit={handleAddProduct} className="mb-6">
-                <h2 className="text-xl mb-4">Add New Product</h2>
-                <div className="grid grid-cols-1 gap-4 mb-4">
-                    <input
-                        type="text"
-                        className="input input-bordered w-full"
-                        placeholder="Product Name"
-                        value={newProduct.name}
-                        onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                        required
-                    />
-                    <textarea
-                        className="textarea textarea-bordered w-full"
-                        placeholder="Product Description"
-                        value={newProduct.description}
-                        onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
-                        required
-                    />
-                    <input
-                        type="number"
-                        className="input input-bordered w-full"
-                        placeholder="Price"
-                        value={newProduct.price}
-                        onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-                        required
-                    />
-                    <input
-                        type="text"
-                        className="input input-bordered w-full"
-                        placeholder="Image URL"
-                        value={newProduct.image}
-                        onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
-                        required
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary">
-                    Add Product
+            {/* Add New Product Button */}
+            <div className="flex justify-between items-center mb-6">
+                <button
+                    className="bg-green-500 text-white px-4 py-2 rounded"
+                    onClick={() => setShowAddProduct(true)}
+                >
+                    + Add New Product
                 </button>
-            </form>
+            </div>
+
+            {/* Add New Product Form */}
+            {showAddProduct && (
+                <form onSubmit={handleAddProduct} className="mb-6">
+                    <h2 className="text-xl mb-4">Add New Product</h2>
+                    <div className="grid grid-cols-1 gap-4 mb-4">
+                        <input
+                            type="text"
+                            className="input input-bordered w-full"
+                            placeholder="Product Name"
+                            value={newProduct.name}
+                            onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                            required
+                        />
+                        <textarea
+                            className="textarea textarea-bordered w-full"
+                            placeholder="Product Description"
+                            value={newProduct.description}
+                            onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                            required
+                        />
+                        <input
+                            type="number"
+                            className="input input-bordered w-full"
+                            placeholder="Price"
+                            value={newProduct.price}
+                            onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                            required
+                        />
+                        <input
+                            type="text"
+                            className="input input-bordered w-full"
+                            placeholder="Image URL"
+                            value={newProduct.image}
+                            onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
+                            required
+                        />
+                    </div>
+                    <div className="flex gap-4">
+                        <button type="submit" className="btn btn-primary">
+                            Add Product
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={() => setShowAddProduct(false)}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            )}
 
             {/* Product List Table */}
             <h2 className="text-xl mb-4">Current Product Listings</h2>
@@ -85,15 +110,21 @@ const ProductListings = () => {
                                 <td>{product.description}</td>
                                 <td>${product.price}</td>
                                 <td>
-                                    <img src={product.image} alt={product.name} className="w-16 h-16 object-cover" />
+                                    <img
+                                        src={product.image}
+                                        alt={product.name}
+                                        className="w-16 h-16 object-cover"
+                                    />
                                 </td>
                                 <td>
-                                    <button className="btn btn-secondary mr-2">Edit</button>
+                                    <button className="bg-blue-500 text-white px-3 py-1 rounded mr-2">
+                                        <FaEdit /> Edit
+                                    </button>
                                     <button
-                                        className="btn btn-error"
+                                        className="bg-red-500 text-white px-3 py-1 rounded"
                                         onClick={() => handleDeleteProduct(product.id)}
                                     >
-                                        Delete
+                                        <FaTrash /> Delete
                                     </button>
                                 </td>
                             </tr>

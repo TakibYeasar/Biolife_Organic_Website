@@ -6,7 +6,7 @@ import {
   FaHeart,
   FaPlus,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Shippingfaq,
   ProdReview,
@@ -14,10 +14,11 @@ import {
 } from "../../../../components";
 import { useFetchSingleProductQuery } from "../../../../redux/features/products/productsApi";
 
-const ProductDetails = ({ id }) => {
+const ProductDetails = () => {
+  const { id } = useParams(); // Get the product ID from the URL
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
-  const { data: product, error, isLoading } = useFetchSingleProductQuery({ id });
+  const { data: product, error, isLoading } = useFetchSingleProductQuery(id);
 
   const incrementQuantity = () => setQuantity((prevQty) => prevQty + 1);
   const decrementQuantity = () => setQuantity((prevQty) => (prevQty > 1 ? prevQty - 1 : 1));

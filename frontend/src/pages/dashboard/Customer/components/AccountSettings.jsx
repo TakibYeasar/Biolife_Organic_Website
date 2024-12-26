@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaCheck, FaTimes, FaSave } from 'react-icons/fa';
 
 const AccountSettings = () => {
     const [name, setName] = useState('John Doe');
@@ -11,14 +12,14 @@ const AccountSettings = () => {
 
     const handleUpdateInfo = (e) => {
         e.preventDefault();
-        // Logic to update user information would go here
+        // Logic to update user information
         setSuccessMessage('Account information updated successfully!');
         setTimeout(() => setSuccessMessage(''), 3000);
     };
 
     const handleChangePassword = (e) => {
         e.preventDefault();
-        // Logic to change password would go here
+        // Logic to change password
         if (newPassword === confirmPassword) {
             setSuccessMessage('Password changed successfully!');
             setNewPassword('');
@@ -31,9 +32,10 @@ const AccountSettings = () => {
     };
 
     return (
-        <div className="p-6 bg-base-100 min-h-screen">
+        <div className="p-6 bg-white shadow rounded">
             <h1 className="text-2xl font-semibold mb-6">Account Settings</h1>
 
+            {/* Success Message */}
             {successMessage && (
                 <div className="mb-4 p-2 bg-green-100 text-green-800 rounded">
                     {successMessage}
@@ -41,76 +43,82 @@ const AccountSettings = () => {
             )}
 
             {/* Personal Information Section */}
-            <form onSubmit={handleUpdateInfo} className="mb-6">
-                <h2 className="text-xl mb-4">Personal Information</h2>
-                <div className="grid grid-cols-1 gap-4 mb-4">
-                    <input
-                        type="text"
-                        className="input input-bordered w-full"
-                        placeholder="Name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="email"
-                        className="input input-bordered w-full"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="tel"
-                        className="input input-bordered w-full"
-                        placeholder="Phone Number"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary">
-                    Update Information
-                </button>
-            </form>
+            <div className="mb-6">
+                <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
+                <form onSubmit={handleUpdateInfo} className="space-y-4">
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <input
+                            type="text"
+                            className="input input-bordered w-full sm:w-1/3"
+                            placeholder="Name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="email"
+                            className="input input-bordered w-full sm:w-1/3"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="tel"
+                            className="input input-bordered w-full sm:w-1/3"
+                            placeholder="Phone Number"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="btn btn-primary flex items-center space-x-2">
+                        <FaSave />
+                        <span>Update Information</span>
+                    </button>
+                </form>
+            </div>
 
             {/* Change Password Section */}
-            <form onSubmit={handleChangePassword} className="mb-6">
-                <h2 className="text-xl mb-4">Change Password</h2>
-                <div className="grid grid-cols-1 gap-4 mb-4">
-                    <input
-                        type="password"
-                        className="input input-bordered w-full"
-                        placeholder="New Password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="password"
-                        className="input input-bordered w-full"
-                        placeholder="Confirm New Password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary">
-                    Change Password
-                </button>
-            </form>
+            <div className="mb-6">
+                <h2 className="text-xl font-semibold mb-4">Change Password</h2>
+                <form onSubmit={handleChangePassword} className="space-y-4">
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <input
+                            type="password"
+                            className="input input-bordered w-full sm:w-1/2"
+                            placeholder="New Password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="password"
+                            className="input input-bordered w-full sm:w-1/2"
+                            placeholder="Confirm New Password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="btn btn-primary flex items-center space-x-2">
+                        <FaSave />
+                        <span>Change Password</span>
+                    </button>
+                </form>
+            </div>
 
             {/* Notification Preferences Section */}
-            <div>
-                <h2 className="text-xl mb-4">Notification Preferences</h2>
-                <label className="flex items-center">
+            <div className="mb-6">
+                <h2 className="text-xl font-semibold mb-4">Notification Preferences</h2>
+                <label className="flex items-center space-x-3">
                     <input
                         type="checkbox"
                         className="toggle toggle-primary"
                         checked={notifications}
                         onChange={() => setNotifications(!notifications)}
                     />
-                    <span className="ml-2">Receive Notifications</span>
+                    <span>Receive Notifications</span>
                 </label>
             </div>
         </div>

@@ -1,84 +1,81 @@
 import React, { useState } from "react";
 import { FaEdit, FaTrash, FaCheck, FaTimes, FaSearch } from "react-icons/fa";
-import { CreateProdCategory, CreateProduct } from "../../../../components";
 
-const ManageProducts = () => {
+const ManageArticles = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("");
-    const [activeTab, setActiveTab] = useState("products"); // 'products' or 'categories'
-    const [showCreateProduct, setShowCreateProduct] = useState(false);
+    const [activeTab, setActiveTab] = useState("articles"); // 'articles' or 'categories'
+    const [showCreateArticle, setShowCreateArticle] = useState(false);
     const [showCreateCategory, setShowCreateCategory] = useState(false);
 
-    const [products, setProducts] = useState([
+    const [articles, setArticles] = useState([
         {
             id: 1,
-            name: "Organic Honey",
-            category: "Honey",
-            price: 15.99,
-            stock: 30,
+            title: "Benefits of Organic Farming",
+            category: "Agriculture",
+            author: "John Doe",
             status: "Pending",
         },
         {
             id: 2,
-            name: "Organic Apples",
-            category: "Fruits",
-            price: 5.49,
-            stock: 100,
-            status: "Approved",
+            title: "Advancements in Renewable Energy",
+            category: "Environment",
+            author: "Jane Smith",
+            status: "Published",
         },
     ]);
 
     const [categories, setCategories] = useState([
-        { id: 1, name: "Honey" },
-        { id: 2, name: "Fruits" },
-        { id: 3, name: "Vegetables" },
+        { id: 1, name: "Agriculture" },
+        { id: 2, name: "Environment" },
+        { id: 3, name: "Technology" },
     ]);
 
     const handleSearch = (e) => setSearchQuery(e.target.value);
 
-    const filteredProducts = products.filter(
-        (product) =>
-            (product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                product.category.toLowerCase().includes(searchQuery.toLowerCase())) &&
-            (selectedCategory === "" || product.category === selectedCategory) &&
-            (selectedStatus === "" || product.status === selectedStatus)
+    const filteredArticles = articles.filter(
+        (article) =>
+            (article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                article.category.toLowerCase().includes(searchQuery.toLowerCase())) &&
+            (selectedCategory === "" || article.category === selectedCategory) &&
+            (selectedStatus === "" || article.status === selectedStatus)
     );
 
-    const handleApproveProduct = (productId) => {
-        setProducts(
-            products.map((product) =>
-                product.id === productId ? { ...product, status: "Approved" } : product
+    const handlePublishArticle = (articleId) => {
+        setArticles(
+            articles.map((article) =>
+                article.id === articleId ? { ...article, status: "Published" } : article
             )
         );
     };
 
-    const handleDisapproveProduct = (productId) => {
-        setProducts(
-            products.map((product) =>
-                product.id === productId ? { ...product, status: "Pending" } : product
+    const handleUnpublishArticle = (articleId) => {
+        setArticles(
+            articles.map((article) =>
+                article.id === articleId ? { ...article, status: "Pending" } : article
             )
         );
     };
 
-    const handleDeleteProduct = (productId) =>
-        setProducts(products.filter((product) => product.id !== productId));
+    const handleDeleteArticle = (articleId) =>
+        setArticles(articles.filter((article) => article.id !== articleId));
 
     const handleDeleteCategory = (categoryId) =>
         setCategories(categories.filter((category) => category.id !== categoryId));
 
     return (
         <div className="p-5 bg-white shadow rounded">
-            <h1 className="text-2xl font-bold mb-5">Manage Products & Categories</h1>
+            <h1 className="text-2xl font-bold mb-5">Manage Articles & Categories</h1>
 
             <div className="flex justify-between items-center mb-6">
                 <div className="space-x-4">
                     <button
-                        className={`px-4 py-2 ${activeTab === "products" ? "bg-blue-500 text-white" : "bg-gray-200"
+                        className={`px-4 py-2 ${activeTab === "articles" ? "bg-blue-500 text-white" : "bg-gray-200"
                             } rounded`}
-                        onClick={() => setActiveTab("products")}
+                        onClick={() => setActiveTab("articles")}
                     >
-                        Product Listings
+                        Article Listings
                     </button>
                     <button
                         className={`px-4 py-2 ${activeTab === "categories" ? "bg-blue-500 text-white" : "bg-gray-200"
@@ -89,12 +86,12 @@ const ManageProducts = () => {
                     </button>
                 </div>
 
-                {activeTab === "products" && (
+                {activeTab === "articles" && (
                     <button
                         className="bg-green-500 text-white px-4 py-2 rounded"
-                        onClick={() => setShowCreateProduct(true)}
+                        onClick={() => setShowCreateArticle(true)}
                     >
-                        + Create Product
+                        + Create Article
                     </button>
                 )}
                 {activeTab === "categories" && (
@@ -107,20 +104,20 @@ const ManageProducts = () => {
                 )}
             </div>
 
-            {showCreateProduct && (
-                <CreateProduct onClose={() => setShowCreateProduct(false)} />
+            {showCreateArticle && (
+                <div className="p-4 bg-gray-100 rounded">Create Article Form Here</div>
             )}
             {showCreateCategory && (
-                <CreateProdCategory onClose={() => setShowCreateCategory(false)} />
+                <div className="p-4 bg-gray-100 rounded">Create Category Form Here</div>
             )}
 
-            {activeTab === "products" && (
+            {activeTab === "articles" && (
                 <>
                     <div className="flex flex-wrap items-center gap-4 mb-4">
                         <div className="flex items-center border rounded overflow-hidden">
                             <input
                                 type="text"
-                                placeholder="Search by name or category"
+                                placeholder="Search by title or category"
                                 className="px-4 py-2 w-64 focus:outline-none"
                                 value={searchQuery}
                                 onChange={handleSearch}
@@ -149,7 +146,7 @@ const ManageProducts = () => {
                             onChange={(e) => setSelectedStatus(e.target.value)}
                         >
                             <option value="">Filter by Status</option>
-                            <option value="Approved">Approved</option>
+                            <option value="Published">Published</option>
                             <option value="Pending">Pending</option>
                         </select>
                     </div>
@@ -157,50 +154,48 @@ const ManageProducts = () => {
                     <table className="w-full table-auto border-collapse">
                         <thead>
                             <tr>
-                                <th className="border px-4 py-2">Product Name</th>
+                                <th className="border px-4 py-2">Title</th>
                                 <th className="border px-4 py-2">Category</th>
-                                <th className="border px-4 py-2">Price</th>
-                                <th className="border px-4 py-2">Stock</th>
+                                <th className="border px-4 py-2">Author</th>
                                 <th className="border px-4 py-2">Status</th>
                                 <th className="border px-4 py-2">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredProducts.map((product) => (
-                                <tr key={product.id}>
-                                    <td className="border px-4 py-2">{product.name}</td>
-                                    <td className="border px-4 py-2">{product.category}</td>
-                                    <td className="border px-4 py-2">${product.price}</td>
-                                    <td className="border px-4 py-2">{product.stock}</td>
+                            {filteredArticles.map((article) => (
+                                <tr key={article.id}>
+                                    <td className="border px-4 py-2">{article.title}</td>
+                                    <td className="border px-4 py-2">{article.category}</td>
+                                    <td className="border px-4 py-2">{article.author}</td>
                                     <td className="border px-4 py-2">
                                         <span
-                                            className={`px-2 py-1 text-sm rounded ${product.status === "Approved"
-                                                    ? "bg-green-200 text-green-700"
-                                                    : "bg-yellow-200 text-yellow-700"
+                                            className={`px-2 py-1 text-sm rounded ${article.status === "Published"
+                                                ? "bg-green-200 text-green-700"
+                                                : "bg-yellow-200 text-yellow-700"
                                                 }`}
                                         >
-                                            {product.status}
+                                            {article.status}
                                         </span>
                                     </td>
                                     <td className="border px-4 py-2 space-x-2">
-                                        {product.status === "Pending" ? (
+                                        {article.status === "Pending" ? (
                                             <button
                                                 className="bg-green-500 text-white px-3 py-1 rounded"
-                                                onClick={() => handleApproveProduct(product.id)}
+                                                onClick={() => handlePublishArticle(article.id)}
                                             >
-                                                <FaCheck /> Approve
+                                                <FaCheck /> Publish
                                             </button>
                                         ) : (
                                             <button
                                                 className="bg-yellow-500 text-white px-3 py-1 rounded"
-                                                onClick={() => handleDisapproveProduct(product.id)}
+                                                onClick={() => handleUnpublishArticle(article.id)}
                                             >
-                                                <FaTimes /> Disapprove
+                                                <FaTimes /> Unpublish
                                             </button>
                                         )}
                                         <button
                                             className="bg-red-500 text-white px-3 py-1 rounded"
-                                            onClick={() => handleDeleteProduct(product.id)}
+                                            onClick={() => handleDeleteArticle(article.id)}
                                         >
                                             <FaTrash /> Delete
                                         </button>
@@ -236,4 +231,4 @@ const ManageProducts = () => {
     );
 };
 
-export default ManageProducts;
+export default ManageArticles;

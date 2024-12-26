@@ -33,37 +33,48 @@ const OrderHistory = () => {
     };
 
     return (
-        <div className="p-6 bg-base-100 min-h-screen">
+        <div className="p-6 bg-white shadow rounded-md">
             <h1 className="text-2xl font-semibold mb-6">Order History</h1>
 
             {orders.length === 0 ? (
                 <p className="text-gray-500">You have no order history.</p>
             ) : (
                 <div className="overflow-x-auto">
-                    <table className="table w-full">
+                    <table className="w-full table-auto border-collapse">
                         <thead>
                             <tr>
-                                <th>Order ID</th>
-                                <th>Date</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th>Details</th>
+                                <th className="border px-4 py-2">Order ID</th>
+                                <th className="border px-4 py-2">Date</th>
+                                <th className="border px-4 py-2">Total</th>
+                                <th className="border px-4 py-2">Status</th>
+                                <th className="border px-4 py-2">Details</th>
                             </tr>
                         </thead>
                         <tbody>
                             {orders.map((order) => (
                                 <React.Fragment key={order.orderId}>
                                     <tr>
-                                        <td>{order.orderId}</td>
-                                        <td>{order.date}</td>
-                                        <td>${order.total.toFixed(2)}</td>
-                                        <td>{order.status}</td>
-                                        <td>
+                                        <td className="border px-4 py-2">{order.orderId}</td>
+                                        <td className="border px-4 py-2">{order.date}</td>
+                                        <td className="border px-4 py-2">${order.total.toFixed(2)}</td>
+                                        <td className="border px-4 py-2">
+                                            <span
+                                                className={`px-2 py-1 text-sm rounded ${order.status === 'Delivered'
+                                                        ? 'bg-green-200 text-green-700'
+                                                        : 'bg-yellow-200 text-yellow-700'
+                                                    }`}
+                                            >
+                                                {order.status}
+                                            </span>
+                                        </td>
+                                        <td className="border px-4 py-2">
                                             <button
-                                                className="btn btn-info"
+                                                className="bg-blue-500 text-white px-4 py-2 rounded"
                                                 onClick={() => toggleOrderDetails(order.orderId)}
                                             >
-                                                {openOrderId === order.orderId ? 'Hide Details' : 'View Details'}
+                                                {openOrderId === order.orderId
+                                                    ? 'Hide Details'
+                                                    : 'View Details'}
                                             </button>
                                         </td>
                                     </tr>
@@ -71,10 +82,10 @@ const OrderHistory = () => {
                                         <tr>
                                             <td colSpan={5} className="bg-gray-100">
                                                 <div className="p-4">
-                                                    <h3 className="font-bold">Items:</h3>
+                                                    <h3 className="font-bold mb-2">Items:</h3>
                                                     <ul className="list-disc pl-5">
                                                         {order.items.map((item) => (
-                                                            <li key={item.id}>
+                                                            <li key={item.id} className="mb-1">
                                                                 {item.quantity} x {item.name} - ${item.price.toFixed(2)}
                                                             </li>
                                                         ))}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaAngleRight, FaHeart, FaRandom } from 'react-icons/fa';
 import bg from "/assets/images/home/biolife-banner__style-01.jpg";
-import { Sortproduct, Sidebar, RecentlyViewed, ProductTags } from '../../../components';
+import { Sortproduct, Sidebar, RecentlyViewed, ProductTags, ProductCard } from '../../../components';
 import { useFetchAllProductsQuery } from '../../../redux/features/products/productsApi';
 
 const Products = () => {
@@ -46,35 +46,8 @@ const Products = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
             {allproducts.map((item, i) => (
-              <div key={i} className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between">
-                <div className="flex-shrink-0">
-                  <a href="#" onClick={() => navigate(item.id)}>
-                    <img src={item.main_image.image} alt={item.title} className="w-full h-64 object-cover rounded-lg" />
-                  </a>
-                </div>
-                <div className="mt-4">
-                  <p className="text-sm text-gray-500">Fresh Fruit</p>
-                  <h4 className="text-xl font-semibold mt-2">
-                    <a href="#" onClick={() => navigate(item.id)} className="hover:text-gray-700">
-                      {item.title}
-                    </a>
-                  </h4>
-                  <div className="flex items-center space-x-2 mt-2">
-                    <span className="text-lg font-bold text-green-500">£{item.price}</span>
-                    <span className="line-through text-red-500">£{item.old_price}</span>
-                  </div>
-                  <div className="mt-4 space-x-2">
-                    <button className="btn btn-outline btn-accent text-gray-500 hover:text-gray-700">
-                      <FaHeart />
-                    </button>
-                    <button className="btn btn-primary bg-green-500 hover:bg-green-600 text-white">
-                      Add to Cart
-                    </button>
-                    <button className="btn btn-outline btn-secondary text-gray-500 hover:text-gray-700">
-                      <FaRandom />
-                    </button>
-                  </div>
-                </div>
+              <div key={item.i} className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between">
+                <ProductCard item={item} />
               </div>
             ))}
           </div>

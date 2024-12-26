@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaStar, FaTrash } from 'react-icons/fa';
 
 // Sample product data
 const sampleProduct = {
@@ -53,8 +54,12 @@ const RateAndReview = () => {
         }
     };
 
+    const handleDeleteReview = (reviewId) => {
+        setReviews(reviews.filter((review) => review.id !== reviewId));
+    };
+
     return (
-        <div className="p-6 bg-base-100 min-h-screen">
+        <div className="p-6 bg-white shadow-md rounded-lg">
             <h1 className="text-2xl font-semibold mb-6">Rate & Review</h1>
             <h2 className="text-xl mb-4">{sampleProduct.name}</h2>
 
@@ -67,16 +72,11 @@ const RateAndReview = () => {
             <form onSubmit={handleSubmitReview} className="mb-6">
                 <div className="flex items-center mb-4">
                     {[...Array(5)].map((_, index) => (
-                        <svg
+                        <FaStar
                             key={index}
                             onClick={() => handleRatingChange(index + 1)}
-                            className={`w-8 h-8 cursor-pointer ${index < rating ? 'text-yellow-400' : 'text-gray-400'
-                                }`}
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                        >
-                            <path d="M10 15l-6.16 3.24 1.18-6.86L0 6.24l6.91-1L10 0l2.09 5.24L20 6.24l-4.82 4.14 1.18 6.86z" />
-                        </svg>
+                            className={`w-8 h-8 cursor-pointer ${index < rating ? 'text-yellow-400' : 'text-gray-400'}`}
+                        />
                     ))}
                 </div>
                 <textarea
@@ -86,7 +86,7 @@ const RateAndReview = () => {
                     onChange={handleCommentChange}
                     rows="4"
                 ></textarea>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
                     Submit Review
                 </button>
             </form>
@@ -98,22 +98,22 @@ const RateAndReview = () => {
                 <ul className="space-y-4">
                     {reviews.map((review) => (
                         <li key={review.id} className="border border-gray-300 p-4 rounded">
-                            <div className="flex items-center">
+                            <div className="flex items-center justify-between mb-2">
                                 <div className="flex">
                                     {[...Array(review.rating)].map((_, index) => (
-                                        <svg
-                                            key={index}
-                                            className="w-5 h-5 text-yellow-400"
-                                            fill="currentColor"
-                                            viewBox="0 0 20 20"
-                                        >
-                                            <path d="M10 15l-6.16 3.24 1.18-6.86L0 6.24l6.91-1L10 0l2.09 5.24L20 6.24l-4.82 4.14 1.18 6.86z" />
-                                        </svg>
+                                        <FaStar key={index} className="w-5 h-5 text-yellow-400" />
                                     ))}
                                 </div>
-                                <span className="ml-2 text-gray-600 text-sm">{review.date}</span>
+                                <span className="text-sm text-gray-500">{review.date}</span>
                             </div>
                             <p className="mt-2">{review.comment}</p>
+                            <button
+                                onClick={() => handleDeleteReview(review.id)}
+                                className="mt-2 text-red-500 hover:text-red-700 text-sm"
+                            >
+                                <FaTrash className="inline-block mr-1" />
+                                Delete Review
+                            </button>
                         </li>
                     ))}
                 </ul>

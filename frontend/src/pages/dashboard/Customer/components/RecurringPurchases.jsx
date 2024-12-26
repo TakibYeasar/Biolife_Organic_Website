@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { FaEdit, FaTrash, FaCheck, FaTimes } from "react-icons/fa";
 
-// Sample recurring purchase data
 const sampleRecurringPurchases = [
     {
         id: 1,
-        productName: 'Organic Almonds',
-        frequency: 'Weekly',
-        nextDelivery: '2024-10-05',
+        productName: "Organic Almonds",
+        frequency: "Weekly",
+        nextDelivery: "2024-10-05",
     },
     {
         id: 2,
-        productName: 'Organic Quinoa',
-        frequency: 'Biweekly',
-        nextDelivery: '2024-10-12',
+        productName: "Organic Quinoa",
+        frequency: "Biweekly",
+        nextDelivery: "2024-10-12",
     },
 ];
 
 const RecurringPurchases = () => {
     const [recurringPurchases, setRecurringPurchases] = useState(sampleRecurringPurchases);
-    const [productName, setProductName] = useState('');
-    const [frequency, setFrequency] = useState('Weekly');
-    const [nextDelivery, setNextDelivery] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
+    const [productName, setProductName] = useState("");
+    const [frequency, setFrequency] = useState("Weekly");
+    const [nextDelivery, setNextDelivery] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     const handleAddRecurringPurchase = (e) => {
         e.preventDefault();
@@ -33,25 +33,25 @@ const RecurringPurchases = () => {
                 nextDelivery,
             };
             setRecurringPurchases([...recurringPurchases, newPurchase]);
-            setSuccessMessage('Recurring purchase added successfully!');
-            setProductName('');
-            setNextDelivery('');
+            setSuccessMessage("Recurring purchase added successfully!");
+            setProductName("");
+            setNextDelivery("");
             setTimeout(() => {
-                setSuccessMessage('');
+                setSuccessMessage("");
             }, 3000);
         }
     };
 
     const handleCancelPurchase = (id) => {
         setRecurringPurchases(recurringPurchases.filter((purchase) => purchase.id !== id));
-        setSuccessMessage('Recurring purchase canceled successfully!');
+        setSuccessMessage("Recurring purchase canceled successfully!");
         setTimeout(() => {
-            setSuccessMessage('');
+            setSuccessMessage("");
         }, 3000);
     };
 
     return (
-        <div className="p-6 bg-base-100 min-h-screen">
+        <div className="p-6 bg-white shadow-md rounded-md">
             <h1 className="text-2xl font-semibold mb-6">Recurring Purchases</h1>
 
             {successMessage && (
@@ -65,14 +65,14 @@ const RecurringPurchases = () => {
                 <div className="grid grid-cols-1 gap-4 mb-4">
                     <input
                         type="text"
-                        className="input input-bordered w-full"
+                        className="px-4 py-2 border rounded-md w-full focus:outline-none"
                         placeholder="Product Name"
                         value={productName}
                         onChange={(e) => setProductName(e.target.value)}
                         required
                     />
                     <select
-                        className="select select-bordered w-full"
+                        className="px-4 py-2 border rounded-md w-full"
                         value={frequency}
                         onChange={(e) => setFrequency(e.target.value)}
                     >
@@ -82,13 +82,13 @@ const RecurringPurchases = () => {
                     </select>
                     <input
                         type="date"
-                        className="input input-bordered w-full"
+                        className="px-4 py-2 border rounded-md w-full"
                         value={nextDelivery}
                         onChange={(e) => setNextDelivery(e.target.value)}
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="bg-blue-500 text-white px-6 py-2 rounded-md">
                     Add Recurring Purchase
                 </button>
             </form>
@@ -97,36 +97,36 @@ const RecurringPurchases = () => {
             {recurringPurchases.length === 0 ? (
                 <p className="text-gray-500">No recurring purchases found.</p>
             ) : (
-                <table className="table w-full">
+                <table className="w-full table-auto border-collapse">
                     <thead>
                         <tr>
-                            <th>Product</th>
-                            <th>Frequency</th>
-                            <th>Next Delivery</th>
-                            <th>Actions</th>
+                            <th className="border px-4 py-2">Product</th>
+                            <th className="border px-4 py-2">Frequency</th>
+                            <th className="border px-4 py-2">Next Delivery</th>
+                            <th className="border px-4 py-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {recurringPurchases.map((purchase) => (
                             <tr key={purchase.id}>
-                                <td>{purchase.productName}</td>
-                                <td>{purchase.frequency}</td>
-                                <td>{purchase.nextDelivery}</td>
-                                <td>
+                                <td className="border px-4 py-2">{purchase.productName}</td>
+                                <td className="border px-4 py-2">{purchase.frequency}</td>
+                                <td className="border px-4 py-2">{purchase.nextDelivery}</td>
+                                <td className="border px-4 py-2 space-x-2">
                                     <button
-                                        className="btn btn-warning mr-2"
+                                        className="bg-yellow-500 text-white px-4 py-2 rounded-md"
                                         onClick={() => {
                                             // Logic for editing purchase can be implemented here
-                                            alert('Edit functionality not implemented yet.');
+                                            alert("Edit functionality not implemented yet.");
                                         }}
                                     >
-                                        Edit
+                                        <FaEdit /> Edit
                                     </button>
                                     <button
-                                        className="btn btn-error"
+                                        className="bg-red-500 text-white px-4 py-2 rounded-md"
                                         onClick={() => handleCancelPurchase(purchase.id)}
                                     >
-                                        Cancel
+                                        <FaTrash /> Cancel
                                     </button>
                                 </td>
                             </tr>

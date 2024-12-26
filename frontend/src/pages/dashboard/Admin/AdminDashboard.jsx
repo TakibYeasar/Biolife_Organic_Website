@@ -4,6 +4,7 @@ import OrderFulfillment from './components/OrderFulfillment';
 import ManageProducts from './components/ManageProducts';
 import ManagePromotions from './components/ManagePromotions';
 import SalesAnalytics from './components/SalesAnalytics';
+import ManageArticles from './components/ManageArticles';
 
 
 const AdminDashboard = () => {
@@ -24,6 +25,14 @@ const AdminDashboard = () => {
               onClick={() => handleSectionChange('users')}
             >
               Manage Users
+            </button>
+          </li>
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'articles' ? 'bg-gray-600' : ''}`}
+              onClick={() => handleSectionChange('articles')}
+            >
+              Manage Articles
             </button>
           </li>
           <li>
@@ -65,6 +74,12 @@ const AdminDashboard = () => {
         {activeSection === 'users' && (
           <div>
             <ManageUsers />
+          </div>
+        )}
+
+        {activeSection === 'articles' && (
+          <div>
+            <ManageArticles />
           </div>
         )}
 

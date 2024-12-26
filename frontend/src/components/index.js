@@ -27,6 +27,8 @@ export { default as RecentComments } from "./Articles/RecentComments";
 export { default as RecentPost } from "./Articles/RecentPost";
 
 // components - containers - Products
+export { default as CreateProdCategory } from "./Products/CreateProdCategory";
+export { default as CreateProduct } from "./Products/CreateProduct";
 export { default as ProdReview } from "./Products/ProdReview";
 export { default as ProductCard } from "./Products/ProductCard";
 export { default as ProductTags } from "./Products/ProductTags";

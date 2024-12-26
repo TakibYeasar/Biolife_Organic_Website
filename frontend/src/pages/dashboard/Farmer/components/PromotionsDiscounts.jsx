@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
 
 const PromotionsDiscounts = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [promotionName, setPromotionName] = useState('');
-    const [discountType, setDiscountType] = useState('Percentage'); // or 'Fixed Amount'
+    const [discountType, setDiscountType] = useState('Percentage');
     const [discountValue, setDiscountValue] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
@@ -33,17 +34,29 @@ const PromotionsDiscounts = () => {
     );
 
     return (
-        <div className="p-6 bg-base-100 min-h-screen">
-            <h1 className="text-2xl font-semibold mb-6">Promotions & Discounts</h1>
+        <div className="p-5 bg-white shadow rounded">
+            <h1 className="text-2xl font-bold mb-5">Promotions & Discounts</h1>
 
-            <div className="mb-4">
-                <input
-                    type="text"
-                    placeholder="Search promotions..."
-                    className="input w-full max-w-xs mb-4"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex space-x-4">
+                    <input
+                        type="text"
+                        placeholder="Search promotions..."
+                        className="border px-4 py-2 rounded w-80"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <button className="bg-blue-500 text-white px-4 py-2 rounded">
+                        <FaSearch />
+                    </button>
+                </div>
+
+                <button
+                    className="bg-green-500 text-white px-4 py-2 rounded"
+                    onClick={() => setPromotionName('')}
+                >
+                    + Add Promotion
+                </button>
             </div>
 
             <form className="mb-6" onSubmit={handleAddPromotion}>
@@ -52,13 +65,13 @@ const PromotionsDiscounts = () => {
                     <input
                         type="text"
                         placeholder="Promotion Name"
-                        className="input w-full"
+                        className="border px-4 py-2 rounded"
                         value={promotionName}
                         onChange={(e) => setPromotionName(e.target.value)}
                         required
                     />
                     <select
-                        className="select w-full"
+                        className="border px-4 py-2 rounded"
                         value={discountType}
                         onChange={(e) => setDiscountType(e.target.value)}
                     >
@@ -68,62 +81,73 @@ const PromotionsDiscounts = () => {
                     <input
                         type="number"
                         placeholder="Discount Value"
-                        className="input w-full"
+                        className="border px-4 py-2 rounded"
                         value={discountValue}
                         onChange={(e) => setDiscountValue(e.target.value)}
                         required
                     />
                     <input
                         type="date"
-                        className="input w-full"
+                        className="border px-4 py-2 rounded"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                         required
                     />
                     <input
                         type="date"
-                        className="input w-full"
+                        className="border px-4 py-2 rounded"
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
                     Add Promotion
                 </button>
             </form>
 
             <div>
                 <h2 className="text-xl font-medium mb-4">Current Promotions</h2>
-                <table className="table w-full">
+                <table className="w-full table-auto border-collapse">
                     <thead>
                         <tr>
-                            <th>Promotion Name</th>
-                            <th>Type</th>
-                            <th>Value</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th className="border px-4 py-2">Promotion Name</th>
+                            <th className="border px-4 py-2">Type</th>
+                            <th className="border px-4 py-2">Value</th>
+                            <th className="border px-4 py-2">Start Date</th>
+                            <th className="border px-4 py-2">End Date</th>
+                            <th className="border px-4 py-2">Status</th>
+                            <th className="border px-4 py-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredPromotions.length > 0 ? (
                             filteredPromotions.map((promo) => (
                                 <tr key={promo.id}>
-                                    <td>{promo.name}</td>
-                                    <td>{promo.type}</td>
-                                    <td>{promo.type === 'Percentage' ? `${promo.value}%` : `$${promo.value}`}</td>
-                                    <td>{promo.startDate}</td>
-                                    <td>{promo.endDate}</td>
-                                    <td>
-                                        <span className={`badge ${promo.status === 'Active' ? 'badge-success' : 'badge-secondary'}`}>
+                                    <td className="border px-4 py-2">{promo.name}</td>
+                                    <td className="border px-4 py-2">{promo.type}</td>
+                                    <td className="border px-4 py-2">
+                                        {promo.type === 'Percentage' ? `${promo.value}%` : `$${promo.value}`}
+                                    </td>
+                                    <td className="border px-4 py-2">{promo.startDate}</td>
+                                    <td className="border px-4 py-2">{promo.endDate}</td>
+                                    <td className="border px-4 py-2">
+                                        <span
+                                            className={`px-2 py-1 text-sm rounded ${promo.status === 'Active'
+                                                ? 'bg-green-200 text-green-700'
+                                                : 'bg-gray-200 text-gray-700'
+                                                }`}
+                                        >
                                             {promo.status}
                                         </span>
                                     </td>
-                                    <td>
-                                        <button className="btn btn-secondary mr-2">Edit</button>
-                                        <button className="btn btn-error">Delete</button>
+                                    <td className="border px-4 py-2 space-x-2">
+                                        <button className="bg-yellow-500 text-white px-3 py-1 rounded">
+                                            <FaEdit /> Edit
+                                        </button>
+                                        <button className="bg-red-500 text-white px-3 py-1 rounded">
+                                            <FaTrash /> Delete
+                                        </button>
                                     </td>
                                 </tr>
                             ))
