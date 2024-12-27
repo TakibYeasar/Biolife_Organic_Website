@@ -2,6 +2,7 @@ from django.db import models
 from django.shortcuts import reverse
 from django.utils.text import slugify
 from django.conf import settings
+from django.utils.timezone import now, datetime
 
 
 class Category(models.Model):
@@ -124,3 +125,40 @@ class Review(models.Model):
 
     def __str__(self):
         return f"Review by {self.user} on {self.product}"
+
+
+class SpecialOffer(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="special_offer")
+    title = models.CharField(max_length=255, blank=True, null=True)
+    start_date = models.DateTimeField(default=datetime(2023, 1, 1, 0, 0, 0))
+    end_date = models.DateTimeField(null=True, blank=True)
+    duration = models.DurationField(null=True, blank=True)
+    discount = models.DecimalField(
+        max_digits=10, decimal_places=2, verbose_name="discount")
+    created = models.DateField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Special offers'
+        ordering = ('-created',)
+
+    def __str__(self):
+        return f"{self.title} ({self.get_display_duration()})"
+
+    def get_display_duration(self):
+        if self.duration:
+            # Use timedelta formatting with appropriate units
+            return str(self.duration).split(".")[0].replace(",", "")
+        elif self.end_date and self.start_date:
+            # Calculate duration if end_date exists
+            self.duration = self.end_date - self.start_date
+            return self.get_display_duration()
+        else:
+            return "Ongoing"
+
+    def is_active(self):
+        if not self.start_date:
+            return False
+        if self.end_date:
+            return now() <= self.end_date
+        else:
+            return True

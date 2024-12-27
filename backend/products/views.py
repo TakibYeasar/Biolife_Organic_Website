@@ -119,6 +119,17 @@ class GetProductView(APIView):
             products_data = ProductSerializer(
                 products, context={'request': request}, many=True).data
             return Response(data=products_data, status=status.HTTP_200_OK)
+        
+
+class GetProductsByUserView(APIView):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        products = Product.objects.filter(user=user)
+        if not products.exists():
+            return Response({'message': "No products found for this user."}, status=status.HTTP_404_NOT_FOUND)
+        products_data = ProductSerializer(
+            products, context={'request': request}, many=True).data
+        return Response(data=products_data, status=status.HTTP_200_OK)
 
 
 class CreateProductView(APIView):

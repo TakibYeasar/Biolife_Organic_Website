@@ -1,31 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import { useFetchBannersQuery } from '../../redux/features/core/coreApi';
 
-// Dummy banner data
-const banners = [
-  {
-    id: 1,
-    image: "https://via.placeholder.com/800x600?text=Banner+1",
-    title: "Summer Collection",
-    subtitle: "Discover the new trends",
-    desc: "Explore our summer collection and find the perfect outfits for your adventures.",
-  },
-  {
-    id: 2,
-    image: "https://via.placeholder.com/800x600?text=Banner+2",
-    title: "Winter Sale",
-    subtitle: "Up to 50% Off",
-    desc: "Don't miss our winter sale on your favorite items. Limited time offer!",
-  },
-  {
-    id: 3,
-    image: "https://via.placeholder.com/800x600?text=Banner+3",
-    title: "New Arrivals",
-    subtitle: "Check Out What's New",
-    desc: "Be the first to explore our latest arrivals and elevate your wardrobe.",
-  },
-];
 
 const variants = {
   initial: (direction) => ({
@@ -44,6 +21,7 @@ const variants = {
 };
 
 const Banner = () => {
+  const { data: banners, error, isLoading } = useFetchBannersQuery();
   const [direction, setDirection] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -56,6 +34,14 @@ const Banner = () => {
     setDirection(-1);
     setCurrentIndex((prev) => (prev === 0 ? banners.length - 1 : prev - 1));
   };
+
+  if (isLoading) {
+    return <div className="text-center py-8">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-primary">Error: {error.message}</div>;
+  }
 
   return (
     <div className="relative w-full lg:w-9/12 md:w-8/12 mx-auto">

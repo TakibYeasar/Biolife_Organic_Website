@@ -1,36 +1,92 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import {
+    useFetchCategoryQuery,
+    useCreateProductMutation,
+} from "../../redux/features/products/productsApi";
 
-const CreateProduct = () => {
+const CreateProduct = ({ onClose }) => {
     const [formData, setFormData] = useState({
-        title: '',
-        categories: '',
-        mainImage: null,
-        images: null,
-        price: '',
-        oldPrice: '',
-        description: '',
+        title: "",
+        categories: [],
+        main_image: null,
+        images: [],
+        price: "",
+        old_price: "",
+        description: "",
+        additional_info: [],
     });
 
+    // Fetch categories using RTK Query
+    const { data: availableCategories = [] } = useFetchCategoryQuery();
+    const [createProduct] = useCreateProductMutation();
+
+    // Handle text and number input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    // Handle file input changes
     const handleFileChange = (e) => {
         const { name, files } = e.target;
-        setFormData({ ...formData, [name]: files });
+        setFormData((prev) => ({
+            ...prev,
+            [name]: name === "images" ? [...prev.images, ...files] : files[0],
+        }));
     };
 
-    const handleSubmit = (e) => {
+    // Handle multi-select dropdown changes
+    const handleMultiSelectChange = (e) => {
+        const selectedValues = Array.from(e.target.selectedOptions).map(
+            (option) => option.value
+        );
+        setFormData((prev) => ({ ...prev, categories: selectedValues }));
+    };
+
+    // Add an additional info entry
+    const handleAddInfo = () => {
+        setFormData((prev) => ({
+            ...prev,
+            additional_info: [...prev.additional_info, { question: "", answer: "" }],
+        }));
+    };
+
+    // Update additional info fields
+    const handleInfoChange = (index, field, value) => {
+        setFormData((prev) => {
+            const updatedInfo = [...prev.additional_info];
+            updatedInfo[index][field] = value;
+            return { ...prev, additional_info: updatedInfo };
+        });
+    };
+
+    // Remove an additional info entry
+    const handleRemoveInfo = (index) => {
+        setFormData((prev) => ({
+            ...prev,
+            additional_info: prev.additional_info.filter((_, i) => i !== index),
+        }));
+    };
+
+    // Handle form submission
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic
-        console.log(formData);
+
+        try {
+            await createProduct(formData).unwrap();
+            onClose(); // Close the form on success
+        } catch (error) {
+            console.error("Error creating product:", error);
+        }
     };
 
     return (
-        <div className="max-w-md mx-auto mt-8 p-6 bg-white shadow-md rounded-lg">
-            <h2 className="text-2xl font-semibold mb-4">Create Product</h2>
+        <div className="max-w-4xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
+            <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+                Create Product
+            </h2>
             <form onSubmit={handleSubmit}>
+                {/* Product Title */}
                 <div className="mb-4">
                     <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                         Product Title
@@ -41,39 +97,57 @@ const CreateProduct = () => {
                         name="title"
                         value={formData.title}
                         onChange={handleChange}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                        className="mt-1 w-full p-2 border rounded-md focus:ring-green-500 focus:border-green-500"
                     />
                 </div>
 
+                {/* Categories */}
                 <div className="mb-4">
-                    <label htmlFor="categories" className="block text-sm font-medium text-gray-700">
+                    <label
+                        htmlFor="categories"
+                        className="block text-sm font-medium text-gray-700"
+                    >
                         Categories
                     </label>
-                    <input
-                        type="text"
+                    <select
                         id="categories"
                         name="categories"
+                        multiple
                         value={formData.categories}
-                        onChange={handleChange}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
-                    />
+                        onChange={handleMultiSelectChange}
+                        className="mt-1 w-full p-2 border rounded-md focus:ring-green-500 focus:border-green-500"
+                    >
+                        {availableCategories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
+                {/* Main Image */}
                 <div className="mb-4">
-                    <label htmlFor="mainImage" className="block text-sm font-medium text-gray-700">
+                    <label
+                        htmlFor="main_image"
+                        className="block text-sm font-medium text-gray-700"
+                    >
                         Main Image
                     </label>
                     <input
                         type="file"
-                        id="mainImage"
-                        name="mainImage"
+                        id="main_image"
+                        name="main_image"
                         onChange={handleFileChange}
-                        className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+                        className="mt-1 block w-full text-sm"
                     />
                 </div>
 
+                {/* Additional Images */}
                 <div className="mb-4">
-                    <label htmlFor="images" className="block text-sm font-medium text-gray-700">
+                    <label
+                        htmlFor="images"
+                        className="block text-sm font-medium text-gray-700"
+                    >
                         Additional Images
                     </label>
                     <input
@@ -82,10 +156,11 @@ const CreateProduct = () => {
                         name="images"
                         multiple
                         onChange={handleFileChange}
-                        className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+                        className="mt-1 block w-full text-sm"
                     />
                 </div>
 
+                {/* Price */}
                 <div className="mb-4">
                     <label htmlFor="price" className="block text-sm font-medium text-gray-700">
                         Price
@@ -96,26 +171,34 @@ const CreateProduct = () => {
                         name="price"
                         value={formData.price}
                         onChange={handleChange}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                        className="mt-1 w-full p-2 border rounded-md focus:ring-green-500 focus:border-green-500"
                     />
                 </div>
 
+                {/* Old Price */}
                 <div className="mb-4">
-                    <label htmlFor="oldPrice" className="block text-sm font-medium text-gray-700">
+                    <label
+                        htmlFor="old_price"
+                        className="block text-sm font-medium text-gray-700"
+                    >
                         Old Price
                     </label>
                     <input
                         type="number"
-                        id="oldPrice"
-                        name="oldPrice"
-                        value={formData.oldPrice}
+                        id="old_price"
+                        name="old_price"
+                        value={formData.old_price}
                         onChange={handleChange}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                        className="mt-1 w-full p-2 border rounded-md focus:ring-green-500 focus:border-green-500"
                     />
                 </div>
 
+                {/* Description */}
                 <div className="mb-4">
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                    <label
+                        htmlFor="description"
+                        className="block text-sm font-medium text-gray-700"
+                    >
                         Description
                     </label>
                     <textarea
@@ -123,13 +206,57 @@ const CreateProduct = () => {
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                        className="mt-1 w-full p-2 border rounded-md focus:ring-green-500 focus:border-green-500"
                     ></textarea>
                 </div>
 
+                {/* Additional Information */}
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Additional Information
+                    </label>
+                    {formData.additional_info.map((info, index) => (
+                        <div key={index} className="flex items-center mb-2">
+                            <input
+                                type="text"
+                                placeholder="Question"
+                                value={info.question}
+                                onChange={(e) =>
+                                    handleInfoChange(index, "question", e.target.value)
+                                }
+                                className="flex-1 mr-2 p-2 border rounded-md"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Answer"
+                                value={info.answer}
+                                onChange={(e) =>
+                                    handleInfoChange(index, "answer", e.target.value)
+                                }
+                                className="flex-1 mr-2 p-2 border rounded-md"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => handleRemoveInfo(index)}
+                                className="p-2 text-sm text-white bg-red-500 rounded-md"
+                            >
+                                Remove
+                            </button>
+                        </div>
+                    ))}
+                    <button
+                        type="button"
+                        onClick={handleAddInfo}
+                        className="mt-2 text-sm bg-green-500 text-white py-1 px-4 rounded-md"
+                    >
+                        Add Info
+                    </button>
+                </div>
+
+                {/* Submit Button */}
                 <button
                     type="submit"
-                    className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                    className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700"
                 >
                     Create Product
                 </button>

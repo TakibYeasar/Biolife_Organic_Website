@@ -1,15 +1,17 @@
 import React from 'react';
-
-// Dummy data for brands
-const brands = [
-  { id: 1, image: 'https://via.placeholder.com/214x163?text=Brand+1' },
-  { id: 2, image: 'https://via.placeholder.com/214x163?text=Brand+2' },
-  { id: 3, image: 'https://via.placeholder.com/214x163?text=Brand+3' },
-  { id: 4, image: 'https://via.placeholder.com/214x163?text=Brand+4' },
-  { id: 5, image: 'https://via.placeholder.com/214x163?text=Brand+5' },
-];
+import { useFetchBrandsQuery } from '../../redux/features/core/coreApi';
 
 const Companies = () => {
+  const { data: brands, error, isLoading } = useFetchBrandsQuery();
+
+  if (isLoading) {
+    return <div className="text-center py-8">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-primary">Error: {error.message}</div>;
+  }
+
   return (
     <section className="bg-gray-100 py-16">
       <div className="container mx-auto px-6">
@@ -20,7 +22,7 @@ const Companies = () => {
                 <a href="#" className="block">
                   <figure className="flex justify-center">
                     <img
-                      src={item.image}
+                      src={item.logo}
                       alt={`Brand ${item.id}`}
                       className="rounded-lg shadow-md w-full h-auto object-contain"
                     />

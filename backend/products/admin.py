@@ -6,6 +6,7 @@ from .models import (
     ProductImage,
     Product,
     Review,
+    SpecialOffer,
 )
 
 admin.site.register([
@@ -14,4 +15,5 @@ admin.site.register([
     ProductImage,
     Product,
     Review,
+    SpecialOffer,
 ])

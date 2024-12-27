@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCreateCategoryMutation } from '../../redux/features/products/productsApi';
 
 const CreateProdCategory = () => {
     const [formData, setFormData] = useState({
@@ -7,6 +8,8 @@ const CreateProdCategory = () => {
         icon: null,
         image: null,
     });
+
+    const [createCategory, { isLoading, isError, isSuccess, error }] = useCreateCategoryMutation();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -18,10 +21,23 @@ const CreateProdCategory = () => {
         setFormData({ ...formData, [name]: files[0] });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic
-        console.log(formData);
+
+        // Construct FormData for file uploads
+        const data = new FormData();
+        data.append('name', formData.name);
+        if (formData.parent) data.append('parent', formData.parent);
+        if (formData.icon) data.append('icon', formData.icon);
+        if (formData.image) data.append('image', formData.image);
+
+        try {
+            await createCategory(data).unwrap();
+            alert('Category created successfully!');
+            setFormData({ name: '', parent: '', icon: null, image: null }); // Reset form
+        } catch (err) {
+            console.error('Failed to create category:', err);
+        }
     };
 
     return (
@@ -84,10 +100,19 @@ const CreateProdCategory = () => {
 
                 <button
                     type="submit"
+                    disabled={isLoading}
                     className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                 >
-                    Create Category
+                    {isLoading ? 'Creating...' : 'Create Category'}
                 </button>
+
+                {isError && (
+                    <p className="mt-2 text-sm text-red-500">Error: {error?.data?.message || 'Something went wrong.'}</p>
+                )}
+
+                {isSuccess && (
+                    <p className="mt-2 text-sm text-green-500">Category created successfully!</p>
+                )}
             </form>
         </div>
     );

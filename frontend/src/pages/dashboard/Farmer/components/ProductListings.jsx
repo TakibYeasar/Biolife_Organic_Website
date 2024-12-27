@@ -1,27 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
+import { CreateProduct } from '../../../../components';
+import { useFetchUserProductsQuery, useDeleteProductMutation } from '../../../../redux/features/products/productsApi';
 
 const ProductListings = () => {
-    const [products, setProducts] = useState([]);
-    const [newProduct, setNewProduct] = useState({
-        name: '',
-        description: '',
-        price: '',
-        image: '',
-    });
+    const [showCreateProduct, setShowCreateProduct] = useState(false);
 
-    const [showAddProduct, setShowAddProduct] = useState(false);
+    // Fetch products using RTK's useFetchUserProductsQuery
+    const { data: products, isLoading, isError } = useFetchUserProductsQuery();
 
-    const handleAddProduct = (e) => {
-        e.preventDefault();
-        setProducts([...products, { ...newProduct, id: Date.now() }]);
-        setNewProduct({ name: '', description: '', price: '', image: '' });
-        setShowAddProduct(false);
-    };
+    // Delete product mutation using RTK
+    const [deleteProduct] = useDeleteProductMutation();
 
-    const handleDeleteProduct = (id) => {
-        const updatedProducts = products.filter((product) => product.id !== id);
-        setProducts(updatedProducts);
+    const handleDeleteProduct = async (id) => {
+        try {
+            await deleteProduct(id); // Perform delete action
+        } catch (error) {
+            console.error('Failed to delete product:', error);
+        }
     };
 
     return (
@@ -32,105 +28,64 @@ const ProductListings = () => {
             <div className="flex justify-between items-center mb-6">
                 <button
                     className="bg-green-500 text-white px-4 py-2 rounded"
-                    onClick={() => setShowAddProduct(true)}
+                    onClick={() => setShowCreateProduct(true)}
                 >
                     + Add New Product
                 </button>
             </div>
 
             {/* Add New Product Form */}
-            {showAddProduct && (
-                <form onSubmit={handleAddProduct} className="mb-6">
-                    <h2 className="text-xl mb-4">Add New Product</h2>
-                    <div className="grid grid-cols-1 gap-4 mb-4">
-                        <input
-                            type="text"
-                            className="input input-bordered w-full"
-                            placeholder="Product Name"
-                            value={newProduct.name}
-                            onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                            required
-                        />
-                        <textarea
-                            className="textarea textarea-bordered w-full"
-                            placeholder="Product Description"
-                            value={newProduct.description}
-                            onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
-                            required
-                        />
-                        <input
-                            type="number"
-                            className="input input-bordered w-full"
-                            placeholder="Price"
-                            value={newProduct.price}
-                            onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-                            required
-                        />
-                        <input
-                            type="text"
-                            className="input input-bordered w-full"
-                            placeholder="Image URL"
-                            value={newProduct.image}
-                            onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
-                            required
-                        />
-                    </div>
-                    <div className="flex gap-4">
-                        <button type="submit" className="btn btn-primary">
-                            Add Product
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={() => setShowAddProduct(false)}
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </form>
+            {showCreateProduct && (
+                <CreateProduct onClose={() => setShowCreateProduct(false)} />
             )}
 
             {/* Product List Table */}
             <h2 className="text-xl mb-4">Current Product Listings</h2>
             <div className="overflow-x-auto">
-                <table className="table w-full">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Price</th>
-                            <th>Image</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products.map((product) => (
-                            <tr key={product.id}>
-                                <td>{product.name}</td>
-                                <td>{product.description}</td>
-                                <td>${product.price}</td>
-                                <td>
-                                    <img
-                                        src={product.image}
-                                        alt={product.name}
-                                        className="w-16 h-16 object-cover"
-                                    />
-                                </td>
-                                <td>
-                                    <button className="bg-blue-500 text-white px-3 py-1 rounded mr-2">
-                                        <FaEdit /> Edit
-                                    </button>
-                                    <button
-                                        className="bg-red-500 text-white px-3 py-1 rounded"
-                                        onClick={() => handleDeleteProduct(product.id)}
-                                    >
-                                        <FaTrash /> Delete
-                                    </button>
-                                </td>
+                {isLoading ? (
+                    <p>Loading products...</p>
+                ) : isError ? (
+                    <p>Error fetching products.</p>
+                ) : (
+                    <table className="table w-full">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Title</th>
+                                <th>Price</th>
+                                <th>Old Price</th>
+                                <th>Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {products?.map((product) => (
+                                <tr key={product.id}>
+                                    <td>
+                                        <img
+                                            src={product.main_image}
+                                            alt={product.name}
+                                            className="w-16 h-16 object-cover"
+                                        />
+                                    </td>
+                                    <td>{product.title}</td>
+                                    <td>${product.price}</td>
+                                    <td>${product.old_price}</td>
+                                    <td>
+                                        <button className="bg-blue-500 text-white px-3 py-1 rounded mr-2">
+                                            <FaEdit /> Edit
+                                        </button>
+                                        <button
+                                            className="bg-red-500 text-white px-3 py-1 rounded"
+                                            onClick={() => handleDeleteProduct(product.id)}
+                                        >
+                                            <FaTrash /> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
             </div>
         </div>
     );

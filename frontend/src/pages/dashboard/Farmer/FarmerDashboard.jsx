@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import CustomerInquiries from './components/CustomerInquiries';
-import InventoryManagement from './components/InventoryManagement';
 import Orders from './components/Orders';
 import ProductListings from './components/ProductListings';
 import PayoutSettings from './components/PayoutSettings';
@@ -29,10 +28,10 @@ const FarmerDashboard = () => {
           </li>
           <li>
             <button
-              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'inventory' ? 'bg-gray-600' : ''}`}
-              onClick={() => handleSectionChange('inventory')}
+              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'products' ? 'bg-gray-600' : ''}`}
+              onClick={() => handleSectionChange('products')}
             >
-              Inventory Management
+              Product Listings
             </button>
           </li>
           <li>
@@ -40,15 +39,7 @@ const FarmerDashboard = () => {
               className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'orders' ? 'bg-gray-600' : ''}`}
               onClick={() => handleSectionChange('orders')}
             >
-              Orders
-            </button>
-          </li>
-          <li>
-            <button
-              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'products' ? 'bg-gray-600' : ''}`}
-              onClick={() => handleSectionChange('products')}
-            >
-              Product Listings
+              Order History
             </button>
           </li>
           <li>
@@ -85,21 +76,15 @@ const FarmerDashboard = () => {
           </div>
         )}
 
-        {activeSection === 'inventory' && (
+        {activeSection === 'products' && (
           <div>
-            <InventoryManagement />
+            <ProductListings />
           </div>
         )}
 
         {activeSection === 'orders' && (
           <div>
             <Orders />
-          </div>
-        )}
-
-        {activeSection === 'products' && (
-          <div>
-            <ProductListings />
           </div>
         )}
 

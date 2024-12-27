@@ -5,8 +5,20 @@ import card02 from "/assets/images/card2.jpg";
 import card03 from "/assets/images/card3.jpg";
 import card04 from "/assets/images/card4.jpg";
 import card05 from "/assets/images/card5.jpg";
+import { useFetchContactInfoQuery } from '../redux/features/core/coreApi';
 
 const Footer = () => {
+
+    const { data: contactinfo, error, isLoading } = useFetchContactInfoQuery();
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
+
     return (
         <footer className="bg-gray-100 py-16">
             <div className="container mx-auto px-4">

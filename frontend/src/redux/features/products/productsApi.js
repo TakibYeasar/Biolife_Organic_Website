@@ -50,6 +50,13 @@ export const productsApi = apiSlice.injectEndpoints({
             }),
         }),
 
+        // Fetch Users Products
+        fetchUserProducts: builder.query({
+            query: () => ({
+                url: `${PRODUCTS_URL}/user_products/`,
+            }),
+        }),
+
         // Fetch Single Product
         fetchSingleProduct: builder.query({
             query: (id) => ({
@@ -60,7 +67,7 @@ export const productsApi = apiSlice.injectEndpoints({
         // Create Product
         createProduct: builder.mutation({
             query: (data) => ({
-                url: `${PRODUCTS_URL}/create/product/`,
+                url: `${PRODUCTS_URL}/create-product/`,
                 method: "POST",
                 body: data,
             }),
@@ -134,6 +141,7 @@ export const {
     useUpdateCategoryMutation,
     useDeleteCategoryMutation,
     useFetchAllProductsQuery,
+    useFetchUserProductsQuery,
     useFetchSingleProductQuery,
     useCreateProductMutation,
     useUpdateProductMutation,
