@@ -10,14 +10,25 @@ const ManageUsers = () => {
     const [changeUserRole] = useChangeUserRoleMutation();
     const [removeUser] = useRemoveUserMutation();
 
-    const handleRoleChange = (id, newRole) => {
-        // Call mutation to change user role
-        changeUserRole({ userId: id, role: newRole });
+    const handleRoleChange = async (id, newRole) => {
+        try {
+            await changeUserRole({ userId: String(id), role: newRole }).unwrap();
+            alert("Role updated successfully!");
+        } catch (err) {
+            console.error("Failed to update role:", err);
+            alert("Failed to update role.");
+        }
     };
 
-    const handleDeleteUser = (id) => {
-        // Call mutation to delete the user
-        removeUser(id);
+
+    const handleDeleteUser = async (id) => {
+        try {
+            await removeUser({ userId: id }).unwrap();
+            alert("User removed successfully!");
+        } catch (err) {
+            console.error("Failed to remove user:", err);
+            alert("Failed to remove user.");
+        }
     };
 
     if (isLoading) {
@@ -42,17 +53,12 @@ const ManageUsers = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {users.length > 0 ? (
+                    {users && users.length > 0 ? (
                         users.map((user) => (
                             <tr key={user.id}>
                                 <td className="border px-4 py-2">{user.username}</td>
                                 <td className="border px-4 py-2">{user.email}</td>
-                                <td className="border px-4 py-2">{user.role}</td>
                                 <td className="border px-4 py-2">
-                                    {user.is_approved ? "Approved" : "Pending"}
-                                </td>
-                                <td className="border px-4 py-2 space-x-2">
-                                    {/* Role Change */}
                                     <select
                                         className="border px-2 py-1"
                                         value={user.role}
@@ -62,7 +68,11 @@ const ManageUsers = () => {
                                         <option value="farmer">Farmer</option>
                                         <option value="customer">Customer</option>
                                     </select>
-                                    {/* Delete User */}
+                                </td>
+                                <td className="border px-4 py-2">
+                                    {user.is_approved ? "Approved" : "Pending"}
+                                </td>
+                                <td className="border px-4 py-2 space-x-2">
                                     <button
                                         className="bg-red-500 text-white px-3 py-1 rounded"
                                         onClick={() => handleDeleteUser(user.id)}

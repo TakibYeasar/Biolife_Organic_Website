@@ -20,7 +20,7 @@ export const productsApi = apiSlice.injectEndpoints({
         // Create Category
         createCategory: builder.mutation({
             query: (data) => ({
-                url: `${PRODUCTS_URL}/create/category/`,
+                url: `${PRODUCTS_URL}/create-prod_category/`,
                 method: "POST",
                 body: data,
             }),

@@ -12,16 +12,17 @@ export const userApi = apiSlice.injectEndpoints({
 
         // Change user role by its ID
         changeUserRole: builder.mutation({
-            query: (id) => ({
-                url: `${PETS_URL}/user/${id}/change-role/`,
-                method: "PATCH",
+            query: ({ userId, role }) => ({
+                url: `${USERS_URL}/user/${userId}/change-role/`,
+                method: "PUT",
+                body: { role },
             }),
         }),
 
         // Remove a user by its ID
         removeUser: builder.mutation({
             query: (id) => ({
-                url: `${PETS_URL}/user/${id}/remove/`,
+                url: `${USERS_URL}/user/${id}/remove/`,
                 method: "DELETE",
             }),
         }),

@@ -21,14 +21,14 @@ class ManageUserView(APIView):
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def put(self, request, *args, **kwargs):
+
+class ChangeUserRoleView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, user_id):
         if request.user.role != 'admin':
             raise PermissionDenied(
                 "You do not have permission to update user details.")
-
-        user_id = kwargs.get('user_id')
-        if not user_id:
-            return Response({"error": "User ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             user = CustomUser.objects.get(id=user_id)
@@ -36,23 +36,21 @@ class ManageUserView(APIView):
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
         new_role = request.data.get('role')
-        if new_role and new_role not in dict(CustomUser.ROLE_CHOICES):
+        if new_role not in dict(CustomUser.ROLE_CHOICES):
             return Response({"error": "Invalid role."}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = UserSerializer(user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        user.role = new_role
+        user.save()
+        return Response({"message": "Role updated successfully."}, status=status.HTTP_200_OK)
 
-    def delete(self, request, *args, **kwargs):
+
+class RemoveUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, user_id):
         if request.user.role != 'admin':
             raise PermissionDenied(
                 "You do not have permission to delete users.")
-
-        user_id = kwargs.get('user_id')
-        if not user_id:
-            return Response({"error": "User ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             user = CustomUser.objects.get(id=user_id)
@@ -60,6 +58,7 @@ class ManageUserView(APIView):
             return Response({"message": "User deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         except CustomUser.DoesNotExist:
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 class CreateUserProfileView(APIView):
