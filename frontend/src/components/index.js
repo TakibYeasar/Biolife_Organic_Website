@@ -19,6 +19,8 @@ export { default as OurArticles } from "./Home/OurArticles";
 export { default as Testimonial } from "./Home/Testimonial";
 
 // components - containers - Articles
+export { default as CreateArticleCategory } from "./Articles/CreateArticleCategory";
+export { default as CreateArticle } from "./Articles/CreateArticle";
 export { default as ArticleCard } from "./Articles/ArticleCard";
 export { default as ArticleCategory } from "./Articles/ArticleCategory";
 export { default as Articletags } from "./Articles/Articletags";

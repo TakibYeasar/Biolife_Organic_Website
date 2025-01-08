@@ -42,21 +42,24 @@ class GetCategoryView(APIView):
             return Response(serialized_categories, status=status.HTTP_200_OK)
 
 
-
 class CreateCategoryView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request, *args, **kwargs):
         user = request.user
-        if user.role != 'admin':
+
+        # Check if the user is an admin
+        if not hasattr(user, 'role') or user.role != 'admin':
             raise PermissionDenied(
                 "You do not have permission to create a category.")
-            
-        serializer = CategorySerializer(data=request.data)
+
+        serializer = CategoryCreateSerializer(
+            data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            category = serializer.save()
+            return Response(CategoryCreateSerializer(category).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class UpdateCategoryView(APIView):
@@ -98,12 +101,84 @@ class DeleteCategoryView(APIView):
             return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
+class ManageProductsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        if request.user.role != 'admin':
+            return Response(
+                {"detail": "You do not have permission to view products."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        products = Product.objects.all()
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, pk, *args, **kwargs):
+        if request.user.role != 'admin':
+            return Response(
+                {"detail": "You do not have permission to approve or edit Products."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        try:
+            product = product.objects.get(pk=pk)
+        except product.DoesNotExist:
+            return Response({"detail": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        is_approved = request.data.get("is_approved", None)
+
+        if is_approved is not None:
+            product.is_approved = is_approved
+            Product.save()
+
+            status_message = (
+                "approved" if is_approved else "set to pending approval"
+            )
+            return Response(
+                {"detail": f"Product '{Product.name}' has been {status_message}."},
+                status=status.HTTP_200_OK,
+            )
+
+        if product.is_approved:
+            return Response(
+                {"detail": f"Product '{Product.name}' is already approved."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        product.is_approved = True
+        product.save()
+
+        return Response(
+            {"detail": f"Product '{Product.name}' approved successfully."},
+            status=status.HTTP_200_OK,
+        )
+
+    def delete(self, request, pk, *args, **kwargs):
+        if request.user.role != 'admin':
+            return Response(
+                {"detail": "You do not have permission to delete Products."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        try:
+            product = product.objects.get(pk=pk)
+        except product.DoesNotExist:
+            return Response({"detail": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        product.delete()
+        return Response(
+            {"detail": f"Product '{Product.name}' has been successfully removed."},
+            status=status.HTTP_200_OK,
+        )
+
 class GetProductView(APIView):
     def get(self, request, *args, **kwargs):
         product_id = kwargs.get('id')
         if product_id:
             try:
-                product = Product.objects.get(id=product_id)
+                product = Product.objects.get(id=product_id, is_approved=True)
                 # category = product.category.all().values_list('id', flat=True)
                 reviews = Review.objects.filter(product=product)
                 serializer = ProductSerializer(
@@ -115,7 +190,7 @@ class GetProductView(APIView):
             except ObjectDoesNotExist:
                 return Response({'error': "No product found"}, status=status.HTTP_404_NOT_FOUND)
         else:
-            products = Product.objects.all()
+            products = Product.objects.filter(is_approved=True)
             products_data = ProductSerializer(
                 products, context={'request': request}, many=True).data
             return Response(data=products_data, status=status.HTTP_200_OK)
@@ -134,18 +209,34 @@ class GetProductsByUserView(APIView):
 
 class CreateProductView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request, *args, **kwargs):
         user = request.user
-        if user.role != 'farmer':
+
+        # Check if the user has the required role
+        if not hasattr(user, 'role') or (user.role != 'farmer' and user.role != 'admin'):
             raise PermissionDenied(
-                "You do not have permission to create a product.")
-            
-        serializer = ProductSerializer(data=request.data)
+                "You do not have permission to create a product."
+            )
+
+        # Initialize the serializer with request data and context
+        serializer = ProductCreateSerializer(
+            data=request.data, context={'request': request}
+        )
+
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # Save the product with the authenticated user as the owner
+            product = serializer.save(user=user)
+            return Response(
+                ProductCreateSerializer(
+                    product, context={'request': request}
+                ).data,
+                status=status.HTTP_201_CREATED
+            )
+
+        # Return validation errors if the data is invalid
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class UpdateProductView(APIView):

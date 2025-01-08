@@ -28,17 +28,48 @@ export const productsApi = apiSlice.injectEndpoints({
 
         // Update Category
         updateCategory: builder.mutation({
-            query: ({ id, data }) => ({
-                url: `${PRODUCTS_URL}/update/category/${id}/`,
+            query: ({ categoryId, formData }) => ({
+                url: `${PRODUCTS_URL}/update-prod_category/${categoryId}/`,
                 method: "PUT",
-                body: data,
+                body: formData,
             }),
         }),
 
         // Delete Category
         deleteCategory: builder.mutation({
+            query: (categoryId) => ({
+                url: `${PRODUCTS_URL}/delete-prod_category/${categoryId}/`,
+                method: "DELETE",
+            }),
+        }),
+
+        // Manage all prods
+        manageProducts: builder.query({
+            query: () => ({
+                url: `${PRODUCTS_URL}/manage-prods/`,
+            }),
+        }),
+
+        // Approve a prod by its ID
+        approveProduct: builder.mutation({
             query: (id) => ({
-                url: `${PRODUCTS_URL}/delete/category/${id}/`,
+                url: `${PRODUCTS_URL}/prods/${id}/approve/`,
+                method: "PUT",
+            }),
+        }),
+
+        // Edit approval status of a prod by its ID
+        editApproval: builder.mutation({
+            query: (id) => ({
+                url: `${PRODUCTS_URL}/prods/${id}/edit-approval/`,
+                method: "PUT",
+            }),
+        }),
+
+        // Remove a prod by its ID
+        removeProduct: builder.mutation({
+            query: (id) => ({
+                url: `${PRODUCTS_URL}/prods/${id}/remove/`,
                 method: "DELETE",
             }),
         }),
@@ -140,12 +171,19 @@ export const {
     useCreateCategoryMutation,
     useUpdateCategoryMutation,
     useDeleteCategoryMutation,
+
+    useManageProductsQuery,
+    useApproveProductMutation,
+    useEditApprovalMutation,
+    useRemoveProductMutation,
+
     useFetchAllProductsQuery,
     useFetchUserProductsQuery,
     useFetchSingleProductQuery,
     useCreateProductMutation,
     useUpdateProductMutation,
     useDeleteProductMutation,
+
     useCreateProductLikeMutation,
     useRemoveProductLikeMutation,
     useCreateProductReviewMutation,

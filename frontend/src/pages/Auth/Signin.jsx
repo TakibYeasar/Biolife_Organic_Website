@@ -15,6 +15,10 @@ const SignIn = () => {
         if (data) {
             toast.success('Login successful!');
             navigate('/'); // Navigate to home on success
+            // Refresh the page after successful login
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000); // Add a slight delay for the toast to display
         }
 
         if (error) {

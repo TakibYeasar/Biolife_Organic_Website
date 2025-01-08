@@ -4,8 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
 
 
 class GetArticleCategoryView(APIView):
@@ -27,11 +27,18 @@ class GetArticleCategoryView(APIView):
 
 
 class CreateArticleCategoryView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
     
     def post(self, request, *args, **kwargs):
-        serializer = ArticleCategorySerializer(data=request.data)
+        user = request.user
+        
+        # Check if the user is an admin
+        if not hasattr(user, 'role') or user.role != 'admin':
+            raise PermissionDenied(
+                "You do not have permission to create a category.")
+            
+            
+        serializer = CreateArticleCategorySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -39,17 +46,22 @@ class CreateArticleCategoryView(APIView):
 
 
 class UpdateArticleCategoryView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
     
     def put(self, request, *args, **kwargs):
+        user = request.user
+        if user.role != 'admin':
+            raise PermissionDenied(
+                "You do not have permission to update a category.")
+            
+            
         category_id = kwargs.get('id')
         try:
             category = ArticleCategory.objects.get(id=category_id)
         except ObjectDoesNotExist:
             return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
     
-        serializer = ArticleCategorySerializer(
+        serializer = CreateArticleCategorySerializer(
             category, context={'request': request}, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -58,10 +70,14 @@ class UpdateArticleCategoryView(APIView):
 
 
 class DeleteArticleCategoryView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def delete(self, request, *args, **kwargs):
+        user = request.user
+        if user.role != 'admin':
+            raise PermissionDenied(
+                "You do not have permission to delete a category.")
+            
         category_id = kwargs.get('id')
         try:
             category = ArticleCategory.objects.get(id=category_id)
@@ -71,6 +87,78 @@ class DeleteArticleCategoryView(APIView):
         category.delete()
         return Response({'message': 'Category deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
+
+class ManageArticlesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        if request.user.role != 'admin':
+            return Response(
+                {"detail": "You do not have permission to view articles."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        articles = Article.objects.all()
+        serializer = ArticleSerializer(articles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, pk, *args, **kwargs):
+        if request.user.role != 'admin':
+            return Response(
+                {"detail": "You do not have permission to approve or edit articles."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        try:
+            article = Article.objects.get(pk=pk)
+        except article.DoesNotExist:
+            return Response({"detail": "article not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        is_approved = request.data.get("is_approved", None)
+
+        if is_approved is not None:
+            article.is_approved = is_approved
+            article.save()
+
+            status_message = (
+                "approved" if is_approved else "set to pending approval"
+            )
+            return Response(
+                {"detail": f"article '{article.name}' has been {status_message}."},
+                status=status.HTTP_200_OK,
+            )
+
+        if article.is_approved:
+            return Response(
+                {"detail": f"article '{article.name}' is already approved."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        article.is_approved = True
+        article.save()
+
+        return Response(
+            {"detail": f"article '{article.name}' approved successfully."},
+            status=status.HTTP_200_OK,
+        )
+
+    def delete(self, request, pk, *args, **kwargs):
+        if request.user.role != 'admin':
+            return Response(
+                {"detail": "You do not have permission to delete articles."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        try:
+            article = Article.objects.get(pk=pk)
+        except article.DoesNotExist:
+            return Response({"detail": "article not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        article.delete()
+        return Response(
+            {"detail": f"article '{article.name}' has been successfully removed."},
+            status=status.HTTP_200_OK,
+        )
 
 
 class GetArticleView(APIView):
@@ -112,11 +200,19 @@ class GetArticleView(APIView):
 
 
 class CreateArticleView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
     
     def post(self, request, *args, **kwargs):
-        serializer = ArticleSerializer(data=request.data)
+        user = request.user
+
+        # Check if the user has the required role
+        if not hasattr(user, 'role') or (user.role != 'farmer' and user.role != 'admin'):
+            raise PermissionDenied(
+                "You do not have permission to create a article."
+            )
+            
+            
+        serializer = ArticleCreateUpdateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -124,41 +220,48 @@ class CreateArticleView(APIView):
 
 
 class UpdateArticleView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
     
     def put(self, request, *args, **kwargs):
         article_id = kwargs.get('id')
         try:
             article = Article.objects.get(id=article_id)
+            
+            if article.farmer != request.user:
+                raise PermissionDenied(
+                    "You do not have permission to update a article.")
+            
+            serializer = ArticleCreateUpdateSerializer(
+                article, context={'request': request}, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                
         except ObjectDoesNotExist:
             return Response({'error': 'Article not found'}, status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = ArticleSerializer(
-            article, context={'request': request}, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DeleteArticleView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
     
     def delete(self, request, *args, **kwargs):
         article_id = kwargs.get('id')
         try:
             article = Article.objects.get(id=article_id)
+            
+            if article.farmer != request.user:
+                raise PermissionDenied(
+                    "You do not have permission to delete a article.")
+
+            article.delete()
+            return Response({'message': 'Article deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+                
         except ObjectDoesNotExist:
             return Response({'error': 'Article not found'}, status=status.HTTP_404_NOT_FOUND)
-        
-        article.delete()
-        return Response({'message': 'Article deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 
 class AddLikeUnlikeArticleView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
     def post(self, request, article_id):
@@ -172,7 +275,6 @@ class AddLikeUnlikeArticleView(APIView):
 
 
 class RemoveLikeUnlikeArticleView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
     def delete(self, request, article_id):
@@ -186,7 +288,6 @@ class RemoveLikeUnlikeArticleView(APIView):
 
 
 class CreateCommentArticleView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
     def post(self, request, article_id, parent_id=None):
@@ -210,7 +311,6 @@ class CreateCommentArticleView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UpdateCommentArticleView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
     def put(self, request, comment_id):
@@ -229,7 +329,6 @@ class UpdateCommentArticleView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DeleteCommentArticleView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
     def delete(self, request, comment_id):
@@ -245,7 +344,6 @@ class DeleteCommentArticleView(APIView):
     
 
 class CreateCommentLikeDislikeView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request, comment_id):
@@ -258,7 +356,6 @@ class CreateCommentLikeDislikeView(APIView):
 
 
 class RemoveCommentLikeDislikeView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request, comment_id):

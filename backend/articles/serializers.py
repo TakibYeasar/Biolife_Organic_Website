@@ -1,37 +1,125 @@
 from rest_framework import serializers
-from .models import *
+from .models import ArticleCategory, ArticleTag, Article, ArticleComment
 
 
-class ArticleCategorySerializer(serializers.ModelSerializer):
+class CreateArticleCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ArticleCategory
-        fields = "__all__"
-        depth = 1
-      
-        
+        fields = ['name', 'parent', 'icon', 'image']
+
+    def create(self, validated_data):
+        # Assign the authenticated user to the category
+        user = self.context['request'].user
+        return ArticleCategory.objects.create(user=user, **validated_data)
+    
+
+class ArticleCategorySerializer(serializers.ModelSerializer):
+    article_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ArticleCategory
+        fields = ['id', 'name', 'parent', 'icon', 'image', 'is_active',
+                  'slug', 'created_at', 'article_count']
+        read_only_fields = ['slug', 'created_at']
+
+    def get_article_count(self, obj):
+        return obj.articles.count()
+
+
 class ArticleTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArticleTag
-        fields = "__all__"
-        depth = 1
- 
+        fields = ['id', 'title', 'created_at']
+        read_only_fields = ['created_at']
+
+
+class ArticleCommentSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+    article = serializers.SlugRelatedField(
+        queryset=Article.objects.all(), slug_field='slug'
+    )
+    parent_comment = serializers.StringRelatedField(
+        source="parent", read_only=True)
+    like_count = serializers.SerializerMethodField()
+    dislike_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ArticleComment
+        fields = [
+            'id', 'user', 'article', 'parent', 'parent_comment', 'comment',
+            'image', 'link', 'likes', 'dislikes', 'like_count', 'dislike_count', 'created_at'
+        ]
+        read_only_fields = ['likes', 'dislikes',
+                            'like_count', 'dislike_count', 'created_at']
+
+    def get_like_count(self, obj):
+        return obj.likes.count()
+
+    def get_dislike_count(self, obj):
+        return obj.dislikes.count()
+
 
 class ArticleSerializer(serializers.ModelSerializer):
+    categories = ArticleCategorySerializer(many=True, read_only=True)
+    tags = ArticleTagSerializer(many=True, read_only=True)
+    comments = ArticleCommentSerializer(
+        many=True, read_only=True, source='comments.all')
+    user = serializers.StringRelatedField(read_only=True)
+    like_count = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Article
-        fields = "__all__"
-        depth = 1
+        fields = [
+            'id', 'user', 'categories', 'tags', 'image', 'image_url', 'title',
+            'description', 'author_name', 'author_profession', 'likes', 'like_count',
+            'slug', 'is_active', 'created_at', 'comments'
+        ]
+        read_only_fields = ['slug', 'created_at', 'user', 'like_count']
+
+    def get_like_count(self, obj):
+        return obj.likes.count()
 
     def get_image_url(self, obj):
         request = self.context.get('request')
-        if request:
+        if obj.image and request:
             return request.build_absolute_uri(obj.image.url)
-        else:
-            return obj.image.url
-    
-    
-class ArticleCommentSerializer(serializers.ModelSerializer):
+        return obj.image.url if obj.image else None
+
+
+class ArticleCreateUpdateSerializer(serializers.ModelSerializer):
+    categories = serializers.SlugRelatedField(
+        queryset=ArticleCategory.objects.all(), slug_field='slug', many=True
+    )
+    tags = serializers.SlugRelatedField(
+        queryset=ArticleTag.objects.all(), slug_field='title', many=True
+    )
+
     class Meta:
-        model = ArticleComment
-        fields = "__all__"
-        # depth = 1
+        model = Article
+        fields = [
+            'title', 'categories', 'tags', 'image', 'description',
+            'author_name', 'author_profession', 'is_active'
+        ]
+
+    def create(self, validated_data):
+        categories_data = validated_data.pop('categories', [])
+        tags_data = validated_data.pop('tags', [])
+        user = self.context['request'].user
+        article = Article.objects.create(user=user, **validated_data)
+
+        article.categories.set(categories_data)
+        article.tags.set(tags_data)
+        return article
+
+    def update(self, instance, validated_data):
+        categories_data = validated_data.pop('categories', [])
+        tags_data = validated_data.pop('tags', [])
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.categories.set(categories_data)
+        instance.tags.set(tags_data)
+        instance.save()
+        return instance

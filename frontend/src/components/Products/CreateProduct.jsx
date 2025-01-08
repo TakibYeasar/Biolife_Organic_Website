@@ -1,13 +1,11 @@
-import React, { useState } from "react";
-import {
-    useFetchCategoryQuery,
-    useCreateProductMutation,
-} from "../../redux/features/products/productsApi";
+import React, { useState, useEffect } from "react";
+import { useFetchCategoryQuery, useCreateProductMutation, useUpdateProductMutation } from "../../redux/features/products/productsApi";
+import { toast } from "react-toastify";
 
-const CreateProduct = ({ onClose }) => {
+const ProductForm = ({ onClose, productData }) => {
     const [formData, setFormData] = useState({
         title: "",
-        categories: [],
+        categories: [], // Changed to array for multiple selections if needed
         main_image: null,
         images: [],
         price: "",
@@ -16,34 +14,38 @@ const CreateProduct = ({ onClose }) => {
         additional_info: [],
     });
 
-    // Fetch categories using RTK Query
     const { data: availableCategories = [] } = useFetchCategoryQuery();
-    const [createProduct] = useCreateProductMutation();
+    const [createProduct, { isLoading: isCreating, error: createError }] = useCreateProductMutation();
+    const [updateProduct, { isLoading: isUpdating, error: updateError }] = useUpdateProductMutation();
 
-    // Handle text and number input changes
+    useEffect(() => {
+        if (productData) {
+            setFormData({
+                ...productData,
+                main_image: null, // Allow new uploads
+                categories: productData.categories ? productData.categories.map(cat => cat.slug) : [], // Extract slugs if needed
+            });
+        }
+    }, [productData]);
+
+
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    // Handle file input changes
     const handleFileChange = (e) => {
-        const { name, files } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: name === "images" ? [...prev.images, ...files] : files[0],
+            [e.target.name]: e.target.name === "images" ? [...e.target.files] : e.target.files[0],
         }));
     };
 
-    // Handle multi-select dropdown changes
-    const handleMultiSelectChange = (e) => {
-        const selectedValues = Array.from(e.target.selectedOptions).map(
-            (option) => option.value
-        );
-        setFormData((prev) => ({ ...prev, categories: selectedValues }));
+    const handleCategoryChange = (e) => {
+        // Handle multiple selections if your backend supports it
+        const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+        setFormData(prev => ({ ...prev, categories: selectedOptions }));
     };
 
-    // Add an additional info entry
     const handleAddInfo = () => {
         setFormData((prev) => ({
             ...prev,
@@ -51,7 +53,6 @@ const CreateProduct = ({ onClose }) => {
         }));
     };
 
-    // Update additional info fields
     const handleInfoChange = (index, field, value) => {
         setFormData((prev) => {
             const updatedInfo = [...prev.additional_info];
@@ -60,7 +61,6 @@ const CreateProduct = ({ onClose }) => {
         });
     };
 
-    // Remove an additional info entry
     const handleRemoveInfo = (index) => {
         setFormData((prev) => ({
             ...prev,
@@ -68,29 +68,56 @@ const CreateProduct = ({ onClose }) => {
         }));
     };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const data = new FormData();
+
+        for (const key in formData) {
+            if (formData.hasOwnProperty(key)) {
+                const value = formData[key];
+
+                if (key === "images" && value && value.length > 0) {
+                    value.forEach(file => data.append("images", file));
+                } else if (key === "main_image" && value instanceof File) {
+                    data.append("main_image", value);
+                } else if (key === "categories" && value && value.length > 0) {
+                    value.forEach(cat => data.append("categories", cat)); // Append each category
+                } else if (key === "additional_info") {
+                    data.append(key, JSON.stringify(value));
+                } else if (value !== "" && value !== null && value !== undefined) {
+                    data.append(key, value);
+                } else if (key === "old_price") {
+                    data.append(key, value || 0); // Use 0 if empty/null/undefined
+                }
+            }
+        }
+
         try {
-            await createProduct(formData).unwrap();
-            onClose(); // Close the form on success
+            if (productData) {
+                await updateProduct({ id: productData.id, data }).unwrap();
+                toast.success("Product updated successfully!");
+            } else {
+                await createProduct(data).unwrap();
+                toast.success("Product created successfully!");
+            }
+            onClose();
         } catch (error) {
-            console.error("Error creating product:", error);
+            console.error("Error submitting product:", error);
+            const errorMessage = error?.data?.message || JSON.stringify(error?.data) || "Failed to submit product.";
+            toast.error(errorMessage);
         }
     };
 
     return (
         <div className="max-w-4xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
             <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-                Create Product
+                {productData ? "Update Product" : "Create Product"}
             </h2>
             <form onSubmit={handleSubmit}>
-                {/* Product Title */}
+                {/* Title */}
                 <div className="mb-4">
-                    <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                        Product Title
-                    </label>
+                    <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
                     <input
                         type="text"
                         id="title"
@@ -98,73 +125,79 @@ const CreateProduct = ({ onClose }) => {
                         value={formData.title}
                         onChange={handleChange}
                         className="mt-1 w-full p-2 border rounded-md focus:ring-green-500 focus:border-green-500"
+                        required
                     />
                 </div>
 
                 {/* Categories */}
-                <div className="mb-4">
-                    <label
-                        htmlFor="categories"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Categories
-                    </label>
-                    <select
-                        id="categories"
-                        name="categories"
-                        multiple
-                        value={formData.categories}
-                        onChange={handleMultiSelectChange}
-                        className="mt-1 w-full p-2 border rounded-md focus:ring-green-500 focus:border-green-500"
-                    >
-                        {availableCategories.map((category) => (
-                            <option key={category.id} value={category.id}>
-                                {category.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                <select
+                    id="categories"
+                    name="categories"
+                    value={formData.categories}
+                    onChange={handleCategoryChange}
+                    className="mt-1 w-full p-2 border rounded-md focus:ring-green-500 focus:border-green-500"
+                    multiple // Add multiple attribute for multiple selections
+                >
+                    <option value="">Select Categories</option>
+                    {availableCategories.map((category) => (
+                        <option key={category.id} value={category.slug}>
+                            {category.name}
+                        </option>
+                    ))}
+                </select>
 
                 {/* Main Image */}
                 <div className="mb-4">
-                    <label
-                        htmlFor="main_image"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Main Image
-                    </label>
+                    <label htmlFor="main_image" className="block text-sm font-medium text-gray-700">Main Image</label>
                     <input
                         type="file"
                         id="main_image"
                         name="main_image"
                         onChange={handleFileChange}
-                        className="mt-1 block w-full text-sm"
+                        className="mt-1 w-full p-2 border rounded-md focus:ring-green-500 focus:border-green-500"
+                        required={!productData}
                     />
+                    {formData.main_image && formData.main_image instanceof File && (
+                        <img
+                            src={URL.createObjectURL(formData.main_image)}
+                            alt="Image Preview"
+                            className="mt-2 h-16 w-16 object-cover"
+                        />
+                    )}
+
                 </div>
 
                 {/* Additional Images */}
                 <div className="mb-4">
-                    <label
-                        htmlFor="images"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Additional Images
-                    </label>
+                    <label htmlFor="images" className="block text-sm font-medium text-gray-700">Additional Images</label>
                     <input
                         type="file"
                         id="images"
                         name="images"
                         multiple
                         onChange={handleFileChange}
-                        className="mt-1 block w-full text-sm"
+                        className="mt-1 block w-full text-sm border rounded-md focus:ring-green-500 focus:border-green-500"
+                        accept="image/*"
                     />
+                    {/* Preview for selected images */}
+                    {formData.images && formData.images.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-2">
+                            {Array.from(formData.images).map((file, index) => (
+                                <img
+                                    key={index}
+                                    src={URL.createObjectURL(file)}
+                                    alt={`Preview ${index + 1}`}
+                                    className="h-16 w-16 object-cover rounded-md shadow-md"
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
+
 
                 {/* Price */}
                 <div className="mb-4">
-                    <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-                        Price
-                    </label>
+                    <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
                     <input
                         type="number"
                         id="price"
@@ -172,17 +205,13 @@ const CreateProduct = ({ onClose }) => {
                         value={formData.price}
                         onChange={handleChange}
                         className="mt-1 w-full p-2 border rounded-md focus:ring-green-500 focus:border-green-500"
+                        required
                     />
                 </div>
 
                 {/* Old Price */}
                 <div className="mb-4">
-                    <label
-                        htmlFor="old_price"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Old Price
-                    </label>
+                    <label htmlFor="old_price" className="block text-sm font-medium text-gray-700">Old Price</label>
                     <input
                         type="number"
                         id="old_price"
@@ -195,50 +224,40 @@ const CreateProduct = ({ onClose }) => {
 
                 {/* Description */}
                 <div className="mb-4">
-                    <label
-                        htmlFor="description"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Description
-                    </label>
+                    <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
                     <textarea
                         id="description"
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
                         className="mt-1 w-full p-2 border rounded-md focus:ring-green-500 focus:border-green-500"
-                    ></textarea>
+                        required
+                    />
                 </div>
 
-                {/* Additional Information */}
+                {/* Additional Info */}
                 <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                        Additional Information
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700">Additional Information</label>
                     {formData.additional_info.map((info, index) => (
                         <div key={index} className="flex items-center mb-2">
                             <input
                                 type="text"
                                 placeholder="Question"
                                 value={info.question}
-                                onChange={(e) =>
-                                    handleInfoChange(index, "question", e.target.value)
-                                }
+                                onChange={(e) => handleInfoChange(index, "question", e.target.value)}
                                 className="flex-1 mr-2 p-2 border rounded-md"
                             />
                             <input
                                 type="text"
                                 placeholder="Answer"
                                 value={info.answer}
-                                onChange={(e) =>
-                                    handleInfoChange(index, "answer", e.target.value)
-                                }
-                                className="flex-1 mr-2 p-2 border rounded-md"
+                                onChange={(e) => handleInfoChange(index, "answer", e.target.value)}
+                                className="flex-1 p-2 border rounded-md"
                             />
                             <button
                                 type="button"
                                 onClick={() => handleRemoveInfo(index)}
-                                className="p-2 text-sm text-white bg-red-500 rounded-md"
+                                className="ml-2 text-red-500"
                             >
                                 Remove
                             </button>
@@ -247,22 +266,32 @@ const CreateProduct = ({ onClose }) => {
                     <button
                         type="button"
                         onClick={handleAddInfo}
-                        className="mt-2 text-sm bg-green-500 text-white py-1 px-4 rounded-md"
+                        className="mt-2 text-green-500"
                     >
                         Add Info
                     </button>
                 </div>
 
                 {/* Submit Button */}
-                <button
-                    type="submit"
-                    className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700"
-                >
-                    Create Product
-                </button>
+                <div className="mb-4">
+                    <button
+                        type="submit"
+                        disabled={isCreating || isUpdating}
+                        className={`w-full p-2 rounded-md text-white ${isCreating || isUpdating ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'}`}
+                    >
+                        {isCreating || isUpdating ? 'Saving...' : productData ? 'Update Product' : 'Create Product'}
+                    </button>
+                </div>
+
+                {/* Error Message */}
+                {(createError || updateError) && (
+                    <div className="text-red-500 text-sm mt-2">
+                        Error: {createError?.data?.message || updateError?.data?.message || 'Something went wrong.'}
+                    </div>
+                )}
             </form>
         </div>
     );
 };
 
-export default CreateProduct;
+export default ProductForm;

@@ -3,13 +3,19 @@ from .views import *
 
 urlpatterns = [
     path('all-prod_categories/', GetCategoryView.as_view(), name='get_categories'),
-    path('single-prd_category/<int:id>/',
+    path('single-prod_category/<int:id>/',
          GetCategoryView.as_view(), name='single_category'),
     path('create-prod_category/', CreateCategoryView.as_view(), name='create_category'),
     path('update-prod_category/<int:id>/',
          UpdateCategoryView.as_view(), name='update_category'),
     path('delete-prod_category/<int:id>/',
          DeleteCategoryView.as_view(), name='delete_category'),
+    
+    path('manage-prods/', ManageProductsView.as_view(), name='manage_prods'),
+    path('prods/<int:pk>/approve/', ManageProductsView.as_view(), name='approve_prod'),
+    path('prods/<int:pk>/edit-approval/',
+         ManageProductsView.as_view(), name='edit-approval'),
+    path('prods/<int:pk>/remove/', ManageProductsView.as_view(), name='remove_prod'),
 
     path('all_products/', GetProductView.as_view(), name='get_products'),
     path('single-product/<int:id>/',

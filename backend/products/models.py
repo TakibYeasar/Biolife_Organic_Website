@@ -28,12 +28,12 @@ class Category(models.Model):
         ordering = ('-created_at',)
 
     def save(self, *args, **kwargs):
-        if not self.slug:
+        if not self.slug and self.name:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        return self.name or "Unnamed Category"
 
     def get_absolute_url(self):
         return reverse('products:category_detail', args=[self.slug])
@@ -67,9 +67,7 @@ class Product(models.Model):
     )
     categories = models.ManyToManyField(Category, related_name="products")
     title = models.CharField(max_length=255, blank=True, null=True)
-    main_image = models.ForeignKey(
-        ProductImage, related_name='main_image', on_delete=models.CASCADE
-    )
+    main_image = models.ImageField(upload_to='products/images/')
     images = models.ManyToManyField(
         ProductImage, related_name='additional_images', blank=True)
     price = models.DecimalField(
@@ -83,6 +81,7 @@ class Product(models.Model):
         settings.AUTH_USER_MODEL, related_name="liked_products", blank=True
     )
     is_active = models.BooleanField(default=True)
+    is_approved = models.BooleanField(default=False)
     slug = models.SlugField(unique=True, blank=True,
                             allow_unicode=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)

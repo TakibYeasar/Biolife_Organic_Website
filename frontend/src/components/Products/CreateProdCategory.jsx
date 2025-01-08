@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useFetchCategoryQuery ,useCreateCategoryMutation } from '../../redux/features/products/productsApi';
+import React, { useState, useEffect } from 'react';
+import { useFetchCategoryQuery, useCreateCategoryMutation, useUpdateCategoryMutation } from '../../redux/features/products/productsApi';
 import { toast } from 'react-toastify';
 
-const CreateProdCategory = () => {
+const CategoryForm = ({ categoryData }) => {
     const [formData, setFormData] = useState({
         name: '',
         parent: '',
@@ -10,8 +10,20 @@ const CreateProdCategory = () => {
         image: null,
     });
 
-    const { data: categories} = useFetchCategoryQuery();
-    const [createCategory, { isLoading, error }] = useCreateCategoryMutation();
+    const { data: categories } = useFetchCategoryQuery();
+    const [createCategory, { isLoading: isCreating, error: createError }] = useCreateCategoryMutation();
+    const [updateCategory, { isLoading: isUpdating, error: updateError }] = useUpdateCategoryMutation();
+
+    useEffect(() => {
+        if (categoryData) {
+            setFormData({
+                name: categoryData.name,
+                parent: categoryData.parent || '',
+                icon: categoryData.icon || null,
+                image: categoryData.image || null,
+            });
+        }
+    }, [categoryData]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -32,17 +44,24 @@ const CreateProdCategory = () => {
         if (formData.image) data.append('image', formData.image);
 
         try {
-            await createCategory(data).unwrap();
-            toast.success('Category created successfully!');
+            if (categoryData) {
+                await updateCategory({ id: categoryData.id, data }).unwrap();
+                toast.success('Category updated successfully!');
+            } else {
+                await createCategory(data).unwrap();
+                toast.success('Category created successfully!');
+            }
+
             setFormData({ name: '', parent: '', icon: null, image: null });
+            window.location.reload();
         } catch (err) {
-            toast.error('Failed to create category.');
+            toast.error(categoryData ? 'Failed to update category.' : 'Failed to create category.');
         }
     };
 
     return (
         <div className="max-w-md mx-auto mt-8 p-6 bg-white shadow-md rounded-lg">
-            <h2 className="text-2xl font-semibold mb-4">Create Category</h2>
+            <h2 className="text-2xl font-semibold mb-4">{categoryData ? 'Update Category' : 'Create Category'}</h2>
             <form onSubmit={handleSubmit}>
                 {/* Category Name */}
                 <div className="mb-4">
@@ -126,17 +145,16 @@ const CreateProdCategory = () => {
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    disabled={isLoading}
-                    className={`w-full py-2 px-4 rounded-md text-white ${isLoading ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'
-                        }`}
+                    disabled={isCreating || isUpdating}
+                    className={`w-full py-2 px-4 rounded-md text-white ${isCreating || isUpdating ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'}`}
                 >
-                    {isLoading ? 'Creating...' : 'Create Category'}
+                    {isCreating || isUpdating ? 'Saving...' : categoryData ? 'Update Category' : 'Create Category'}
                 </button>
 
                 {/* Error Message */}
-                {error && (
+                {(createError || updateError) && (
                     <p className="mt-2 text-sm text-red-500">
-                        Error: {error?.data?.message || 'Something went wrong.'}
+                        Error: {createError?.data?.message || updateError?.data?.message || 'Something went wrong.'}
                     </p>
                 )}
             </form>
@@ -144,4 +162,4 @@ const CreateProdCategory = () => {
     );
 };
 
-export default CreateProdCategory;
+export default CategoryForm;

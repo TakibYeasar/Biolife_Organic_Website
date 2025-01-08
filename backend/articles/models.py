@@ -19,6 +19,10 @@ class ArticleCategory(models.Model):
         related_name="subcategories",
         verbose_name="Parent Category"
     )
+    icon = models.ImageField(
+        upload_to='articles/categories/icons/', blank=True, null=True)
+    image = models.ImageField(
+        upload_to='articles/categories/images/', blank=True, null=True)
     is_active = models.BooleanField(default=True)
     slug = models.SlugField(blank=True, unique=True,
                             allow_unicode=True, db_index=True)
@@ -78,6 +82,7 @@ class Article(models.Model):
         blank=True
     )
     author_profession = models.CharField(max_length=150, blank=True, null=True)
+    is_approved = models.BooleanField(default=False)
     slug = models.SlugField(blank=True, unique=True,
                             allow_unicode=True, db_index=True)
     is_active = models.BooleanField(default=True)
