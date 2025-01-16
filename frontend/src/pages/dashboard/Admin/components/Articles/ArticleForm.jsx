@@ -6,10 +6,10 @@ import {
     useFetchArticleTagsQuery,
     useCreateArticleMutation,
     useUpdateArticleMutation,
-} from "../../redux/features/articles/articlesApi";
+} from "../../../../../redux/features/articles/articlesApi";
 import { toast } from "react-toastify";
 
-const ArticleForm = ({ articleData, onSuccess }) => {
+const ArticleForm = ({ articleData, onSuccess, onClose }) => {
     const initialState = {
         title: "",
         categories: [],
@@ -83,8 +83,16 @@ const ArticleForm = ({ articleData, onSuccess }) => {
     if (isCategoriesLoading || isTagsLoading) return <p>Loading...</p>;
 
     return (
-        <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-            <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+        <div className="max-w-3xl mx-auto bg-gradient-to-r from-blue-50 via-white to-blue-50 p-8 rounded-lg shadow-lg relative">
+            <button
+                className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 transition"
+                onClick={onClose}
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <h2 className="text-4xl font-semibold text-gray-800 mb-6">
                 {articleData ? "Update Article" : "Create Article"}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -96,6 +104,7 @@ const ArticleForm = ({ articleData, onSuccess }) => {
                     value={formData.title}
                     onChange={handleChange}
                     required
+                    className="bg-gray-100 focus:ring-2 focus:ring-blue-500"
                 />
 
                 {/* Categories */}
@@ -107,6 +116,7 @@ const ArticleForm = ({ articleData, onSuccess }) => {
                     onChange={(e) => handleMultiSelectChange(e, "categories")}
                     options={categories.map((cat) => ({ value: cat.id, label: cat.name }))}
                     isMultiple
+                    className="bg-gray-100 focus:ring-2 focus:ring-blue-500"
                 />
 
                 {/* Image */}
@@ -116,6 +126,7 @@ const ArticleForm = ({ articleData, onSuccess }) => {
                     name="image"
                     onChange={handleFileChange}
                     preview={formData.image && URL.createObjectURL(formData.image)}
+                    className="bg-gray-100 focus:ring-2 focus:ring-blue-500"
                 />
 
                 {/* Description */}
@@ -126,6 +137,7 @@ const ArticleForm = ({ articleData, onSuccess }) => {
                     value={formData.description}
                     onChange={handleChange}
                     required
+                    className="bg-gray-100 focus:ring-2 focus:ring-blue-500"
                 />
 
                 {/* Author Details */}
@@ -136,6 +148,7 @@ const ArticleForm = ({ articleData, onSuccess }) => {
                         name="author_name"
                         value={formData.author_name}
                         onChange={handleChange}
+                        className="bg-gray-100 focus:ring-2 focus:ring-blue-500"
                     />
                     <FormField
                         label="Author Profession"
@@ -143,6 +156,7 @@ const ArticleForm = ({ articleData, onSuccess }) => {
                         name="author_profession"
                         value={formData.author_profession}
                         onChange={handleChange}
+                        className="bg-gray-100 focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
 
@@ -155,6 +169,7 @@ const ArticleForm = ({ articleData, onSuccess }) => {
                     onChange={(e) => handleMultiSelectChange(e, "tags")}
                     options={tags.map((tag) => ({ value: tag.id, label: tag.title }))}
                     isMultiple
+                    className="bg-gray-100 focus:ring-2 focus:ring-blue-500"
                 />
 
                 {/* Submit Button */}
@@ -162,7 +177,7 @@ const ArticleForm = ({ articleData, onSuccess }) => {
                     type="submit"
                     className={`w-full py-3 text-lg font-semibold text-white rounded-md transition ${isCreating || isUpdating
                         ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
+                        : "bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
                         }`}
                     disabled={isCreating || isUpdating}
                 >
@@ -173,7 +188,7 @@ const ArticleForm = ({ articleData, onSuccess }) => {
     );
 };
 
-// Reusable FormField Component
+// Reusable FormField Component with added styling options
 const FormField = ({
     label,
     type,
@@ -184,15 +199,16 @@ const FormField = ({
     isMultiple,
     preview,
     required,
+    className,
 }) => (
     <div className="mb-6">
-        <label className="block text-lg font-medium text-gray-700 mb-2">{label}</label>
+        <label className="block text-lg font-medium text-gray-800 mb-2">{label}</label>
         {type === "textarea" ? (
             <textarea
                 name={name}
                 value={value}
                 onChange={onChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                className={`w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none ${className}`}
                 required={required}
                 rows="4"
             />
@@ -202,7 +218,7 @@ const FormField = ({
                 value={value}
                 onChange={onChange}
                 multiple={isMultiple}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                className={`w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none ${className}`}
             >
                 {options.map(({ value, label }) => (
                     <option key={value} value={value} className="text-gray-700">
@@ -217,7 +233,7 @@ const FormField = ({
                     name={name}
                     value={type === "file" ? undefined : value}
                     onChange={onChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                    className={`w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none ${className}`}
                     required={required}
                 />
                 {preview && (
@@ -233,6 +249,5 @@ const FormField = ({
         )}
     </div>
 );
-
 
 export default ArticleForm;

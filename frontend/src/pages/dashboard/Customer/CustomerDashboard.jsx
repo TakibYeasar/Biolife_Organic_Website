@@ -6,106 +6,47 @@ import RateAndReview from './components/RateAndReview';
 import RecurringPurchases from './components/RecurringPurchases';
 import Wishlists from './components/Wishlists';
 
+const sections = [
+  { name: 'wishlists', label: 'WishLists', component: <Wishlists /> },
+  { name: 'history', label: 'Order History', component: <OrderHistory /> },
+  { name: 'purshase', label: 'Recurring Purchases', component: <RecurringPurchases /> },
+  { name: 'tracking', label: 'Order Tracking', component: <OrderTracking /> },
+  { name: 'review', label: 'Rate & Review', component: <RateAndReview /> },
+  { name: 'settings', label: 'Account Settings', component: <AccountSettings /> },
+];
+
 const CustomerDashboard = () => {
   const [activeSection, setActiveSection] = useState('wishlists');
 
-  const handleSectionChange = (section) => {
-    setActiveSection(section);
+  const handleSectionChange = (section) => setActiveSection(section);
+
+  const renderSection = () => {
+    const active = sections.find((section) => section.name === activeSection);
+    return active ? active.component : null;
   };
 
   return (
     <div className="flex mt-32">
-      <div className="w-1/4 bg-gray-800 text-white min-h-screen p-5">
+      <nav className="w-1/4 bg-gray-800 text-white min-h-screen p-5">
         <h2 className="text-2xl font-bold mb-5">Customer Dashboard</h2>
         <ul className="space-y-4">
-          <li>
-            <button
-              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'wishlists' ? 'bg-gray-600' : ''}`}
-              onClick={() => handleSectionChange('wishlists')}
-            >
-              WishLists
-            </button>
-          </li>
-          <li>
-            <button
-              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'history' ? 'bg-gray-600' : ''}`}
-              onClick={() => handleSectionChange('history')}
-            >
-              Order History
-            </button>
-          </li>
-          <li>
-            <button
-              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'purshase' ? 'bg-gray-600' : ''}`}
-              onClick={() => handleSectionChange('purshase')}
-            >
-              Recurring Purchases
-            </button>
-          </li>
-          <li>
-            <button
-              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'tracking' ? 'bg-gray-600' : ''}`}
-              onClick={() => handleSectionChange('tracking')}
-            >
-              Order Tracking
-            </button>
-          </li>
-          <li>
-            <button
-              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'review' ? 'bg-gray-600' : ''}`}
-              onClick={() => handleSectionChange('review')}
-            >
-              Rate & Review
-            </button>
-          </li>
-          <li>
-            <button
-              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'settings' ? 'bg-gray-600' : ''}`}
-              onClick={() => handleSectionChange('settings')}
-            >
-              Account Settings
-            </button>
-          </li>
+          {sections.map(({ name, label }) => (
+            <li key={name}>
+              <button
+                className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === name ? 'bg-gray-600' : ''
+                  }`}
+                onClick={() => handleSectionChange(name)}
+              >
+                {label}
+              </button>
+            </li>
+          ))}
         </ul>
-      </div>
+      </nav>
 
-      <div className="w-3/4 p-5 bg-gray-100 min-h-screen">
-        {activeSection === 'wishlists' && (
-          <div>
-            <Wishlists />
-          </div>
-        )}
-
-        {activeSection === 'history' && (
-          <div>
-            <OrderHistory />
-          </div>
-        )}
-
-        {activeSection === 'purshase' && (
-          <div>
-            <RecurringPurchases />
-          </div>
-        )}
-
-        {activeSection === 'tracking' && (
-          <div>
-            <OrderTracking />
-          </div>
-        )}
-
-        {activeSection === 'review' && (
-          <div>
-            <RateAndReview />
-          </div>
-        )}
-
-        {activeSection === 'settings' && (
-          <div>
-            <AccountSettings />
-          </div>
-        )}
-      </div>
+      <main className="w-3/4 p-5 bg-gray-100 min-h-screen">
+        {renderSection()}
+      </main>
     </div>
   );
 };

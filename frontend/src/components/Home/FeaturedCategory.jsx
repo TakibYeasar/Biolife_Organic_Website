@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useFetchCategoryQuery } from '../../redux/features/products/productsApi';
+import { useFetchProdCategoryQuery } from '../../redux/features/products/productsApi';
 
 const FeaturedCategory = () => {
-  const { data: categoriesData, error, isLoading } = useFetchCategoryQuery();
+  const { data: categoriesData, error, isLoading } = useFetchProdCategoryQuery();
   const [width, setWidth] = useState(0);
   const carousel = useRef();
 

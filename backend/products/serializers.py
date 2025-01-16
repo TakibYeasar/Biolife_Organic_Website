@@ -30,6 +30,13 @@ class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
         fields = ['image', 'created_at']
+        
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return obj.image.url if obj.image else None
+
 
 
 class AdditionalInfoSerializer(serializers.ModelSerializer):
@@ -69,7 +76,6 @@ class ProductSerializer(serializers.ModelSerializer):
     categories = serializers.SlugRelatedField(
         queryset=Category.objects.all(), slug_field='slug', many=True
     )
-    main_image = ProductImageSerializer()
     images = ProductImageSerializer(many=True, required=False)
     additional_info = AdditionalInfoSerializer(many=True, required=False)
     user = serializers.StringRelatedField(read_only=True)
@@ -84,6 +90,12 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_likes_count(self, obj):
         return obj.likes.count()
+    
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return obj.image.url if obj.image else None
 
 
 class ReviewProductSerializer(serializers.ModelSerializer):

@@ -73,7 +73,7 @@ class Article(models.Model):
         verbose_name="Article Tags"
     )
     image = models.ImageField(upload_to='articles/', blank=True, null=True)
-    title = models.CharField(max_length=150)
+    title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     author_name = models.CharField(max_length=150, blank=True, null=True)
     likes = models.ManyToManyField(

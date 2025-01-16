@@ -41,11 +41,11 @@ const CustomerInquiries = () => {
                     <input
                         type="text"
                         placeholder="Search inquiries..."
-                        className="px-4 py-2 w-full focus:outline-none"
+                        className="bg-white px-4 py-2 w-full focus:outline-none"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <button className="bg-blue-500 text-white px-4">
+                    <button className="bg-blue-500 text-white p-4 rounded">
                         <FaSearch />
                     </button>
                 </div>

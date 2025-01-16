@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
-import { CreateProduct } from '../../../../components';
+import ProductForm from './ProductForm';
 import { useFetchUserProductsQuery, useDeleteProductMutation } from '../../../../redux/features/products/productsApi';
 
 const ProductListings = () => {
@@ -36,7 +36,7 @@ const ProductListings = () => {
 
             {/* Add New Product Form */}
             {showCreateProduct && (
-                <CreateProduct onClose={() => setShowCreateProduct(false)} />
+                <ProductForm onClose={() => setShowCreateProduct(false)} />
             )}
 
             {/* Product List Table */}

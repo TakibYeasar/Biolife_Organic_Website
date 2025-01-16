@@ -4,21 +4,21 @@ import { PRODUCTS_URL } from "../../constant";
 export const productsApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         // Fetch Product Categories
-        fetchCategory: builder.query({
+        fetchProdCategory: builder.query({
             query: () => ({
                 url: `${PRODUCTS_URL}/all-prod_categories/`,
             }),
         }),
 
         // Fetch Single Category
-        fetchSingleCategory: builder.query({
+        fetchSingleProdCategory: builder.query({
             query: (id) => ({
                 url: `${PRODUCTS_URL}/single-prod_category/${id}/`,
             }),
         }),
 
         // Create Category
-        createCategory: builder.mutation({
+        createProdCategory: builder.mutation({
             query: (data) => ({
                 url: `${PRODUCTS_URL}/create-prod_category/`,
                 method: "POST",
@@ -27,7 +27,7 @@ export const productsApi = apiSlice.injectEndpoints({
         }),
 
         // Update Category
-        updateCategory: builder.mutation({
+        updateProdCategory: builder.mutation({
             query: ({ categoryId, formData }) => ({
                 url: `${PRODUCTS_URL}/update-prod_category/${categoryId}/`,
                 method: "PUT",
@@ -36,7 +36,7 @@ export const productsApi = apiSlice.injectEndpoints({
         }),
 
         // Delete Category
-        deleteCategory: builder.mutation({
+        deleteProdCategory: builder.mutation({
             query: (categoryId) => ({
                 url: `${PRODUCTS_URL}/delete-prod_category/${categoryId}/`,
                 method: "DELETE",
@@ -166,11 +166,11 @@ export const productsApi = apiSlice.injectEndpoints({
 });
 
 export const {
-    useFetchCategoryQuery,
-    useFetchSingleCategoryQuery,
-    useCreateCategoryMutation,
-    useUpdateCategoryMutation,
-    useDeleteCategoryMutation,
+    useFetchProdCategoryQuery,
+    useFetchSingleProdCategoryQuery,
+    useCreateProdCategoryMutation,
+    useUpdateProdCategoryMutation,
+    useDeleteProdCategoryMutation,
 
     useManageProductsQuery,
     useApproveProductMutation,

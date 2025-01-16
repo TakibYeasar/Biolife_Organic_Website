@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useFetchCategoryQuery, useCreateCategoryMutation, useUpdateCategoryMutation } from '../../redux/features/products/productsApi';
+import React, { useEffect, useState } from 'react';
+import { useFetchArticleCategoriesQuery, useCreateArticleCategoryMutation, useUpdateArticleCategoryMutation } from '../../../../../redux/features/articles/articlesApi';
 import { toast } from 'react-toastify';
 
-const CategoryForm = ({ categoryData }) => {
+const ArticleCategoryForm = ({ categoryData, onClose }) => {
     const [formData, setFormData] = useState({
         name: '',
         parent: '',
@@ -10,9 +10,9 @@ const CategoryForm = ({ categoryData }) => {
         image: null,
     });
 
-    const { data: categories } = useFetchCategoryQuery();
-    const [createCategory, { isLoading: isCreating, error: createError }] = useCreateCategoryMutation();
-    const [updateCategory, { isLoading: isUpdating, error: updateError }] = useUpdateCategoryMutation();
+    const { data: categories } = useFetchArticleCategoriesQuery();
+    const [createCategory, { isLoading: isCreating, error: createError }] = useCreateArticleCategoryMutation();
+    const [updateCategory, { isLoading: isUpdating, error: updateError }] = useUpdateArticleCategoryMutation();
 
     useEffect(() => {
         if (categoryData) {
@@ -53,18 +53,31 @@ const CategoryForm = ({ categoryData }) => {
             }
 
             setFormData({ name: '', parent: '', icon: null, image: null });
-            window.location.reload();
+            if (onClose) onClose();
         } catch (err) {
             toast.error(categoryData ? 'Failed to update category.' : 'Failed to create category.');
         }
     };
 
     return (
-        <div className="max-w-md mx-auto mt-8 p-6 bg-white shadow-md rounded-lg">
-            <h2 className="text-2xl font-semibold mb-4">{categoryData ? 'Update Category' : 'Create Category'}</h2>
+        <div className="relative max-w-md mx-auto mt-8 p-6 bg-white shadow-lg rounded-lg border border-gray-200">
+            {/* Close Button */}
+            <button
+                type="button"
+                onClick={onClose}
+                className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800">
+                {categoryData ? 'Update Category' : 'Create Category'}
+            </h2>
             <form onSubmit={handleSubmit}>
                 {/* Category Name */}
-                <div className="mb-4">
+                <div className="mb-6">
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                         Category Name
                     </label>
@@ -74,13 +87,13 @@ const CategoryForm = ({ categoryData }) => {
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                        className="bg-white mt-2 block w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         required
                     />
                 </div>
 
                 {/* Parent Category */}
-                <div className="mb-4">
+                <div className="mb-6">
                     <label htmlFor="parent" className="block text-sm font-medium text-gray-700">
                         Parent Category
                     </label>
@@ -89,7 +102,7 @@ const CategoryForm = ({ categoryData }) => {
                         name="parent"
                         value={formData.parent}
                         onChange={handleChange}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                        className="bg-white mt-2 block w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     >
                         <option value="">None</option>
                         {categories?.map((cat) => (
@@ -101,7 +114,7 @@ const CategoryForm = ({ categoryData }) => {
                 </div>
 
                 {/* Icon Upload */}
-                <div className="mb-4">
+                <div className="mb-6">
                     <label htmlFor="icon" className="block text-sm font-medium text-gray-700">
                         Icon
                     </label>
@@ -110,19 +123,19 @@ const CategoryForm = ({ categoryData }) => {
                         id="icon"
                         name="icon"
                         onChange={handleFileChange}
-                        className="mt-1 block w-full"
+                        className="mt-2 block w-full py-2 px-3 border border-gray-300 rounded-md"
                     />
                     {formData.icon && (
                         <img
                             src={URL.createObjectURL(formData.icon)}
                             alt="Icon Preview"
-                            className="mt-2 h-16 w-16 object-cover"
+                            className="mt-3 h-16 w-16 object-cover border border-gray-300 rounded-md"
                         />
                     )}
                 </div>
 
                 {/* Image Upload */}
-                <div className="mb-4">
+                <div className="mb-6">
                     <label htmlFor="image" className="block text-sm font-medium text-gray-700">
                         Image
                     </label>
@@ -131,13 +144,13 @@ const CategoryForm = ({ categoryData }) => {
                         id="image"
                         name="image"
                         onChange={handleFileChange}
-                        className="mt-1 block w-full"
+                        className="mt-2 block w-full py-2 px-3 border border-gray-300 rounded-md"
                     />
                     {formData.image && (
                         <img
                             src={URL.createObjectURL(formData.image)}
                             alt="Image Preview"
-                            className="mt-2 h-16 w-16 object-cover"
+                            className="mt-3 h-16 w-16 object-cover border border-gray-300 rounded-md"
                         />
                     )}
                 </div>
@@ -146,14 +159,14 @@ const CategoryForm = ({ categoryData }) => {
                 <button
                     type="submit"
                     disabled={isCreating || isUpdating}
-                    className={`w-full py-2 px-4 rounded-md text-white ${isCreating || isUpdating ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'}`}
+                    className={`w-full py-3 px-4 rounded-md text-white ${isCreating || isUpdating ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}
                 >
                     {isCreating || isUpdating ? 'Saving...' : categoryData ? 'Update Category' : 'Create Category'}
                 </button>
 
                 {/* Error Message */}
                 {(createError || updateError) && (
-                    <p className="mt-2 text-sm text-red-500">
+                    <p className="mt-4 text-sm text-red-500">
                         Error: {createError?.data?.message || updateError?.data?.message || 'Something went wrong.'}
                     </p>
                 )}
@@ -162,4 +175,4 @@ const CategoryForm = ({ categoryData }) => {
     );
 };
 
-export default CategoryForm;
+export default ArticleCategoryForm;

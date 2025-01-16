@@ -6,106 +6,47 @@ import PayoutSettings from './components/PayoutSettings';
 import PromotionsDiscounts from './components/PromotionsDiscounts';
 import SalesReports from './components/SalesReports';
 
+const sections = [
+  { name: 'inquiries', label: 'Customer Inquiries', component: <CustomerInquiries /> },
+  { name: 'products', label: 'Product Listings', component: <ProductListings /> },
+  { name: 'orders', label: 'Order History', component: <Orders /> },
+  { name: 'payouts', label: 'Payout Settings', component: <PayoutSettings /> },
+  { name: 'promotions', label: 'Promotions & Discounts', component: <PromotionsDiscounts /> },
+  { name: 'analytics', label: 'Sales Reports', component: <SalesReports /> },
+];
+
 const FarmerDashboard = () => {
   const [activeSection, setActiveSection] = useState('inquiries');
 
-  const handleSectionChange = (section) => {
-    setActiveSection(section);
+  const handleSectionChange = (section) => setActiveSection(section);
+
+  const renderSection = () => {
+    const active = sections.find((section) => section.name === activeSection);
+    return active ? active.component : null;
   };
 
   return (
     <div className="flex mt-32">
-      <div className="w-1/4 bg-gray-800 text-white min-h-screen p-5">
-        <h2 className="text-2xl font-bold mb-5">Admin Dashboard</h2>
+      <nav className="w-1/4 bg-gray-800 text-white min-h-screen p-5">
+        <h2 className="text-2xl font-bold mb-5">Farmer Dashboard</h2>
         <ul className="space-y-4">
-          <li>
-            <button
-              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'inquiries' ? 'bg-gray-600' : ''}`}
-              onClick={() => handleSectionChange('inquiries')}
-            >
-              Customer Inquiries
-            </button>
-          </li>
-          <li>
-            <button
-              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'products' ? 'bg-gray-600' : ''}`}
-              onClick={() => handleSectionChange('products')}
-            >
-              Product Listings
-            </button>
-          </li>
-          <li>
-            <button
-              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'orders' ? 'bg-gray-600' : ''}`}
-              onClick={() => handleSectionChange('orders')}
-            >
-              Order History
-            </button>
-          </li>
-          <li>
-            <button
-              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'payouts' ? 'bg-gray-600' : ''}`}
-              onClick={() => handleSectionChange('payouts')}
-            >
-              Payout Settings
-            </button>
-          </li>
-          <li>
-            <button
-              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'promotions' ? 'bg-gray-600' : ''}`}
-              onClick={() => handleSectionChange('promotions')}
-            >
-              Promotions & Discounts
-            </button>
-          </li>
-          <li>
-            <button
-              className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === 'analytics' ? 'bg-gray-600' : ''}`}
-              onClick={() => handleSectionChange('analytics')}
-            >
-              Sales Reports
-            </button>
-          </li>
+          {sections.map(({ name, label }) => (
+            <li key={name}>
+              <button
+                className={`w-full text-left p-2 rounded hover:bg-gray-700 ${activeSection === name ? 'bg-gray-600' : ''
+                  }`}
+                onClick={() => handleSectionChange(name)}
+              >
+                {label}
+              </button>
+            </li>
+          ))}
         </ul>
-      </div>
+      </nav>
 
-      <div className="w-3/4 p-5 bg-gray-100 min-h-screen">
-        {activeSection === 'inquiries' && (
-          <div>
-            <CustomerInquiries />
-          </div>
-        )}
-
-        {activeSection === 'products' && (
-          <div>
-            <ProductListings />
-          </div>
-        )}
-
-        {activeSection === 'orders' && (
-          <div>
-            <Orders />
-          </div>
-        )}
-
-        {activeSection === 'payouts' && (
-          <div>
-            <PayoutSettings />
-          </div>
-        )}
-
-        {activeSection === 'promotions' && (
-          <div>
-            <PromotionsDiscounts />
-          </div>
-        )}
-
-        {activeSection === 'analytics' && (
-          <div>
-            <SalesReports />
-          </div>
-        )}
-      </div>
+      <main className="w-3/4 p-5 bg-gray-100 min-h-screen">
+        {renderSection()}
+      </main>
     </div>
   );
 };

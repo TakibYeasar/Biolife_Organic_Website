@@ -60,7 +60,7 @@ const ManageUsers = () => {
                                 <td className="border px-4 py-2">{user.email}</td>
                                 <td className="border px-4 py-2">
                                     <select
-                                        className="border px-2 py-1"
+                                        className="bg-white border px-2 py-1"
                                         value={user.role}
                                         onChange={(e) => handleRoleChange(user.id, e.target.value)}
                                     >

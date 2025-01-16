@@ -47,17 +47,17 @@ const Orders = () => {
                     <input
                         type="text"
                         placeholder="Search orders..."
-                        className="px-4 py-2 w-64 border rounded"
+                        className="bg-white px-4 py-2 w-64 border rounded"
                         value={searchTerm}
                         onChange={handleSearch}
                     />
-                    <button className="bg-blue-500 text-white px-4 py-2 rounded">
+                    <button className="bg-blue-500 text-white p-4 rounded">
                         <FaSearch />
                     </button>
                 </div>
 
                 <select
-                    className="border px-4 py-2 rounded"
+                    className="bg-white border px-4 py-2 rounded"
                     value={selectedStatus}
                     onChange={(e) => setSelectedStatus(e.target.value)}
                 >
