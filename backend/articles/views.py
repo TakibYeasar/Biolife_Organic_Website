@@ -28,17 +28,20 @@ class GetArticleCategoryView(APIView):
 
 class CreateArticleCategoryView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request, *args, **kwargs):
         user = request.user
-        
+
         # Check if the user is an admin
         if not hasattr(user, 'role') or user.role != 'admin':
             raise PermissionDenied(
                 "You do not have permission to create a category.")
-            
-            
-        serializer = CreateArticleCategorySerializer(data=request.data)
+
+        # Pass the request object in the serializer's context
+        serializer = CreateArticleCategorySerializer(
+            data=request.data,
+            context={'request': request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -86,6 +89,91 @@ class DeleteArticleCategoryView(APIView):
         
         category.delete()
         return Response({'message': 'Category deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+
+
+class GetArticleTagView(APIView):
+    def get(self, request, *args, **kwargs):
+        tag_id = kwargs.get('id')
+        if tag_id:
+            try:
+                tag = ArticleTag.objects.get(id=tag_id)
+                articles = Article.objects.filter(tags=tag)
+                serializer = ArticleSerializer(articles, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except ObjectDoesNotExist:
+                return Response({'error': 'Tag not found'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            tags = ArticleTag.objects.all()
+            tag_data = ArticleTagSerializer(tags, many=True).data
+            return Response(data=tag_data, status=status.HTTP_200_OK)
+
+
+class CreateArticleTagView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+
+        # Check if the user is an admin
+        if not hasattr(user, 'role') or user.role != 'admin':
+            raise PermissionDenied(
+                "You do not have permission to create a tag."
+            )
+
+        serializer = ArticleTagCreateUpdateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateArticleTagView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+
+        # Check if the user is an admin
+        if not hasattr(user, 'role') or user.role != 'admin':
+            raise PermissionDenied(
+                "You do not have permission to update a tag."
+            )
+
+        tag_id = kwargs.get('id')
+        try:
+            tag = ArticleTag.objects.get(id=tag_id)
+        except ObjectDoesNotExist:
+            return Response({'error': 'Tag not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ArticleTagCreateUpdateSerializer(
+            tag, data=request.data
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteArticleTagView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+
+        # Check if the user is an admin
+        if not hasattr(user, 'role') or user.role != 'admin':
+            raise PermissionDenied(
+                "You do not have permission to delete a tag."
+            )
+
+        tag_id = kwargs.get('id')
+        try:
+            tag = ArticleTag.objects.get(id=tag_id)
+        except ObjectDoesNotExist:
+            return Response({'error': 'Tag not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        tag.delete()
+        return Response({'message': 'Tag deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 
 class ManageArticlesView(APIView):
@@ -198,21 +286,20 @@ class GetArticleView(APIView):
         return children_data
 
 
-
 class CreateArticleView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request, *args, **kwargs):
         user = request.user
 
-        # Check if the user has the required role
-        if not hasattr(user, 'role') or (user.role != 'farmer' and user.role != 'admin'):
+        if user.role != 'admin':
             raise PermissionDenied(
-                "You do not have permission to create a article."
+                "You do not have permission to create an article."
             )
-            
-            
-        serializer = ArticleCreateUpdateSerializer(data=request.data)
+
+        # Pass the request context to the serializer
+        serializer = ArticleCreateUpdateSerializer(
+            data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

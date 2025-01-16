@@ -38,14 +38,7 @@ class AdditionalInfoSerializer(serializers.ModelSerializer):
         fields = ['title', 'description']
 
 
-class ProductCreateSerializer(serializers.ModelSerializer):
-    categories = serializers.SlugRelatedField(
-        queryset=Category.objects.all(), slug_field='slug', many=True
-    )
-    main_image = ProductImageSerializer()
-    images = ProductImageSerializer(many=True, required=False)
-    additional_info = AdditionalInfoSerializer(many=True, required=False)
-
+class ProductCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['title', 'categories', 'main_image', 'images', 'price', 'old_price',

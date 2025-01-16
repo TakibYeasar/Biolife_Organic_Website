@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { FaEdit, FaTrash, FaCheck, FaTimes, FaSearch } from "react-icons/fa";
 import { CreateArticleCategory, CreateArticle } from "../../../../components";
-import { useFetchCategoriesQuery, useDeleteCategoryMutation, useFetchArticlesQuery } from "../../../../redux/features/articles/articlesApi";
+import {
+    useFetchArticleCategoriesQuery,
+    useDeleteArticleCategoryMutation,
+    useFetchArticlesQuery,
+    useApproveArticleMutation,
+    useRemoveArticleMutation,
+} from "../../../../redux/features/articles/articlesApi";
 
 const ManageArticles = () => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -9,29 +15,13 @@ const ManageArticles = () => {
     const [selectedStatus, setSelectedStatus] = useState("");
     const [showCreateArticle, setShowCreateArticle] = useState(false);
     const [showCreateCategory, setShowCreateCategory] = useState(false);
+    const [editData, setEditData] = useState(null);
 
-    const [articles, setArticles] = useState([
-        {
-            id: 1,
-            title: "Benefits of Organic Farming",
-            category: "Agriculture",
-            author: "John Doe",
-            status: "Pending",
-        },
-        {
-            id: 2,
-            title: "Advancements in Renewable Energy",
-            category: "Environment",
-            author: "Jane Smith",
-            status: "Published",
-        },
-    ]);
-
-    const [categories, setCategories] = useState([
-        { id: 1, name: "Agriculture" },
-        { id: 2, name: "Environment" },
-        { id: 3, name: "Technology" },
-    ]);
+    const { data: categories = [], isLoading: categoriesLoading } = useFetchArticleCategoriesQuery();
+    const { data: articles = [], isLoading: articlesLoading } = useFetchArticlesQuery();
+    const [deleteCategory] = useDeleteArticleCategoryMutation();
+    const [approveArticle] = useApproveArticleMutation();
+    const [removeArticle] = useRemoveArticleMutation();
 
     const handleSearch = (e) => setSearchQuery(e.target.value);
 
@@ -43,107 +33,115 @@ const ManageArticles = () => {
             (selectedStatus === "" || article.status === selectedStatus)
     );
 
-    const handlePublishArticle = (articleId) => {
-        setArticles(
-            articles.map((article) =>
-                article.id === articleId ? { ...article, status: "Published" } : article
-            )
-        );
+    const handleDeleteCategory = async (categoryId) => {
+        await deleteCategory(categoryId);
     };
 
-    const handleUnpublishArticle = (articleId) => {
-        setArticles(
-            articles.map((article) =>
-                article.id === articleId ? { ...article, status: "Pending" } : article
-            )
-        );
+    const handleApproveArticle = async (articleId) => {
+        await approveArticle(articleId);
     };
 
-    const handleDeleteArticle = (articleId) =>
-        setArticles(articles.filter((article) => article.id !== articleId));
+    const handleRemoveArticle = async (articleId) => {
+        await removeArticle(articleId);
+    };
 
-    const handleDeleteCategory = (categoryId) =>
-        setCategories(categories.filter((category) => category.id !== categoryId));
+    const handleEditCategory = (category) => {
+        setEditData(category);
+        setShowCreateCategory(true);
+    };
+
+    const handleEditArticle = (article) => {
+        setEditData(article);
+        setShowCreateArticle(true);
+    };
 
     return (
-        <div className="p-5 bg-white shadow rounded">
-            <h1 className="text-2xl font-bold mb-5">Manage Articles & Categories</h1>
+        <div className="p-6 bg-gray-50 shadow-md rounded-lg">
+            <h1 className="text-3xl font-bold text-gray-800 mb-6">Manage Articles & Categories</h1>
 
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col md:flex-row justify-between gap-4 mb-8">
                 <button
-                    className="bg-green-500 text-white px-4 py-2 rounded"
-                    onClick={() => setShowCreateArticle(true)}
+                    className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700"
+                    onClick={() => {
+                        setEditData(null);
+                        setShowCreateArticle(true);
+                    }}
                 >
                     + Create Article
                 </button>
-
                 <button
-                    className="bg-green-500 text-white px-4 py-2 rounded"
-                    onClick={() => setShowCreateCategory(true)}
+                    className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700"
+                    onClick={() => {
+                        setEditData(null);
+                        setShowCreateCategory(true);
+                    }}
                 >
                     + Create Category
                 </button>
             </div>
 
             {showCreateArticle && (
-                <div className="p-4 bg-gray-100 rounded mb-4">Create Article Form Here</div>
+                <CreateArticle
+                    onClose={() => setShowCreateArticle(false)}
+                    initialData={editData}
+                />
             )}
 
             {showCreateCategory && (
-                <div className="p-4 bg-gray-100 rounded mb-4">Create Category Form Here</div>
+                <CreateArticleCategory
+                    onClose={() => setShowCreateCategory(false)}
+                    initialData={editData}
+                />
             )}
 
-            <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">Category Listings</h2>
-                <table className="min-w-full bg-white border rounded">
-                    <thead>
-                        <tr className="bg-gray-200">
-                            <th className="py-2 px-4 text-left">#</th>
-                            <th className="py-2 px-4 text-left">Name</th>
-                            <th className="py-2 px-4 text-left">Slug</th>
-                            <th className="py-2 px-4 text-left">Image</th>
-                            <th className="py-2 px-4 text-left">Products</th>
-                            <th className="py-2 px-4 text-left">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {categories.map((category, index) => (
-                            <tr key={category.id} className="border-b">
-                                <td className="py-2 px-4">{index + 1}</td>
-                                <td className="py-2 px-4">{category.name}</td>
-                                <td className="py-2 px-4">{category.slug}</td>
-                                <td className="py-2 px-4">
-                                    <img
-                                        src={category.image}
-                                        alt={category.name}
-                                        className="w-16 h-16 object-cover rounded"
-                                    />
-                                </td>
-                                <td className="py-2 px-4">{category.product_count}</td>
-                                <td className="py-2 px-4">
-                                    <button
-                                        className="bg-red-500 text-white px-3 py-1 rounded flex items-center gap-2"
-                                        onClick={() => handleDeleteCategory(category.id)}
-                                    >
-                                        <FaTrash /> Delete
-                                    </button>
-                                </td>
+            <div className="mb-10">
+                <h2 className="text-xl font-semibold text-gray-700 mb-4">Category Listings</h2>
+                {categoriesLoading ? (
+                    <p className="text-gray-600">Loading categories...</p>
+                ) : (
+                    <table className="min-w-full bg-white border rounded-md">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="py-3 px-4 text-left text-sm text-gray-600">#</th>
+                                <th className="py-3 px-4 text-left text-sm text-gray-600">Name</th>
+                                <th className="py-3 px-4 text-left text-sm text-gray-600">Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-
+                        </thead>
+                        <tbody>
+                            {categories.map((category, index) => (
+                                <tr key={category.id} className="border-b hover:bg-gray-50">
+                                    <td className="py-3 px-4 text-gray-700">{index + 1}</td>
+                                    <td className="py-3 px-4 text-gray-700">{category.name}</td>
+                                    <td className="py-3 px-4 flex gap-2">
+                                        <button
+                                            className="flex items-center gap-1 bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                                            onClick={() => handleEditCategory(category)}
+                                        >
+                                            <FaEdit /> Edit
+                                        </button>
+                                        <button
+                                            className="flex items-center gap-1 bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+                                            onClick={() => handleDeleteCategory(category.id)}
+                                        >
+                                            <FaTrash /> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
             </div>
 
-            <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">Article Listings</h2>
+            <div className="mb-10">
+                <h2 className="text-xl font-semibold text-gray-700 mb-4">Article Listings</h2>
 
-                <div className="flex flex-wrap items-center gap-4 mb-4">
-                    <div className="flex items-center border rounded overflow-hidden">
+                <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
+                    <div className="flex items-center border rounded-md overflow-hidden w-full md:w-1/2">
                         <input
                             type="text"
                             placeholder="Search by title or category"
-                            className="px-4 py-2 w-64 focus:outline-none"
+                            className="px-4 py-2 w-full focus:outline-none"
                             value={searchQuery}
                             onChange={handleSearch}
                         />
@@ -153,7 +151,7 @@ const ManageArticles = () => {
                     </div>
 
                     <select
-                        className="border px-4 py-2 rounded"
+                        className="border px-4 py-2 rounded-md"
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
                     >
@@ -166,7 +164,7 @@ const ManageArticles = () => {
                     </select>
 
                     <select
-                        className="border px-4 py-2 rounded"
+                        className="border px-4 py-2 rounded-md"
                         value={selectedStatus}
                         onChange={(e) => setSelectedStatus(e.target.value)}
                     >
@@ -176,59 +174,69 @@ const ManageArticles = () => {
                     </select>
                 </div>
 
-                <table className="w-full table-auto border-collapse">
-                    <thead>
-                        <tr>
-                            <th className="border px-4 py-2">Title</th>
-                            <th className="border px-4 py-2">Category</th>
-                            <th className="border px-4 py-2">Author</th>
-                            <th className="border px-4 py-2">Status</th>
-                            <th className="border px-4 py-2">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredArticles.map((article) => (
-                            <tr key={article.id}>
-                                <td className="border px-4 py-2">{article.title}</td>
-                                <td className="border px-4 py-2">{article.category}</td>
-                                <td className="border px-4 py-2">{article.author}</td>
-                                <td className="border px-4 py-2">
-                                    <span
-                                        className={`px-2 py-1 text-sm rounded ${article.status === "Published"
-                                            ? "bg-green-200 text-green-700"
-                                            : "bg-yellow-200 text-yellow-700"
-                                            }`}
-                                    >
-                                        {article.status}
-                                    </span>
-                                </td>
-                                <td className="border px-4 py-2 space-x-2">
-                                    {article.status === "Pending" ? (
-                                        <button
-                                            className="bg-green-500 text-white px-3 py-1 rounded"
-                                            onClick={() => handlePublishArticle(article.id)}
-                                        >
-                                            <FaCheck /> Publish
-                                        </button>
-                                    ) : (
-                                        <button
-                                            className="bg-yellow-500 text-white px-3 py-1 rounded"
-                                            onClick={() => handleUnpublishArticle(article.id)}
-                                        >
-                                            <FaTimes /> Unpublish
-                                        </button>
-                                    )}
-                                    <button
-                                        className="bg-red-500 text-white px-3 py-1 rounded"
-                                        onClick={() => handleDeleteArticle(article.id)}
-                                    >
-                                        <FaTrash /> Delete
-                                    </button>
-                                </td>
+                {articlesLoading ? (
+                    <p className="text-gray-600">Loading articles...</p>
+                ) : (
+                    <table className="w-full border-collapse bg-white rounded-md">
+                        <thead>
+                            <tr className="bg-gray-200">
+                                <th className="border px-4 py-2 text-gray-600 text-left">Title</th>
+                                <th className="border px-4 py-2 text-gray-600 text-left">Category</th>
+                                <th className="border px-4 py-2 text-gray-600 text-left">Author</th>
+                                <th className="border px-4 py-2 text-gray-600 text-left">Status</th>
+                                <th className="border px-4 py-2 text-gray-600 text-left">Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {filteredArticles.map((article) => (
+                                <tr key={article.id} className="border-b hover:bg-gray-50">
+                                    <td className="border px-4 py-2 text-gray-700">{article.title}</td>
+                                    <td className="border px-4 py-2 text-gray-700">{article.category}</td>
+                                    <td className="border px-4 py-2 text-gray-700">{article.author}</td>
+                                    <td className="border px-4 py-2">
+                                        <span
+                                            className={`px-2 py-1 text-sm rounded-md ${article.status === "Published"
+                                                    ? "bg-green-200 text-green-700"
+                                                    : "bg-yellow-200 text-yellow-700"
+                                                }`}
+                                        >
+                                            {article.status}
+                                        </span>
+                                    </td>
+                                    <td className="border px-4 py-2 flex gap-2">
+                                        <button
+                                            className="flex items-center gap-1 bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                                            onClick={() => handleEditArticle(article)}
+                                        >
+                                            <FaEdit /> Edit
+                                        </button>
+                                        {article.status === "Pending" ? (
+                                            <button
+                                                className="flex items-center gap-1 bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
+                                                onClick={() => handleApproveArticle(article.id)}
+                                            >
+                                                <FaCheck /> Publish
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="flex items-center gap-1 bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600"
+                                                onClick={() => handleRemoveArticle(article.id)}
+                                            >
+                                                <FaTimes /> Unpublish
+                                            </button>
+                                        )}
+                                        <button
+                                            className="flex items-center gap-1 bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+                                            onClick={() => handleRemoveArticle(article.id)}
+                                        >
+                                            <FaTrash /> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
             </div>
         </div>
     );

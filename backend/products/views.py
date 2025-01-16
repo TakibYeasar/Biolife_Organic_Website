@@ -220,7 +220,7 @@ class CreateProductView(APIView):
             )
 
         # Initialize the serializer with request data and context
-        serializer = ProductCreateSerializer(
+        serializer = ProductCreateUpdateSerializer(
             data=request.data, context={'request': request}
         )
 
@@ -228,7 +228,7 @@ class CreateProductView(APIView):
             # Save the product with the authenticated user as the owner
             product = serializer.save(user=user)
             return Response(
-                ProductCreateSerializer(
+                ProductCreateUpdateSerializer(
                     product, context={'request': request}
                 ).data,
                 status=status.HTTP_201_CREATED

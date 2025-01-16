@@ -4,34 +4,62 @@ import { ARTICLES_URL } from "../../constant";
 export const articlesApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         // Article Categories
-        fetchCategories: builder.query({
+        fetchArticleCategories: builder.query({
             query: () => `${ARTICLES_URL}/article_categories/`,
         }),
-        fetchSingleCategory: builder.query({
+        fetchArticleSingleCategory: builder.query({
             query: (id) => `${ARTICLES_URL}/single-article-category/${id}/`,
         }),
-        createCategory: builder.mutation({
+        createArticleCategory: builder.mutation({
             query: (data) => ({
                 url: `${ARTICLES_URL}/create-article-category/`,
                 method: "POST",
                 body: data,
             }),
         }),
-        updateCategory: builder.mutation({
+        updateArticleCategory: builder.mutation({
             query: ({ id, data }) => ({
                 url: `${ARTICLES_URL}/update-article-category/${id}/`,
                 method: "PUT",
                 body: data,
             }),
         }),
-        deleteCategory: builder.mutation({
+        deleteArticleCategory: builder.mutation({
             query: (id) => ({
                 url: `${ARTICLES_URL}/delete-article-category/${id}/`,
                 method: "DELETE",
             }),
         }),
 
-        // Articles
+        // Article Tags
+        fetchArticleTags: builder.query({
+            query: () => `${ARTICLES_URL}/article_tags/`,
+        }),
+        fetchSingleArticleTag: builder.query({
+            query: (id) => `${ARTICLES_URL}/single-article-tag/${id}/`,
+        }),
+        createArticleTag: builder.mutation({
+            query: (data) => ({
+                url: `${ARTICLES_URL}/create-article-tag/`,
+                method: "POST",
+                body: data,
+            }),
+        }),
+        updateArticleTag: builder.mutation({
+            query: ({ id, data }) => ({
+                url: `${ARTICLES_URL}/update-article-tag/${id}/`,
+                method: "PUT",
+                body: data,
+            }),
+        }),
+        deleteArticleTag: builder.mutation({
+            query: (id) => ({
+                url: `${ARTICLES_URL}/delete-article-tag/${id}/`,
+                method: "DELETE",
+            }),
+        }),
+
+        // Articles Management
         fetchArticles: builder.query({
             query: () => `${ARTICLES_URL}/all_articles/`,
         }),
@@ -55,6 +83,26 @@ export const articlesApi = apiSlice.injectEndpoints({
         deleteArticle: builder.mutation({
             query: (id) => ({
                 url: `${ARTICLES_URL}/delete-article/${id}/`,
+                method: "DELETE",
+            }),
+        }),
+
+        // Approve/Edit/Remove Articles
+        approveArticle: builder.mutation({
+            query: (id) => ({
+                url: `${ARTICLES_URL}/articles/${id}/approve/`,
+                method: "POST",
+            }),
+        }),
+        editApproval: builder.mutation({
+            query: (id) => ({
+                url: `${ARTICLES_URL}/articles/${id}/edit-approval/`,
+                method: "PUT",
+            }),
+        }),
+        removeArticle: builder.mutation({
+            query: (id) => ({
+                url: `${ARTICLES_URL}/articles/${id}/remove/`,
                 method: "DELETE",
             }),
         }),
@@ -113,17 +161,27 @@ export const articlesApi = apiSlice.injectEndpoints({
 });
 
 export const {
-    useFetchCategoriesQuery,
-    useFetchSingleCategoryQuery,
-    useCreateCategoryMutation,
-    useUpdateCategoryMutation,
-    useDeleteCategoryMutation,
+    useFetchArticleCategoriesQuery,
+    useFetchSingleArticleCategoryQuery,
+    useCreateArticleCategoryMutation,
+    useUpdateArticleCategoryMutation,
+    useDeleteArticleCategoryMutation,
+
+    useFetchArticleTagsQuery,
+    useFetchSingleArticleTagQuery,
+    useCreateArticleTagMutation,
+    useUpdateArticleTagMutation,
+    useDeleteArticleTagMutation,
 
     useFetchArticlesQuery,
     useFetchSingleArticleQuery,
     useCreateArticleMutation,
     useUpdateArticleMutation,
     useDeleteArticleMutation,
+
+    useApproveArticleMutation,
+    useEditApprovalMutation,
+    useRemoveArticleMutation,
 
     useLikeArticleMutation,
     useUnlikeArticleMutation,

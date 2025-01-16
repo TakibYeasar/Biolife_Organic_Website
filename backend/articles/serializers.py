@@ -26,11 +26,18 @@ class ArticleCategorySerializer(serializers.ModelSerializer):
         return obj.articles.count()
 
 
+class ArticleTagCreateUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ArticleTag
+        fields = ['title']
+
+
 class ArticleTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArticleTag
         fields = ['id', 'title', 'created_at']
         read_only_fields = ['created_at']
+
 
 
 class ArticleCommentSerializer(serializers.ModelSerializer):
@@ -88,26 +95,23 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 
 class ArticleCreateUpdateSerializer(serializers.ModelSerializer):
-    categories = serializers.SlugRelatedField(
-        queryset=ArticleCategory.objects.all(), slug_field='slug', many=True
-    )
-    tags = serializers.SlugRelatedField(
-        queryset=ArticleTag.objects.all(), slug_field='title', many=True
-    )
 
     class Meta:
         model = Article
         fields = [
-            'title', 'categories', 'tags', 'image', 'description',
-            'author_name', 'author_profession', 'is_active'
+            'title', 'categories', 'image', 'description',
+            'author_name', 'author_profession', 'tags'
         ]
 
     def create(self, validated_data):
         categories_data = validated_data.pop('categories', [])
         tags_data = validated_data.pop('tags', [])
         user = self.context['request'].user
+
+        # Create the article instance
         article = Article.objects.create(user=user, **validated_data)
 
+        # Set the categories and tags using the related field manager's 'set' method
         article.categories.set(categories_data)
         article.tags.set(tags_data)
         return article
@@ -116,10 +120,14 @@ class ArticleCreateUpdateSerializer(serializers.ModelSerializer):
         categories_data = validated_data.pop('categories', [])
         tags_data = validated_data.pop('tags', [])
 
+        # Update the instance attributes from validated data
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
+        # Update the categories and tags
         instance.categories.set(categories_data)
         instance.tags.set(tags_data)
+
+        # Save the instance after the updates
         instance.save()
         return instance
