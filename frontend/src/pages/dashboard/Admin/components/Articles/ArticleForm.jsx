@@ -21,6 +21,7 @@ const ArticleForm = ({ articleData, onSuccess, onClose }) => {
     };
 
     const [formData, setFormData] = useState(initialState);
+
     const { data: categories = [], isLoading: isCategoriesLoading } = useFetchArticleCategoriesQuery();
     const { data: tags = [], isLoading: isTagsLoading } = useFetchArticleTagsQuery();
     const [createArticle, { isLoading: isCreating }] = useCreateArticleMutation();
@@ -31,7 +32,7 @@ const ArticleForm = ({ articleData, onSuccess, onClose }) => {
             setFormData({
                 ...articleData,
                 categories: articleData.categories.map((cat) => cat.id),
-                tags: articleData.tags.map((tag) => tag.id),
+                tags: articleData.tags.map((tag) => tag.title),
             });
         }
     }, [articleData]);
@@ -49,6 +50,12 @@ const ArticleForm = ({ articleData, onSuccess, onClose }) => {
     const handleMultiSelectChange = (e, fieldName) => {
         const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value);
         setFormData((prev) => ({ ...prev, [fieldName]: selectedValues }));
+    };
+
+    const handleTagsChange = (e) => {
+        const tagInput = e.target.value;
+        const tagsArray = tagInput.split(",").map((tag) => tag.trim());
+        setFormData((prev) => ({ ...prev, tags: tagsArray }));
     };
 
     const handleSubmit = async (e) => {
@@ -162,13 +169,11 @@ const ArticleForm = ({ articleData, onSuccess, onClose }) => {
 
                 {/* Tags */}
                 <FormField
-                    label="Tags"
-                    type="select"
+                    label="Tags (comma-separated)"
+                    type="text"
                     name="tags"
-                    value={formData.tags}
-                    onChange={(e) => handleMultiSelectChange(e, "tags")}
-                    options={tags.map((tag) => ({ value: tag.id, label: tag.title }))}
-                    isMultiple
+                    value={formData.tags.join(", ")}
+                    onChange={handleTagsChange}
                     className="bg-gray-100 focus:ring-2 focus:ring-blue-500"
                 />
 
@@ -188,7 +193,7 @@ const ArticleForm = ({ articleData, onSuccess, onClose }) => {
     );
 };
 
-// Reusable FormField Component with added styling options
+// Reusable FormField Component
 const FormField = ({
     label,
     type,
@@ -220,32 +225,36 @@ const FormField = ({
                 multiple={isMultiple}
                 className={`w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none ${className}`}
             >
-                {options.map(({ value, label }) => (
-                    <option key={value} value={value} className="text-gray-700">
-                        {label}
+                {options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                        {option.label}
                     </option>
                 ))}
             </select>
-        ) : (
-            <>
+        ) : type === "file" ? (
+            <div>
                 <input
-                    type={type}
+                    type="file"
                     name={name}
-                    value={type === "file" ? undefined : value}
                     onChange={onChange}
                     className={`w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none ${className}`}
-                    required={required}
+                    accept="image/*"
                 />
                 {preview && (
-                    <div className="mt-4 flex justify-center">
-                        <img
-                            src={preview}
-                            alt="Preview"
-                            className="h-20 w-20 rounded-md object-cover shadow-md"
-                        />
+                    <div className="mt-4">
+                        <img src={preview} alt="Image Preview" className="w-full h-auto rounded-lg" />
                     </div>
                 )}
-            </>
+            </div>
+        ) : (
+            <input
+                type={type}
+                name={name}
+                value={value}
+                onChange={onChange}
+                className={`w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none ${className}`}
+                required={required}
+            />
         )}
     </div>
 );

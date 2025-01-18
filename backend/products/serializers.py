@@ -29,7 +29,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
-        fields = ['image', 'created_at']
+        fields = ['image']
         
     def get_image_url(self, obj):
         request = self.context.get('request')
@@ -46,30 +46,83 @@ class AdditionalInfoSerializer(serializers.ModelSerializer):
 
 
 class ProductCreateUpdateSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, required=False)
+    additional_info = AdditionalInfoSerializer(many=True, required=False)
+    
     class Meta:
         model = Product
         fields = ['title', 'categories', 'main_image', 'images', 'price', 'old_price',
                   'description', 'additional_info']
 
     def create(self, validated_data):
+        # Pop nested data
         images_data = validated_data.pop('images', [])
         additional_info_data = validated_data.pop('additional_info', [])
         categories_data = validated_data.pop('categories', [])
 
         user = self.context['request'].user
-        product = Product.objects.create(user=user, **validated_data)
+        
+        # Create the product instance
+        product = Product.objects.create(**validated_data)
 
         product.categories.set(categories_data)
 
         # Save images
         for image_data in images_data:
             ProductImage.objects.create(product=product, image=image_data)
+        
+        # Set categories
+        product.categories.set(categories_data)
 
         # Save additional info
+        # Create and associate images
+        for image_data in images_data:
+            ProductImage.objects.create(
+                image=image_data['image'], product=product)
+
+        # Create and associate additional info
         for info_data in additional_info_data:
-            AdditionalInfo.objects.create(product=product, **info_data)
+            AdditionalInfo.objects.create(
+                title=info_data['title'], description=info_data['description'], products=product)
 
         return product
+    
+    def update(self, instance, validated_data):
+        # Update the product instance
+        instance.title = validated_data.get('title', instance.title)
+        instance.price = validated_data.get('price', instance.price)
+        instance.old_price = validated_data.get(
+            'old_price', instance.old_price)
+        instance.description = validated_data.get(
+            'description', instance.description)
+        instance.main_image = validated_data.get(
+            'main_image', instance.main_image)
+        instance.save()
+
+        # Handle categories
+        if 'categories' in validated_data:
+            categories_data = validated_data.pop('categories', [])
+            instance.categories.set(categories_data)
+
+        # Handle images
+        if 'images' in validated_data:
+            images_data = validated_data.pop('images', [])
+            # Remove old images and add new ones
+            instance.images.clear()
+            for image_data in images_data:
+                ProductImage.objects.create(
+                    image=image_data['image'], product=instance)
+
+        # Handle additional info
+        if 'additional_info' in validated_data:
+            additional_info_data = validated_data.pop('additional_info', [])
+            # Remove old info and add new ones
+            instance.additional_info.clear()
+            for info_data in additional_info_data:
+                AdditionalInfo.objects.create(
+                    title=info_data['title'], description=info_data['description'], products=instance)
+
+        return instance
 
 
 class ProductSerializer(serializers.ModelSerializer):

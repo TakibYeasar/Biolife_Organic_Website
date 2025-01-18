@@ -16,10 +16,6 @@ urlpatterns = [
     path('article_tags/', GetArticleTagView.as_view(), name='get_article_tags'),
     path('single-article-tag/<int:id>/',
          GetArticleTagView.as_view(), name='single_article_tag'),
-    path('create-article-tag/', CreateArticleTagView.as_view(),
-         name='create_article_tag'),
-    path('update-article-tag/<int:id>/',
-         UpdateArticleTagView.as_view(), name='update_article_tag'),
     path('delete-article-tag/<int:id>/',
          DeleteArticleTagView.as_view(), name='delete_article_tag'),
     

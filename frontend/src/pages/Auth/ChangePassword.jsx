@@ -11,7 +11,7 @@ const ChangePassword = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
                         <input
                             type="password"
-                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition duration-300"
+                            className="bg-white w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition duration-300"
                             placeholder="Enter current password"
                         />
                     </div>
@@ -20,7 +20,7 @@ const ChangePassword = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
                         <input
                             type="password"
-                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition duration-300"
+                            className="bg-white w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition duration-300"
                             placeholder="Enter new password"
                         />
                     </div>
@@ -29,7 +29,7 @@ const ChangePassword = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
                         <input
                             type="password"
-                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition duration-300"
+                            className="bg-white w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition duration-300"
                             placeholder="Confirm new password"
                         />
                     </div>

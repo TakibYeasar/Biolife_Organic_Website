@@ -52,7 +52,7 @@ const EmailVerification = () => {
                             value={otp}
                             onChange={handleOtpChange}
                             required
-                            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:text-secondary focus:border-transparent shadow-sm transition duration-300"
+                            className="bg-white w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:text-secondary focus:border-transparent shadow-sm transition duration-300"
                             placeholder="Enter the OTP sent to your email"
                         />
                     </div>

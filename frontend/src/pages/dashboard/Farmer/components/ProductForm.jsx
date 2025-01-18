@@ -170,7 +170,7 @@ const ProductForm = ({ productData, onSuccess, onClose }) => {
                         type="file"
                         name="images"
                         onChange={handleFileChange}
-                        multiple
+                        isMultiple
                         className="bg-gray-100 focus:ring-2 focus:ring-blue-500"
                     />
                     {formData.images && formData.images.length > 0 && (

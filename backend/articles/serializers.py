@@ -26,12 +26,6 @@ class ArticleCategorySerializer(serializers.ModelSerializer):
         return obj.articles.count()
 
 
-class ArticleTagCreateUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ArticleTag
-        fields = ['title']
-
-
 class ArticleTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArticleTag
@@ -95,6 +89,10 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 
 class ArticleCreateUpdateSerializer(serializers.ModelSerializer):
+    tags = serializers.ListField(
+        child=serializers.CharField(max_length=20),
+        write_only=True
+    )
 
     class Meta:
         model = Article
@@ -111,9 +109,16 @@ class ArticleCreateUpdateSerializer(serializers.ModelSerializer):
         # Create the article instance
         article = Article.objects.create(user=user, **validated_data)
 
-        # Set the categories and tags using the related field manager's 'set' method
+        # Assign categories to the article
         article.categories.set(categories_data)
-        article.tags.set(tags_data)
+
+        # Handle tags: Create or retrieve them, and assign them to the article
+        tag_instances = []
+        for tag_title in tags_data:
+            tag, created = ArticleTag.objects.get_or_create(title=tag_title)
+            tag_instances.append(tag)
+        article.tags.set(tag_instances)
+
         return article
 
     def update(self, instance, validated_data):
@@ -124,9 +129,15 @@ class ArticleCreateUpdateSerializer(serializers.ModelSerializer):
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
-        # Update the categories and tags
+        # Update the categories
         instance.categories.set(categories_data)
-        instance.tags.set(tags_data)
+
+        # Handle tags: Create or retrieve them, and assign them to the article
+        tag_instances = []
+        for tag_title in tags_data:
+            tag, created = ArticleTag.objects.get_or_create(title=tag_title)
+            tag_instances.append(tag)
+        instance.tags.set(tag_instances)
 
         # Save the instance after the updates
         instance.save()

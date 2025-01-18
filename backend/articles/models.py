@@ -10,7 +10,7 @@ class ArticleCategory(models.Model):
         on_delete=models.CASCADE,
         related_name="article_categories"
     )
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=50, unique=True)
     parent = models.ForeignKey(
         'self',
         null=True,
@@ -45,7 +45,7 @@ class ArticleCategory(models.Model):
 
 
 class ArticleTag(models.Model):
-    title = models.CharField(max_length=255, unique=True)
+    title = models.CharField(max_length=20, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -72,7 +72,7 @@ class Article(models.Model):
         related_name="articles",
         verbose_name="Article Tags"
     )
-    image = models.ImageField(upload_to='articles/', blank=True, null=True)
+    image = models.ImageField(upload_to='articles/images/', blank=True, null=True)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     author_name = models.CharField(max_length=150, blank=True, null=True)
@@ -124,7 +124,7 @@ class ArticleComment(models.Model):
         verbose_name="Parent Comment"
     )
     comment = models.TextField()
-    image = models.ImageField(upload_to='comments/', blank=True, null=True)
+    image = models.ImageField(upload_to='article/comments/', blank=True, null=True)
     link = models.URLField(blank=True, null=True)
     likes = models.ManyToManyField(
         settings.AUTH_USER_MODEL,

@@ -213,15 +213,15 @@ class CreateProductView(APIView):
     def post(self, request, *args, **kwargs):
         user = request.user
 
-        # Check if the user has the required role
-        if not hasattr(user, 'role') or (user.role != 'farmer' and user.role != 'admin'):
+        # Ensure only farmers can create products
+        if not hasattr(user, 'role') or user.role != 'farmer':
             raise PermissionDenied(
-                "You do not have permission to create a product."
-            )
+                "Only farmers are allowed to create products.")
 
         # Initialize the serializer with request data and context
         serializer = ProductCreateUpdateSerializer(
-            data=request.data, context={'request': request}
+            data=request.data,
+            context={'request': request}
         )
 
         if serializer.is_valid():
@@ -229,13 +229,13 @@ class CreateProductView(APIView):
             product = serializer.save(user=user)
             return Response(
                 ProductCreateUpdateSerializer(
-                    product, context={'request': request}
-                ).data,
+                    product, context={'request': request}).data,
                 status=status.HTTP_201_CREATED
             )
 
         # Return validation errors if the data is invalid
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 

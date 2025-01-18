@@ -38,20 +38,6 @@ export const articlesApi = apiSlice.injectEndpoints({
         fetchSingleArticleTag: builder.query({
             query: (id) => `${ARTICLES_URL}/single-article-tag/${id}/`,
         }),
-        createArticleTag: builder.mutation({
-            query: (data) => ({
-                url: `${ARTICLES_URL}/create-article-tag/`,
-                method: "POST",
-                body: data,
-            }),
-        }),
-        updateArticleTag: builder.mutation({
-            query: ({ id, data }) => ({
-                url: `${ARTICLES_URL}/update-article-tag/${id}/`,
-                method: "PUT",
-                body: data,
-            }),
-        }),
         deleteArticleTag: builder.mutation({
             query: (id) => ({
                 url: `${ARTICLES_URL}/delete-article-tag/${id}/`,
@@ -169,8 +155,6 @@ export const {
 
     useFetchArticleTagsQuery,
     useFetchSingleArticleTagQuery,
-    useCreateArticleTagMutation,
-    useUpdateArticleTagMutation,
     useDeleteArticleTagMutation,
 
     useFetchArticlesQuery,
