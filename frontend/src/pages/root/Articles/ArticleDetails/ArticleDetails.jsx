@@ -62,7 +62,7 @@ const ArticleDetails = () => {
                 <a href="#" className="text-pink-500 hover:text-pink-700"><FaInstagram /></a>
               </div>
 
-              <Comments articleId={article.id} />
+              <Comments articleId={article.id} comments={article.comments} />
             </div>
           </div>
 
@@ -81,7 +81,7 @@ const ArticleDetails = () => {
 
             <ArticleCategory article={article} />
             <RecentPost />
-            <RecentComments />
+            <RecentComments comments={article.comments} />
           </div>
         </div>
       </div>

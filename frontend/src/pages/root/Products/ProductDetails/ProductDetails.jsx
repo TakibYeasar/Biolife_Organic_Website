@@ -151,7 +151,7 @@ const ProductDetails = () => {
         {/* Additional Sections */}
         <div className="mt-12">
           <Shippingfaq />
-          <ProdReview />
+          <ProdReview reviews={product.reviews} />
           <Relatedprod />
         </div>
       </div>

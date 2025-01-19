@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 
 
 class GetArticleCategoryView(APIView):
@@ -359,80 +360,107 @@ class RemoveLikeUnlikeArticleView(APIView):
 
 class CreateCommentArticleView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request, article_id, parent_id=None):
         try:
-            article = ArticleComment.objects.get(id=article_id)
-        except ArticleComment.DoesNotExist:
+            article = Article.objects.get(id=article_id)
+        except Article.DoesNotExist:
             return Response({'error': "No article found"}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = ArticleCommentSerializer(data=request.data)
+        data = request.data.copy()
+        data['article'] = article.id  # Associate the article with the comment
+        if parent_id:
+            try:
+                parent_comment = ArticleComment.objects.get(id=parent_id)
+                # Associate the parent comment if provided
+                data['parent'] = parent_comment.id
+            except ArticleComment.DoesNotExist:
+                return Response({'error': "No parent comment found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ArticleCommentCreateUpdateSerializer(data=data)
         if serializer.is_valid():
-            if parent_id:
-                try:
-                    parent_comment = ArticleComment.objects.get(id=parent_id)
-                except ArticleComment.DoesNotExist:
-                    return Response({'error': "No parent comment found"}, status=status.HTTP_404_NOT_FOUND)
-                serializer.save(user=request.user,
-                                article=article, parent=parent_comment)
-            else:
-                serializer.save(user=request.user, article=article)
+            serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class UpdateCommentArticleView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def put(self, request, comment_id):
         try:
             comment = ArticleComment.objects.get(id=comment_id)
-            if comment.user.id != request.user.id:
-                return Response({'error': "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
         except ArticleComment.DoesNotExist:
             return Response({'error': "No comment found"}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = ArticleCommentSerializer(
-            comment, data=request.data, partial=True)
+        if comment.user.id != request.user.id:
+            return Response({'error': "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = ArticleCommentCreateUpdateSerializer(
+            comment, data=request.data, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class DeleteCommentArticleView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def delete(self, request, comment_id):
         try:
             comment = ArticleComment.objects.get(id=comment_id)
-            if comment.user.id == request.user.id:
-                comment.delete()
-                return Response({'msg': "Comment deleted"}, status=status.HTTP_200_OK)
-            else:
-                return Response({'error': "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
         except ArticleComment.DoesNotExist:
             return Response({'error': "No comment found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if comment.user.id != request.user.id:
+            return Response({'error': "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
+
+        comment.delete()
+        return Response({'msg': "Comment deleted successfully"}, status=status.HTTP_200_OK)
     
 
 class CreateCommentLikeDislikeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, comment_id):
-        serializer = ArticleCommentSerializer(data={'action': request.data.get(
-            'action'), 'user': request.user.id, 'comment': comment_id})
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'msg': serializer.data['action'] + 'd'}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Expected values: 'like' or 'dislike'
+        action = request.data.get('action')
+        if action not in ['like', 'dislike']:
+            return Response({'error': 'Invalid action. Must be "like" or "dislike".'}, status=status.HTTP_400_BAD_REQUEST)
+
+        comment = get_object_or_404(ArticleComment, id=comment_id)
+
+        # Remove any existing like or dislike by the user
+        if comment.likes.filter(id=request.user.id).exists():
+            comment.likes.remove(request.user)
+        if comment.dislikes.filter(id=request.user.id).exists():
+            comment.dislikes.remove(request.user)
+
+        # Add the new action
+        if action == 'like':
+            comment.likes.add(request.user)
+        elif action == 'dislike':
+            comment.dislikes.add(request.user)
+
+        return Response({'msg': f'Comment {action}d successfully'}, status=status.HTTP_200_OK)
 
 
 class RemoveCommentLikeDislikeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, comment_id):
-        try:
-            like_or_dislike = ArticleComment.likes.through.objects.get(
-                user=request.user, comment_id=comment_id)
-            like_or_dislike.delete()
-            return Response({'msg': 'Like/dislike removed'}, status=status.HTTP_200_OK)
-        except ArticleComment.likes.through.DoesNotExist:
-            return Response({'error': 'Like/dislike not found'}, status=status.HTTP_404_NOT_FOUND)
+        comment = get_object_or_404(ArticleComment, id=comment_id)
+
+        # Remove the user's reaction (like or dislike)
+        if comment.likes.filter(id=request.user.id).exists():
+            comment.likes.remove(request.user)
+            return Response({'msg': 'Like removed'}, status=status.HTTP_200_OK)
+
+        if comment.dislikes.filter(id=request.user.id).exists():
+            comment.dislikes.remove(request.user)
+            return Response({'msg': 'Dislike removed'}, status=status.HTTP_200_OK)
+
+        return Response({'error': 'No like or dislike found to remove'}, status=status.HTTP_404_NOT_FOUND)
+

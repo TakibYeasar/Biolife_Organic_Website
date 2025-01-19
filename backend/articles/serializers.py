@@ -1,3 +1,4 @@
+from .models import ArticleComment
 from rest_framework import serializers
 from .models import ArticleCategory, ArticleTag, Article, ArticleComment
 
@@ -33,6 +34,32 @@ class ArticleTagSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at']
 
 
+class ArticleCommentCreateUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ArticleComment
+        fields = [
+            'article',
+            'parent',
+            'comment',
+        ]
+        extra_kwargs = {
+            'parent': {'required': False, 'allow_null': True},
+        }
+
+    def validate(self, data):
+        """
+        Custom validation to ensure parent comment belongs to the same article.
+        """
+        parent = data.get('parent')
+        article = data.get('article')
+
+        if parent and parent.article != article:
+            raise serializers.ValidationError(
+                "The parent comment must belong to the same article."
+            )
+        return data
+
+
 
 class ArticleCommentSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
@@ -48,7 +75,7 @@ class ArticleCommentSerializer(serializers.ModelSerializer):
         model = ArticleComment
         fields = [
             'id', 'user', 'article', 'parent', 'parent_comment', 'comment',
-            'image', 'link', 'likes', 'dislikes', 'like_count', 'dislike_count', 'created_at'
+            'likes', 'dislikes', 'like_count', 'dislike_count', 'created_at'
         ]
         read_only_fields = ['likes', 'dislikes',
                             'like_count', 'dislike_count', 'created_at']

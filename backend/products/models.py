@@ -109,9 +109,6 @@ class Review(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reviews"
     )
-    parent = models.ForeignKey(
-        'self', blank=True, null=True, on_delete=models.CASCADE, related_name="child_reviews"
-    )
     name = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(max_length=255, blank=True, null=True)
     comment = models.TextField()

@@ -173,30 +173,36 @@ class ManageProductsView(APIView):
 class GetProductView(APIView):
     def get(self, request, *args, **kwargs):
         product_id = kwargs.get('id')
+
         if product_id:
             try:
+                # Fetch the product along with related data
                 product = Product.objects.select_related('user').prefetch_related(
-                    'categories', 'images', 'additional_info'
+                    'categories', 'images', 'additional_info', 'reviews'
                 ).get(id=product_id, is_approved=True)
-                reviews = Review.objects.filter(product=product)
+
+                # Serialize the product
                 serializer = ProductSerializer(
                     product, context={'request': request}
                 )
-                data = serializer.data
-                data['reviews'] = [
-                    {'review': review.review_field, 'rating': review.rating}
-                    for review in reviews
-                ]
-                return Response(data, status=status.HTTP_200_OK)
+
+                # Return the serialized product data
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
             except ObjectDoesNotExist:
+                # Handle case where the product is not found
                 return Response({'error': "No product found"}, status=status.HTTP_404_NOT_FOUND)
         else:
+            # Fetch all approved products
             products = Product.objects.filter(is_approved=True).prefetch_related(
                 'categories', 'images', 'additional_info'
             )
+
+            # Serialize the list of products
             serializer = ProductSerializer(
                 products, context={'request': request}, many=True
             )
+
             return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -339,18 +345,20 @@ class UserLikedProductView(APIView):
 
 class CreateProductReviewView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request, product_id):
         user = request.user
         if user.role != 'customer':
             raise PermissionDenied(
                 "You do not have permission to review a product.")
-            
+
         try:
             product = Product.objects.get(id=product_id)
-            serializer = ReviewProductSerializer(data=request.data)
+            # Use the ReviewCreateUpdateSerializer to create a review
+            serializer = ReviewCreateUpdateSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.save(user=request.user, product=product)
+                # Assign user and product to review
+                serializer.save(user=user, product=product)
                 return Response({'message': 'Review created successfully'}, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Product.DoesNotExist:
@@ -359,24 +367,26 @@ class CreateProductReviewView(APIView):
 
 class UpdateProductReviewView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def put(self, request, review_id):
         user = request.user
         if user.role != 'customer':
             raise PermissionDenied(
                 "You do not have permission to update product review.")
-            
+
         try:
             review_product = Review.objects.get(id=review_id)
-            if review_product.user.id != request.user.id:
+            if review_product.user != request.user:
                 return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
-            serializer = ReviewProductSerializer(
+
+            # Use the ReviewCreateUpdateSerializer for updating the review
+            serializer = ReviewCreateUpdateSerializer(
                 review_product, data=request.data, partial=True)
             if serializer.is_valid():
-                serializer.save()
+                serializer.save()  # Save the updated review
                 return Response({'message': 'Review updated successfully'})
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except ObjectDoesNotExist:
+        except Review.DoesNotExist:
             return Response({'error': 'No review found'}, status=status.HTTP_404_NOT_FOUND)
 
 
@@ -388,11 +398,16 @@ class DeleteProductReviewView(APIView):
         if user.role != 'customer':
             raise PermissionDenied(
                 "You do not have permission to delete product review.")
-            
+
         review_id = kwargs.get('id')
         try:
             review = Review.objects.get(id=review_id)
+            if review.user != request.user:
+                return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+
             review.delete()
-            return Response({'message': 'review deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
-        except ObjectDoesNotExist:
-            return Response({'error': 'review not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'message': 'Review deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except Review.DoesNotExist:
+            return Response({'error': 'Review not found'}, status=status.HTTP_404_NOT_FOUND)
+
+

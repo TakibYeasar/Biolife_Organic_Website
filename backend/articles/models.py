@@ -124,8 +124,6 @@ class ArticleComment(models.Model):
         verbose_name="Parent Comment"
     )
     comment = models.TextField()
-    image = models.ImageField(upload_to='article/comments/', blank=True, null=True)
-    link = models.URLField(blank=True, null=True)
     likes = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name="liked_comments",

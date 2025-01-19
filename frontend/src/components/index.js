@@ -23,12 +23,12 @@ export { default as Testimonial } from "./Home/Testimonial";
 export { default as ArticleCard } from "./Articles/ArticleCard";
 export { default as ArticleCategory } from "./Articles/ArticleCategory";
 export { default as Articletags } from "./Articles/Articletags";
-export { default as Comments } from "./Articles/Comments";
+export { default as Comments } from "./Articles/comments/Comments";
 export { default as RecentComments } from "./Articles/RecentComments";
 export { default as RecentPost } from "./Articles/RecentPost";
 
 // components - containers - Products
-export { default as ProdReview } from "./Products/ProdReview";
+export { default as ProdReview } from "./Products/reviews/ProdReview";
 export { default as ProductCard } from "./Products/ProductCard";
 export { default as ProductTags } from "./Products/ProductTags";
 export { default as Relatedprod } from "./Products/Relatedprod";
