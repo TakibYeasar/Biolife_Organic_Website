@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaComment,
   FaHeart,
@@ -9,18 +9,49 @@ import {
   FaInstagram,
   FaShareAlt,
 } from "react-icons/fa";
-import author from "/assets/images/about-us/author-02.png";
 import { Link, useNavigate } from "react-router-dom";
+import author from "/assets/images/about-us/author-02.png";
+import { useCurrentUserQuery } from "../../redux/features/auth/authApi";
+import { useLikeArticleMutation, useUnlikeArticleMutation } from "../../redux/features/articles/articlesApi";
 
 const ArticleCard = ({ item }) => {
   const navigate = useNavigate();
 
+  // Fetch current user
+  const { data: user, isLoading } = useCurrentUserQuery();
+  const [isLiked, setIsLiked] = useState(false);
+
+  // Redux hooks for liking and unliking an article
+  const [likeArticle] = useLikeArticleMutation();
+  const [unlikeArticle] = useUnlikeArticleMutation();
+
+  // Determine if the article is liked by the user on component mount or item update
+  useEffect(() => {
+    if (user && item?.likes?.includes(user.id)) {
+      setIsLiked(true);
+    } else {
+      setIsLiked(false);
+    }
+  }, [user, item]);
+
+  // Handle like/unlike functionality
+  const handleLike = () => {
+    if (isLiked) {
+      unlikeArticle(item?.id);
+    } else {
+      likeArticle(item?.id);
+    }
+    setIsLiked(!isLiked);
+  };
+
+  // Navigate to article details page
   const handleReadMore = () => {
     navigate(`/article/${item.id}`);
   };
 
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
+      {/* Article Image */}
       <div className="relative">
         <Link to={`/article/${item.id}`}>
           <img
@@ -33,11 +64,15 @@ const ArticleCard = ({ item }) => {
           {item?.date?.split("-")[2]} {item?.date?.split("-")[1]}
         </div>
       </div>
+
+      {/* Article Content */}
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-primary">
           <Link to={`/article/${item.id}`}>{item?.title}</Link>
         </h3>
+
         <div className="flex items-center text-sm text-gray-600 space-x-4 mb-3">
+          {/* Author Information */}
           <div className="flex items-center space-x-2">
             <img
               src={author}
@@ -46,15 +81,23 @@ const ArticleCard = ({ item }) => {
             />
             <span>Admin</span>
           </div>
+
+          {/* Like Count */}
           <div className="flex items-center space-x-1">
-            <FaHeart className="text-red-500" />
-            <span>2</span>
+            <button onClick={handleLike} aria-label="Like Article">
+              <FaHeart className={`text-xl ${isLiked ? "text-red-500" : "text-gray-600"}`} />
+            </button>
+            <span>{item?.like_count}</span>
           </div>
+
+          {/* Comment Count */}
           <div className="flex items-center space-x-1">
             <FaComment className="text-blue-500" />
             <span>6</span>
           </div>
         </div>
+
+        {/* Footer Section */}
         <div className="flex justify-between items-center">
           <button
             onClick={handleReadMore}

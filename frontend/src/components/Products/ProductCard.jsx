@@ -1,12 +1,47 @@
-import React from 'react';
-import { FaEye, FaHeart } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { FaEye, FaHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import {
+    useCreateProductLikeMutation,
+    useRemoveProductLikeMutation
+} from "../../redux/features/products/productsApi";
+import { useCurrentUserQuery } from "../../redux/features/auth/authApi";
 
 const ProductCard = ({ item }) => {
+    const { data: user, isLoading, error } = useCurrentUserQuery();  // Fetch current user
+    const [isLiked, setIsLiked] = useState(false);
     const navigate = useNavigate();
 
+    // Redux hooks for like and unlike actions
+    const [createProductLike] = useCreateProductLikeMutation();
+    const [removeProductLike] = useRemoveProductLikeMutation();
+
+    // Check if the product is liked on component mount or item update
+    useEffect(() => {
+        if (user && item?.likes?.includes(user.id)) {
+            setIsLiked(true);  // Set to true if current user has liked the product
+        } else {
+            setIsLiked(false); // Set to false if current user has not liked the product
+        }
+    }, [user, item]);
+
+    // Handle like/unlike functionality
+    const handleLike = () => {
+        if (isLiked) {
+            removeProductLike(item?.id); // Remove like
+        } else {
+            createProductLike(item?.id); // Add like
+        }
+        setIsLiked(!isLiked); // Toggle the like state
+    };
+
+    // Navigate to product details page with product ID
     const handleProductDetails = () => {
-        navigate(`/product/${item.id}`);
+        if (item?.id) {
+            navigate(`/product/${item.id}`);
+        } else {
+            console.error("Product ID is missing");
+        }
     };
 
     return (
@@ -45,9 +80,10 @@ const ProductCard = ({ item }) => {
                     <div className="flex justify-center space-x-3">
                         <button
                             className="p-2 bg-transparent border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition duration-300"
-                            aria-label="Add to Wishlist"
+                            onClick={handleLike}
+                            aria-label={isLiked ? "Remove from Wishlist" : "Add to Wishlist"}
                         >
-                            <FaHeart className="text-xl" />
+                            <FaHeart className={`text-xl ${isLiked ? 'text-red-500' : 'text-gray-600'}`} />
                         </button>
                         <button
                             className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary transition duration-300"

@@ -9,8 +9,8 @@ import {
     useUpdateProdCategoryMutation,
     useDeleteProdCategoryMutation,
     useManageProductsQuery,
-    useApproveProductMutation,
     useEditApprovalMutation,
+    useDeleteProductMutation,
 } from "../../../../../redux/features/products/productsApi";
 
 const ManageProducts = () => {
@@ -26,30 +26,30 @@ const ManageProducts = () => {
     const { data: products = [], isLoading: isLoadingProducts } = useManageProductsQuery();
     const [updateProdCategory] = useUpdateProdCategoryMutation();
     const [deleteProdCategory] = useDeleteProdCategoryMutation();
-    const [approveProduct] = useApproveProductMutation();
-    const [editApproval] = useEditApprovalMutation();
+    const [approveProduct] = useEditApprovalMutation();
+    const [deleteProduct] = useDeleteProductMutation();
 
     // Handlers
     const handleSearch = (e) => setSearchQuery(e.target.value);
 
-    const handleEditCategory = async (categoryId) => {
-        if (!categoryId) return;
-        await updateProdCategory(categoryId);
+    const handleEditCategory = (category) => {
+        setEditData(category);
+        setShowModal("category");
     };
 
     const handleDeleteCategory = async (categoryId) => {
         if (!categoryId) return;
-        await deleteProdCategory(categoryId);
+        await deleteProdCategory({ id: categoryId });
     };
 
-    const handleApproveProduct = async (productId) => {
+    const handleApproveProduct = async (productId, isApproved) => {
         if (!productId) return;
-        await approveProduct(productId);
+        await approveProduct({ id: productId, is_approved: isApproved });
     };
 
-    const handleEditApproval = async (productId) => {
+    const handleDeleteProduct = async (productId) => {
         if (!productId) return;
-        await editApproval(productId);
+        await deleteProduct({ id: productId });
     };
 
     const closeModal = () => {
@@ -64,7 +64,9 @@ const ManageProducts = () => {
     return (
         <div className="p-6 bg-gray-100 min-h-screen">
             <div className="bg-white shadow-md rounded-lg p-6">
-                <h1 className="text-3xl font-semibold mb-6 text-gray-700">Manage Products & Categories</h1>
+                <h1 className="text-3xl font-semibold mb-6 text-gray-700">
+                    Manage Products & Categories
+                </h1>
 
                 {/* Create Category Button */}
                 <div className="flex justify-end mb-6">
@@ -105,7 +107,6 @@ const ManageProducts = () => {
                             />
                         </>
                     )}
-                    isLoading={isLoadingCategories}
                 />
 
                 {/* Filters */}
@@ -158,33 +159,32 @@ const ManageProducts = () => {
                     )}
                     actions={(product) => (
                         <>
-                            {product.status === "Pending" ? (
-                                <ActionButton
-                                    label="Approve"
-                                    onClick={() => handleApproveProduct(product.id)}
-                                    icon={<FaCheck />}
-                                    bgColor="bg-green-500"
-                                    hoverColor="bg-green-600"
-                                />
-                            ) : (
+                            {product.is_approved ? (
                                 <ActionButton
                                     label="Unapprove"
-                                    onClick={() => handleEditApproval(product.id)}
+                                    onClick={() => handleApproveProduct(product.id, false)}
                                     icon={<FaTimes />}
                                     bgColor="bg-yellow-500"
                                     hoverColor="bg-yellow-600"
                                 />
+                            ) : (
+                                <ActionButton
+                                    label="Approve"
+                                    onClick={() => handleApproveProduct(product.id, true)}
+                                    icon={<FaCheck />}
+                                    bgColor="bg-green-500"
+                                    hoverColor="bg-green-600"
+                                />
                             )}
                             <ActionButton
                                 label="Delete"
-                                onClick={() => handleEditApproval(product.id)}
+                                onClick={() => handleDeleteProduct(product.id)}
                                 icon={<FaTrash />}
                                 bgColor="bg-red-500"
                                 hoverColor="bg-red-600"
                             />
                         </>
                     )}
-                    isLoading={isLoadingProducts}
                 />
             </div>
         </div>

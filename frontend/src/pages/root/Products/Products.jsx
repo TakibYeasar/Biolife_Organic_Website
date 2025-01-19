@@ -16,7 +16,7 @@ const Products = () => {
   }
 
   return (
-    <div className="bg-gray-50">
+    <div className="">
       {/* Hero Section */}
       <div className="relative h-80 mb-8">
         <img src={bg} alt="banner" className="w-full h-full object-cover rounded-lg shadow-md" />
@@ -39,7 +39,7 @@ const Products = () => {
           {/* Product Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {allproducts.map((item) => (
-              <div key={item.id} className="bg-white shadow-lg rounded-lg overflow-hidden">
+              <div key={item.id} className="flex-none w-1/3 sm:w-1/4 md:w-1/5">
                 <ProductCard item={item} />
               </div>
             ))}

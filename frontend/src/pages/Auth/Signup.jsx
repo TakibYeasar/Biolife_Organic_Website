@@ -5,21 +5,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRegisterMutation } from "../../redux/features/auth/authApi";
 
 const SignUp = () => {
-    const navigate = useNavigate(); // For navigation in React Router
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { loading, error } = useSelector((state) => state.auth);
+
+    const [register, { isLoading }] = useRegisterMutation(); // Proper hook usage
+
     const [formData, setFormData] = useState({
-        email: '',
-        username: '',
-        first_name: '',
-        last_name: '',
-        password: '',
-        confirm_password: '',
-    })
-    const [selectedRole, setSelectedRole] = useState('');
+        email: "",
+        username: "",
+        first_name: "",
+        last_name: "",
+        password: "",
+        confirm_password: "",
+    });
+
+    const [selectedRole, setSelectedRole] = useState("");
 
     const handleClose = () => {
-        navigate("/"); // Redirect to home on close
+        navigate("/");
     };
 
     const handleChange = (e) => {
@@ -28,60 +32,67 @@ const SignUp = () => {
             ...prevData,
             [name]: value,
         }));
-    }
+    };
 
     const handleSignUpSubmit = async (e) => {
         e.preventDefault();
 
-        // Check if passwords match
         if (formData.password !== formData.confirm_password) {
-            alert('Passwords do not match!');
+            alert("Passwords do not match!");
             return;
         }
 
-        // Add the selected role to the formData
         const signUpData = {
             ...formData,
-            role: selectedRole || 'customer', // Default to 'customer' if no role is selected
+            role: selectedRole || "customer",
         };
 
-        // Dispatch the useRegisterMutation action with the complete formData including role
-        const result = await dispatch(useRegisterMutation(signUpData));
-
-        // Handle success or failure
-        if (result?.payload?.message) {
-            navigate('/sign-up/verify-email');
-        } else {
-            alert('Sign up failed! Please try again.');
+        try {
+            const result = await register(signUpData).unwrap();
+            if (result?.message) {
+                navigate("/sign-up/verify-email");
+            } else {
+                alert("Sign up failed! Please try again.");
+            }
+        } catch (err) {
+            alert("An error occurred: " + err.message);
         }
     };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="relative w-full max-w-lg bg-white shadow-lg rounded-lg p-8 max-h-[80vh] overflow-y-auto">
-                {/* Close Button */}
                 <button
                     onClick={handleClose}
                     className="absolute top-2 right-4 text-gray-500 hover:text-gray-700 transition-colors"
                 >
-                    &#x2715; {/* Close icon */}
+                    &#x2715;
                 </button>
 
                 <h2 className="text-3xl font-semibold text-gray-800 mb-6 text-center">
                     Create a new account
                 </h2>
 
-                {error && <div className="mb-4 text-center text-red-500">{error.message || 'An error occurred'}</div>}
+                {error && (
+                    <div className="mb-4 text-center text-red-500">
+                        {error.message || "An error occurred"}
+                    </div>
+                )}
 
                 <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Select Your Role <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Select Your Role <span className="text-red-500">*</span>
+                    </label>
                     <div className="flex justify-center space-x-4">
-                        {['customer', 'farmer'].map((role) => (
+                        {["customer", "farmer"].map((role) => (
                             <button
                                 key={role}
                                 type="button"
                                 onClick={() => setSelectedRole(role)}
-                                className={`px-4 py-2 text-center w-1/2 border rounded-md focus:outline-none ${selectedRole === role ? 'bg-primary text-white' : 'bg-white text-gray-700 border-gray-300'} transition duration-300 ease-in-out`}
+                                className={`px-4 py-2 text-center w-1/2 border rounded-md focus:outline-none ${selectedRole === role
+                                        ? "bg-primary text-white"
+                                        : "bg-white text-gray-700 border-gray-300"
+                                    } transition duration-300 ease-in-out`}
                             >
                                 {role.charAt(0).toUpperCase() + role.slice(1)}
                             </button>
@@ -90,14 +101,14 @@ const SignUp = () => {
                 </div>
 
                 <form className="space-y-6" onSubmit={handleSignUpSubmit}>
-
-                    {['email', 'username', 'first_name', 'last_name'].map((field) => (
+                    {["email", "username", "first_name", "last_name"].map((field) => (
                         <div key={field}>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                {field.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())} <span className="text-red-500">*</span>
+                                {field.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase())}{" "}
+                                <span className="text-red-500">*</span>
                             </label>
                             <input
-                                type={field === 'email' ? 'email' : 'text'}
+                                type={field === "email" ? "email" : "text"}
                                 name={field}
                                 required
                                 onChange={handleChange}
@@ -107,10 +118,11 @@ const SignUp = () => {
                         </div>
                     ))}
 
-                    {['password', 'confirm_password'].map((field) => (
+                    {["password", "confirm_password"].map((field) => (
                         <div key={field}>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                {field.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())} <span className="text-red-500">*</span>
+                                {field.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase())}{" "}
+                                <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="password"
@@ -118,39 +130,30 @@ const SignUp = () => {
                                 required
                                 onChange={handleChange}
                                 className="bg-white w-full p-4 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition duration-300"
-                                placeholder={field === 'password' ? 'Enter your password' : 'Confirm your password'}
+                                placeholder={field === "password" ? "Enter your password" : "Confirm your password"}
                             />
                         </div>
                     ))}
 
-
                     <button
                         type="submit"
                         className="w-full bg-primary text-white py-3 rounded-md shadow-lg font-medium hover:bg-secondary transition duration-300"
+                        disabled={isLoading}
                     >
-                        {loading ? 'Signing Up...' : 'Sign Up'}
+                        {isLoading ? "Signing Up..." : "Sign Up"}
                     </button>
                 </form>
 
                 <div className="mt-8 text-center">
                     <p className="text-sm text-gray-600 mb-4">Or sign up using</p>
                     <div className="flex justify-center space-x-4">
-                        <a
-                            href="#"
-                            className="text-blue-600 hover:text-blue-800 transition duration-300"
-                        >
+                        <a href="#" className="text-blue-600 hover:text-blue-800 transition duration-300">
                             <FaFacebook size={24} />
                         </a>
-                        <a
-                            href="#"
-                            className="text-red-500 hover:text-red-700 transition duration-300"
-                        >
+                        <a href="#" className="text-red-500 hover:text-red-700 transition duration-300">
                             <FaGoogle size={24} />
                         </a>
-                        <a
-                            href="#"
-                            className="text-blue-400 hover:text-blue-600 transition duration-300"
-                        >
+                        <a href="#" className="text-blue-400 hover:text-blue-600 transition duration-300">
                             <FaTwitter size={24} />
                         </a>
                     </div>

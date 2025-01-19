@@ -18,14 +18,14 @@ const EmailVerification = () => {
             const response = await dispatch(useVerifyEmailMutation(otp)).unwrap();
             setMessage(response.message);
             // Redirect to /signin after successful verification
-            setTimeout(() => navigate('/signin'));
+            setTimeout(() => navigate('/signin'), 3000);
         } catch (err) {
             const errorMessage = err.response?.data?.message || 'Invalid OTP. Please try again.';
             setMessage(errorMessage);
         }
     };
 
-    const handleClose = () => router.push('/');
+    const handleClose = () => navigate('/');
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -66,7 +66,10 @@ const EmailVerification = () => {
                     </button>
 
                     {message && (
-                        <p className={`mt-4 text-center text-sm ${message.includes('Invalid') ? 'text-red-500' : 'text-green-500'}`}>
+                        <p
+                            className={`mt-4 text-center text-sm ${message.includes('Invalid') ? 'text-red-500' : 'text-green-500'
+                                }`}
+                        >
                             {message}
                         </p>
                     )}

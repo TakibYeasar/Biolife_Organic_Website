@@ -12,9 +12,8 @@ urlpatterns = [
          DeleteCategoryView.as_view(), name='delete_category'),
     
     path('manage-prods/', ManageProductsView.as_view(), name='manage_prods'),
-    path('prods/<int:pk>/approve/', ManageProductsView.as_view(), name='approve_prod'),
     path('prods/<int:pk>/edit-approval/',
-         ManageProductsView.as_view(), name='edit-approval'),
+         ManageProductsView.as_view(), name='edit_approval'),
     path('prods/<int:pk>/remove/', ManageProductsView.as_view(), name='remove_prod'),
 
     path('all_products/', GetProductView.as_view(), name='get_products'),
@@ -31,6 +30,7 @@ urlpatterns = [
          CreateProductLikeView.as_view(), name='create_product_like'),
     path('product/<int:product_id>/remove-likes/',
          RemoveProductLikeView.as_view(), name='remove_product_like'),
+    path('user-liked-products/', UserLikedProductView.as_view(), name='user_liked_products'),
 
     path('product/<int:product_id>/create-review/',
          CreateProductReviewView.as_view(), name='create_product_review'),

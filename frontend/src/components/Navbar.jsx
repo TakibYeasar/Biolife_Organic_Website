@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { FaBars, FaTimes, FaEnvelope } from 'react-icons/fa';
+import { FaBars, FaTimes, FaEnvelope, FaHeart, FaShoppingCart } from 'react-icons/fa';
 import { BsSun, BsMoon } from 'react-icons/bs';
 import organic4 from '/assets/images/organic-4.png';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { useLogoutMutation } from '../redux/features/auth/authApi';
+import { useLogoutMutation } from '../redux/features/auth/authApi';  // Ensure correct import for the logout mutation
 import { toast } from 'react-toastify';
+import LikedProducts from './Products/LikedProducts';
+import Wishlists from './Products/Wishlists';
 
 const Navbar = ({ user, isAuthenticated }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const [isHoveredHeart, setIsHoveredHeart] = useState(false);
+    const [isHoveredCart, setIsHoveredCart] = useState(false);
     const [theme, setTheme] = useState('light-theme');
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -47,13 +51,20 @@ const Navbar = ({ user, isAuthenticated }) => {
 
     const handleLogout = async () => {
         try {
-            await dispatch(useLogoutMutation()).unwrap();
+            // Assuming the token is stored in localStorage (update as needed)
+            const token = localStorage.getItem('authToken');
+
+            if (!token) {
+                throw new Error('No token found');
+            }
+
+            await dispatch(useLogoutMutation({ token })).unwrap();
             localStorage.clear();
             sessionStorage.clear();
             toast.success('Logged out successfully');
             navigate('/');
         } catch (error) {
-            toast.error('Failed to log out. Please try again.');
+            toast.error(`Logout failed: ${error.message || 'Please try again.'}`);
         }
     };
 
@@ -141,6 +152,31 @@ const Navbar = ({ user, isAuthenticated }) => {
 
                 {/* Right Section */}
                 <div className="flex items-center gap-4">
+                    {/* Conditional rendering for 'customer' role */}
+                    {user?.role === 'customer' && (
+                        <div className="flex items-center gap-4">
+                            <div
+                                className="relative"
+                                onMouseEnter={() => setIsHoveredHeart(true)}
+                                onMouseLeave={() => setIsHoveredHeart(false)}
+                            >
+                                <button className="text-gray-600 hover:text-gray-900">
+                                    <FaHeart className="text-white text-2xl" />
+                                </button>
+                                {isHoveredHeart && <LikedProducts />}
+                            </div>
+                            <div
+                                className="relative"
+                                onMouseEnter={() => setIsHoveredCart(true)}
+                                onMouseLeave={() => setIsHoveredCart(false)}
+                            >
+                                <button className="text-gray-600 hover:text-gray-900">
+                                    <FaShoppingCart className="text-white text-2xl" />
+                                </button>
+                                {isHoveredCart && <Wishlists />}
+                            </div>
+                        </div>
+                    )}
                     <button onClick={toggleTheme} className="text-white text-2xl">
                         {theme === 'dark-theme' ? <BsSun /> : <BsMoon />}
                     </button>

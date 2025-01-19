@@ -322,26 +322,39 @@ class AddLikeUnlikeArticleView(APIView):
     permission_classes = [IsAuthenticated]
     
     def post(self, request, article_id):
-        try:
-            article = Article.objects.get(id=article_id)
-            article.likes.add(request.user.id)
-            article.save()
-            return Response(ArticleSerializer(article).data, status=status.HTTP_201_CREATED)
-        except ObjectDoesNotExist:
-            return Response({'error': "No article found"}, status=status.HTTP_404_NOT_FOUND)
+        user = request.user
+        if user.role != 'customer':
+            raise PermissionDenied(
+                "You do not have permission to like a article.")
+            
+        article = Article.objects.get(id=article_id)
+        
+        if user.id in article.likes.values_list('id', flat=True):
+            raise PermissionDenied("You have already liked this article.")
+        
+        article.likes.add(request.user.id)
+        article.save()
+        return Response(ArticleSerializer(article).data, status=status.HTTP_201_CREATED)
 
 
 class RemoveLikeUnlikeArticleView(APIView):
     permission_classes = [IsAuthenticated]
     
     def delete(self, request, article_id):
-        try:
-            article = Article.objects.get(id=article_id)
-            article.likes.remove(request.user.id)
-            article.save()
-            return Response(ArticleSerializer(article).data, status=status.HTTP_200_OK)
-        except ObjectDoesNotExist:
-            return Response({'error': "No article found"}, status=status.HTTP_404_NOT_FOUND)
+        user = request.user
+        if user.role != 'customer':
+            raise PermissionDenied(
+                "You do not have permission to unlike a article.")
+            
+        article = Article.objects.get(id=article_id)
+        
+        if user.id not in article.likes.values_list('id', flat=True):
+            raise PermissionDenied("You have not liked this article yet.")
+        
+        
+        article.likes.remove(request.user.id)
+        article.save()
+        return Response(ArticleSerializer(article).data, status=status.HTTP_200_OK)
 
 
 class CreateCommentArticleView(APIView):

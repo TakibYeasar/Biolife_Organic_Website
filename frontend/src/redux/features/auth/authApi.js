@@ -65,17 +65,24 @@ export const authApi = apiSlice.injectEndpoints({
             }),
             async onQueryStarted(_, { queryFulfilled, dispatch }) {
                 try {
+                    // Wait for the query to complete
                     await queryFulfilled;
 
-                    // Clear state and storage
+                    // After successful logout, clear state and local storage
                     dispatch(resetAuthState());
-                    localStorage.clear();
-                    sessionStorage.clear();
+
+                    // Clear only the specific authentication-related data
+                    localStorage.removeItem("authToken");
+                    localStorage.removeItem("user");
+
+                    sessionStorage.clear(); // Only if you also store auth data in sessionStorage
+
                 } catch (error) {
                     console.error("Logout failed:", error);
                 }
             },
         }),
+
 
         // Request password reset
         requestPasswordReset: builder.mutation({

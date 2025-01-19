@@ -136,26 +136,25 @@ class ProductSerializer(serializers.ModelSerializer):
     categories = serializers.SlugRelatedField(
         queryset=Category.objects.all(), slug_field='slug', many=True
     )
+    # Already handles many images
     images = ProductImageSerializer(many=True, required=False)
-    additional_info = AdditionalInfoSerializer(many=True, required=False)
+    additional_info = AdditionalInfoSerializer(
+        many=True, required=False)  # Handles many additional info entries
     user = serializers.StringRelatedField(read_only=True)
     likes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ['user', 'title', 'main_image', 'images', 'price', 'old_price',
-                  'description', 'categories', 'additional_info', 'likes', 'likes_count',
-                  'is_active', 'slug', 'created_at', 'is_approved']
+        fields = [
+            'id', 'user', 'title', 'main_image', 'images', 'price', 'old_price',
+            'description', 'categories', 'additional_info', 'likes', 'likes_count',
+            'is_active', 'slug', 'created_at', 'is_approved'
+        ]
         read_only_fields = ['slug', 'created_at', 'user']
 
     def get_likes_count(self, obj):
         return obj.likes.count()
-    
-    def get_image_url(self, obj):
-        request = self.context.get('request')
-        if obj.image and request:
-            return request.build_absolute_uri(obj.image.url)
-        return obj.image.url if obj.image else None
+
 
 
 class ReviewProductSerializer(serializers.ModelSerializer):

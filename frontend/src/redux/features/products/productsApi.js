@@ -50,14 +50,6 @@ export const productsApi = apiSlice.injectEndpoints({
             }),
         }),
 
-        // Approve a prod by its ID
-        approveProduct: builder.mutation({
-            query: (id) => ({
-                url: `${PRODUCTS_URL}/prods/${id}/approve/`,
-                method: "PUT",
-            }),
-        }),
-
         // Edit approval status of a prod by its ID
         editApproval: builder.mutation({
             query: (id) => ({
@@ -124,7 +116,7 @@ export const productsApi = apiSlice.injectEndpoints({
         // Create Product Like
         createProductLike: builder.mutation({
             query: (productId) => ({
-                url: `${PRODUCTS_URL}/product/${productId}/create/likes/`,
+                url: `${PRODUCTS_URL}/product/${productId}/create-likes/`,
                 method: "POST",
             }),
         }),
@@ -132,8 +124,16 @@ export const productsApi = apiSlice.injectEndpoints({
         // Remove Product Like
         removeProductLike: builder.mutation({
             query: (productId) => ({
-                url: `${PRODUCTS_URL}/product/${productId}/remove/likes/`,
+                url: `${PRODUCTS_URL}/product/${productId}/remove-likes/`,
                 method: "DELETE",
+            }),
+        }),
+
+
+        // User Liked Product
+        fetchUserLikedProducts: builder.query({
+            query: () => ({
+                url: `${PRODUCTS_URL}/user-liked-products/`,
             }),
         }),
 
@@ -173,7 +173,6 @@ export const {
     useDeleteProdCategoryMutation,
 
     useManageProductsQuery,
-    useApproveProductMutation,
     useEditApprovalMutation,
     useRemoveProductMutation,
 
@@ -186,6 +185,8 @@ export const {
 
     useCreateProductLikeMutation,
     useRemoveProductLikeMutation,
+    useFetchUserLikedProductsQuery,
+
     useCreateProductReviewMutation,
     useUpdateProductReviewMutation,
     useDeleteProductReviewMutation,

@@ -102,6 +102,9 @@ class ManageProductsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
+        """
+        Get all products. Only accessible by admin users.
+        """
         if request.user.role != 'admin':
             return Response(
                 {"detail": "You do not have permission to view products."},
@@ -113,85 +116,90 @@ class ManageProductsView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, pk, *args, **kwargs):
+        """
+        Approve or unapprove a product. Only accessible by admin users.
+        """
         if request.user.role != 'admin':
             return Response(
-                {"detail": "You do not have permission to approve or edit Products."},
+                {"detail": "You do not have permission to approve or edit products."},
                 status=status.HTTP_403_FORBIDDEN
             )
 
         try:
-            product = product.objects.get(pk=pk)
-        except product.DoesNotExist:
+            product = Product.objects.get(pk=pk)
+        except Product.DoesNotExist:
             return Response({"detail": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
 
+        # Approve or unapprove the product based on the request data
         is_approved = request.data.get("is_approved", None)
 
         if is_approved is not None:
             product.is_approved = is_approved
-            Product.save()
-
-            status_message = (
-                "approved" if is_approved else "set to pending approval"
-            )
+            product.save()
+            status_message = "approved" if is_approved else "set to pending approval"
             return Response(
-                {"detail": f"Product '{Product.name}' has been {status_message}."},
+                {"detail": f"Product '{product.title}' has been {status_message}."},
                 status=status.HTTP_200_OK,
             )
 
-        if product.is_approved:
-            return Response(
-                {"detail": f"Product '{Product.name}' is already approved."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        product.is_approved = True
-        product.save()
-
         return Response(
-            {"detail": f"Product '{Product.name}' approved successfully."},
-            status=status.HTTP_200_OK,
+            {"detail": "Please provide the 'is_approved' field in the request."},
+            status=status.HTTP_400_BAD_REQUEST
         )
 
     def delete(self, request, pk, *args, **kwargs):
+        """
+        Delete a product. Only accessible by admin users.
+        """
         if request.user.role != 'admin':
             return Response(
-                {"detail": "You do not have permission to delete Products."},
+                {"detail": "You do not have permission to delete products."},
                 status=status.HTTP_403_FORBIDDEN
             )
 
         try:
-            product = product.objects.get(pk=pk)
-        except product.DoesNotExist:
+            product = Product.objects.get(pk=pk)
+        except Product.DoesNotExist:
             return Response({"detail": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
 
+        product_title = product.title
         product.delete()
         return Response(
-            {"detail": f"Product '{Product.name}' has been successfully removed."},
+            {"detail": f"Product '{product_title}' has been successfully removed."},
             status=status.HTTP_200_OK,
         )
+
 
 class GetProductView(APIView):
     def get(self, request, *args, **kwargs):
         product_id = kwargs.get('id')
         if product_id:
             try:
-                product = Product.objects.get(id=product_id, is_approved=True)
-                # category = product.category.all().values_list('id', flat=True)
+                product = Product.objects.select_related('user').prefetch_related(
+                    'categories', 'images', 'additional_info'
+                ).get(id=product_id, is_approved=True)
                 reviews = Review.objects.filter(product=product)
                 serializer = ProductSerializer(
-                    product, context={'request': request})
-                # serializer.data['category'] = list(category)
-                serializer.data['reviews'] = [
-                    {'review': review.review_field, 'rating': review.rating} for review in reviews]
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                    product, context={'request': request}
+                )
+                data = serializer.data
+                data['reviews'] = [
+                    {'review': review.review_field, 'rating': review.rating}
+                    for review in reviews
+                ]
+                return Response(data, status=status.HTTP_200_OK)
             except ObjectDoesNotExist:
                 return Response({'error': "No product found"}, status=status.HTTP_404_NOT_FOUND)
         else:
-            products = Product.objects.filter(is_approved=True)
-            products_data = ProductSerializer(
-                products, context={'request': request}, many=True).data
-            return Response(data=products_data, status=status.HTTP_200_OK)
-        
+            products = Product.objects.filter(is_approved=True).prefetch_related(
+                'categories', 'images', 'additional_info'
+            )
+            serializer = ProductSerializer(
+                products, context={'request': request}, many=True
+            )
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 class GetProductsByUserView(APIView):
     def get(self, request, *args, **kwargs):
@@ -283,7 +291,11 @@ class CreateProductLikeView(APIView):
             raise PermissionDenied(
                 "You do not have permission to like a product.")
             
-        product = self._get_product(product_id)
+        product = Product.objects.get(id=product_id)
+        
+        if user.id in product.likes.values_list('id', flat=True):
+            raise PermissionDenied("You have already liked this product.")
+        
         product.likes.add(request.user.id)
         product.save()
         return Response(ProductSerializer(product).data, status=status.HTTP_201_CREATED)
@@ -293,16 +305,36 @@ class RemoveProductLikeView(APIView):
     permission_classes = [IsAuthenticated]
     
     def delete(self, request, product_id):
-        product = self._get_product(product_id)
-        
-        if product.customer != request.user:
+        user = request.user
+        if user.role != 'customer':
             raise PermissionDenied(
                 "You do not have permission to unlike a product.")
+            
+        product = Product.objects.get(id=product_id)
+            
+        if user.id not in product.likes.values_list('id', flat=True):
+            raise PermissionDenied("You have not liked this product yet.")
             
         product.likes.remove(request.user.id)
         product.save()
         return Response(ProductSerializer(product).data, status=status.HTTP_200_OK)
 
+
+class UserLikedProductView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if user.role != 'customer':
+            raise PermissionDenied(
+                "You do not have permission to see liked product list.")
+
+        # Get the updated list of products liked by the user
+        liked_products = Product.objects.filter(likes=user)
+        serializer = ProductSerializer(
+            liked_products, many=True, context={'request': request})
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CreateProductReviewView(APIView):
