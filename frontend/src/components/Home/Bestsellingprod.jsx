@@ -41,7 +41,7 @@ const Bestsellingprod = () => {
             bestsellingprodItem.product.map((productItem) => (
               <motion.li
                 key={productItem.id}
-                className="flex-shrink-0 w-60 sm:w-72 lg:w-80 xl:w-96 p-4 border border-gray-200 rounded-xl shadow-lg transition-transform duration-300 ease-in-out hover:scale-105"
+                className=""
               >
                 <ProductCard item={productItem} />
               </motion.li>

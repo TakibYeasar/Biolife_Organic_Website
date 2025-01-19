@@ -82,19 +82,19 @@ const Contact = () => {
             <form>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
-                <input type="text" placeholder="Your Name" className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                <input type="text" placeholder="Your Name" className="bg-white w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                <input type="email" placeholder="Email Address" className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                <input type="email" placeholder="Email Address" className="bg-white w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                <input type="tel" placeholder="Phone Number" className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+                <input type="tel" placeholder="Phone Number" className="bg-white w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
               </div>
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Leave Message</label>
-                <textarea placeholder="Leave Message" className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" rows="6"></textarea>
+                <textarea placeholder="Leave Message" className="bg-white w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" rows="6"></textarea>
               </div>
               <button type="submit" className="w-full py-3 px-4 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary">
                 Send Message

@@ -1,7 +1,7 @@
 import React from 'react';
-import "./index.css";
+import './index.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Navbar, Footer } from "./components";
+import { Navbar, Footer } from './components';
 import {
   AdminDashboard,
   CustomerDashboard,
@@ -20,8 +20,8 @@ import {
   SignIn,
   ForgotPassword,
   ChangePassword,
-  ResetPassword
-} from "./pages";
+  ResetPassword,
+} from './pages';
 import { useCurrentUserQuery } from './redux/features/auth/authApi';
 
 function App() {
@@ -44,68 +44,70 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes></Routes>
-      {/* Navbar receives user and authentication status */}
+      {/* Navbar is placed outside Routes to always remain visible */}
       <Navbar user={user} isAuthenticated={isAuthenticated} />
-      <Routes>
-        <Route
-          path="/admin-dashboard"
-          element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/customer-dashboard"
-          element={
-            <ProtectedRoute>
-              <CustomerDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/farmer-dashboard"
-          element={
-            <ProtectedRoute>
-              <FarmerDashboard />
-            </ProtectedRoute>
-          }
-        />
+      <main className="flex-grow">
+        <Routes>
+          <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer-dashboard"
+            element={
+              <ProtectedRoute>
+                <CustomerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/farmer-dashboard"
+            element={
+              <ProtectedRoute>
+                <FarmerDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route path="/" element={<Homepage />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/articles" element={<Articles />} />
-        <Route path="/article/:id" element={<ArticleDetails />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/sign-up/verify-email" element={<EmailVerification />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/forgot-pass" element={<ForgotPassword />} />
-        <Route path="/reset-pass" element={<ResetPassword />} />
-        <Route path="/change-pass" element={<ChangePassword />} />
+          <Route path="/" element={<Homepage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/articles" element={<Articles />} />
+          <Route path="/article/:id" element={<ArticleDetails />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/sign-up/verify-email" element={<EmailVerification />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/forgot-pass" element={<ForgotPassword />} />
+          <Route path="/reset-pass" element={<ResetPassword />} />
+          <Route path="/change-pass" element={<ChangePassword />} />
 
-        <Route
-          path="/cart"
-          element={
-            <ProtectedRoute>
-              <Cart />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/checkout"
-          element={
-            <ProtectedRoute>
-              <Checkout />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-        <Footer />
-      </BrowserRouter>
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <Cart />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </main>
+      {/* Footer is placed outside Routes */}
+      <Footer />
+    </BrowserRouter>
   );
 }
 

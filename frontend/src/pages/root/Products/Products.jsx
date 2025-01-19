@@ -1,52 +1,45 @@
-import React, { useState } from 'react';
-import { FaAngleRight, FaHeart, FaRandom } from 'react-icons/fa';
+import React from 'react';
+import { FaAngleRight } from 'react-icons/fa';
 import bg from "/assets/images/home/biolife-banner__style-01.jpg";
-import { Sortproduct, Sidebar, RecentlyViewed, ProductTags, ProductCard } from '../../../components';
+import { Sortproduct, Sidebar, ProductTags, ProductCard } from '../../../components';
 import { useFetchAllProductsQuery } from '../../../redux/features/products/productsApi';
 
 const Products = () => {
   const { data: allproducts, error, isLoading } = useFetchAllProductsQuery();
-
-  const navigate = (id) => {
-    console.log(`Navigating to product with id: ${id}`);
-  };
 
   if (isLoading) {
     return <div className="text-center py-8">Loading...</div>;
   }
 
   if (error) {
-    return <div className="text-center py-8 text-primary">Error: {error.message}</div>;
+    return <div className="text-center py-8 text-red-500">Error: {error.message}</div>;
   }
 
   return (
-    <div className="bg-white">
+    <div className="bg-gray-50">
       {/* Hero Section */}
-      <div className="relative h-72">
-        <img src={bg} alt="banner" className="w-full h-full object-cover" />
-        <h1 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-white">
+      <div className="relative h-80 mb-8">
+        <img src={bg} alt="banner" className="w-full h-full object-cover rounded-lg shadow-md" />
+        <h1 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-5xl font-bold text-white text-shadow">
           Organic Fruits
         </h1>
       </div>
 
       {/* Breadcrumbs */}
-      <div className="container mx-auto my-4">
-        <div className="flex items-center text-lg text-gray-600">
-          <a href="/" className="hover:text-gray-900">Home</a>
-          <span className="mx-2">/</span>
-          <a href="/allprods" className="hover:text-gray-900">Our Products</a>
-        </div>
-      </div>
+      <nav className="container mx-auto text-lg text-gray-600 mb-8">
+        <a href="/" className="hover:text-gray-900">Home</a>
+        <span className="mx-2">/</span>
+        <a href="/allprods" className="hover:text-gray-900">Our Products</a>
+      </nav>
 
-      <div className="container mx-auto flex space-x-4">
+      <div className="container mx-auto flex flex-col lg:flex-row space-y-8 lg:space-y-0 lg:space-x-8">
         {/* Main Content */}
-        <div className="w-3/4">
-          {/* Sorting Product */}
-          <Sortproduct />
+        <main className="w-full lg:w-3/4 space-y-8">
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-            {allproducts.map((item, i) => (
-              <div key={item.i} className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between">
+          {/* Product Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {allproducts.map((item) => (
+              <div key={item.id} className="bg-white shadow-lg rounded-lg overflow-hidden">
                 <ProductCard item={item} />
               </div>
             ))}
@@ -63,13 +56,16 @@ const Products = () => {
               </li>
             </ul>
           </div>
-        </div>
+        </main>
 
         {/* Sidebar */}
-        <aside className="w-1/4">
-          <Sidebar />
-          <RecentlyViewed />
-          <ProductTags />
+        <aside className="lg:w-1/4 space-y-8">
+          <div className="sticky top-24">
+            {/* Sorting Product */}
+            <Sortproduct />
+            <Sidebar />
+            <ProductTags />
+          </div>
         </aside>
       </div>
     </div>

@@ -13,12 +13,12 @@ const Companies = () => {
   }
 
   return (
-    <section className="bg-gray-100 py-16">
+    <section className="py-16">
       <div className="container mx-auto px-6">
         <ul className="flex flex-wrap justify-center gap-8">
           {brands.map((item) => (
             <li key={item.id} className="w-full sm:w-1/2 lg:w-1/5">
-              <div className="bg-white p-4 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+              <div className="p-4 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
                 <a href="#" className="block">
                   <figure className="flex justify-center">
                     <img

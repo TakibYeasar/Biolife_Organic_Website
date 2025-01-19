@@ -206,38 +206,54 @@ class ManageArticlesView(APIView):
 class GetArticleView(APIView):
     def get(self, request, *args, **kwargs):
         article_id = kwargs.get('id')
+
         if article_id:
+            # Fetch the article and handle the possibility of Article.DoesNotExist
             try:
-                article = Article.objects.get(id=article_id)
+                # Efficient query: prefetch related categories, tags, and likes; select related for user
+                article = Article.objects.select_related('user').prefetch_related(
+                    'categories', 'tags', 'likes', 'comments').get(id=article_id)
                 serializer = ArticleSerializer(
                     article, context={'request': request})
-                category_ids = [category.id for category in article.category.all()]
-                serializer.data['category'] = category_ids
-                comments = ArticleComment.objects.filter(article=article).order_by('-created')
-                flat_comments = []
-                for comment in ArticleCommentSerializer(comments, many=True).data:
-                    children = self.get_children(comment['id'])
-                    comment['children'] = children
-                    flat_comments.append(comment)
+
+                # Fetch and serialize comments with recursive replies, ordering by 'created_at'
+                comments = ArticleComment.objects.filter(article=article).order_by(
+                    '-created_at')  # Use 'created_at' instead of 'created'
+                flat_comments = self.get_flat_comments(comments)
+
+                # Attach comments data to the article response
                 serializer.data['comments'] = flat_comments
 
                 return Response(serializer.data, status=status.HTTP_200_OK)
             except Article.DoesNotExist:
                 return Response({'error': "No article found"}, status=status.HTTP_404_NOT_FOUND)
+
         else:
+            # If no article_id, fetch all articles
             articles = Article.objects.all()
             articles_data = ArticleSerializer(
                 articles, context={'request': request}, many=True).data
             return Response(data=articles_data, status=status.HTTP_200_OK)
 
+    def get_flat_comments(self, comments):
+        """Helper function to serialize comments and their children"""
+        flat_comments = []
+        for comment in ArticleCommentSerializer(comments, many=True).data:
+            children = self.get_children(comment['id'])
+            comment['children'] = children
+            flat_comments.append(comment)
+        return flat_comments
+
     def get_children(self, parent_id):
         """Recursive function to retrieve child comments (replies)"""
-        children = ArticleComment.objects.filter(
-            parent_id=parent_id).order_by('-created')
+        children = ArticleComment.objects.filter(parent_id=parent_id).order_by(
+            '-created_at')  # Use 'created_at' for ordering replies
         children_data = ArticleCommentSerializer(children, many=True).data
         for child in children_data:
-            child['children'] = self.get_children(child['id'])
+            child['children'] = self.get_children(
+                child['id'])  # Recursively add replies
         return children_data
+
 
 
 class CreateArticleView(APIView):

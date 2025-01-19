@@ -9,67 +9,73 @@ import {
   Discountprod,
   Companies,
   OurArticles,
-  FeaturedCategory
-} from "../../../components";
+  FeaturedCategory,
+} from '../../../components';
 
 const Homepage = () => {
   return (
-    <div className="homepage bg-gray-50">
+    <div className="">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-          <div className="bg-white shadow rounded-lg p-4">
+      <section className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-6">
             <Categorylist />
           </div>
-          <div className="md:col-span-2 bg-white shadow rounded-lg overflow-hidden">
+          <div className="md:col-span-2">
             <Banner />
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Features Section */}
-      <div className="py-12 bg-gradient-to-b from-white to-gray-100">
-        <Features />
-      </div>
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <Features />
+        </div>
+      </section>
 
       {/* Featured Categories */}
-      <div className="container mx-auto px-4 py-12">
+      <section className="container mx-auto px-4 py-12">
         <FeaturedCategory />
-      </div>
+      </section>
 
       {/* Our Products Section */}
-      <div className="bg-white py-12">
+      <section className="py-12">
         <div className="container mx-auto px-4">
           <OurProducts />
         </div>
-      </div>
+      </section>
 
       {/* Special Offer Section */}
-      <div className="py-12 bg-gray-100">
-        <Specialoffer />
-      </div>
+      <section className="py-12 bg-gray-100">
+        <div className="mx-auto">
+          <Specialoffer />
+        </div>
+      </section>
 
-      {/* Discount and Best Selling Products */}
-      <div className="container mx-auto px-4 py-12">
+      {/* Discounted and Bestselling Products */}
+      <section className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="bg-white shadow rounded-lg p-6">
+          <div className="p-6">
             <Discountprod />
           </div>
-          <div className="lg:col-span-2 bg-white shadow rounded-lg p-6">
+          <div className="lg:col-span-2 p-6">
             <Bestsellingprod />
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Partner Companies Section */}
-      <div className="py-12 bg-gray-50">
-        <Companies />
-      </div>
+      {/* Partner Companies */}
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <Companies />
+        </div>
+      </section>
 
       {/* Articles Section */}
-      <div className="container mx-auto px-4 py-12">
+      <section className="container mx-auto px-4 py-12">
         <OurArticles />
-      </div>
+      </section>
     </div>
   );
 };

@@ -1,63 +1,51 @@
 import React from 'react';
 
-// Dummy data for special offers
-const dummySpecialOffers = [
-  {
-    title: "Limited Time Offer!",
-    subtitle: "50% Off on All Items",
-    image: "https://via.placeholder.com/780x450", // Replace with your image URL
-  },
-  {
-    title: "Spring Sale!",
-    subtitle: "30% Off on Selected Items",
-    image: "https://via.placeholder.com/780x450", // Replace with your image URL
-  },
-  {
-    title: "Clearance Sale!",
-    subtitle: "Up to 70% Off",
-    image: "https://via.placeholder.com/780x450", // Replace with your image URL
-  },
-];
-
 const Specialoffer = () => {
   return (
-    <section className="bg-gray-50 py-16">
-      <div className="container mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {dummySpecialOffers.map((item, i) => (
-            <div key={i} className="bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition duration-300">
-              {/* Offer Content */}
-              <div className="p-6 flex flex-col items-center text-center">
-                <span className="text-xl font-semibold text-primary">{item.title}</span>
-                <h3 className="text-2xl font-extrabold text-gray-800 mt-2">{item.subtitle}</h3>
-                <p className="text-gray-500 mt-4">Limited time only!</p>
-
-                <div className="mt-6">
-                  <a
-                    href="#"
-                    className="inline-block bg-primary text-white py-2 px-6 rounded-full text-lg font-semibold hover:bg-opacity-80 transition duration-200"
-                  >
-                    See Offer Now!
-                  </a>
-                </div>
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6">
+          {/* Left Section: Offer Details */}
+          <div className="text-center md:text-left space-y-4">
+            <h2 className="text-3xl font-bold text-gray-800">
+              Special Discount
+            </h2>
+            <p className="text-lg text-gray-600">
+              For all fruit products
+            </p>
+            <div className="flex justify-center md:justify-start gap-4 text-gray-800 text-xl font-semibold">
+              <div className="text-center">
+                <span className="block text-4xl text-gray-900">00</span>
+                <span>Days</span>
               </div>
-
-              {/* Offer Image */}
-              <div className="relative group-hover:scale-105 transition-transform duration-300 ease-in-out">
-                <a href="#">
-                  <img
-                    src={item.image}
-                    alt="Special Offer"
-                    className="w-full h-64 object-cover rounded-b-xl"
-                  />
-                </a>
+              <div className="text-center">
+                <span className="block text-4xl text-gray-900">00</span>
+                <span>Hours</span>
+              </div>
+              <div className="text-center">
+                <span className="block text-4xl text-gray-900">00</span>
+                <span>Mins</span>
+              </div>
+              <div className="text-center">
+                <span className="block text-4xl text-gray-900">00</span>
+                <span>Secs</span>
               </div>
             </div>
-          ))}
+            <button className="mt-4 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700">
+              See Offer Now
+            </button>
+          </div>
+
+          {/* Right Section: Image */}
+          <div className="flex justify-center">
+            <img
+              src="/path/to/your/image.jpg"
+              alt="Special Offer"
+              className="w-full max-w-sm rounded-lg shadow-lg"
+            />
+          </div>
         </div>
       </div>
-    </section>
   );
-}
+};
 
 export default Specialoffer;

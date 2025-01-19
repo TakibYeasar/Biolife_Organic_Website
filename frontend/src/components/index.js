@@ -31,7 +31,6 @@ export { default as RecentPost } from "./Articles/RecentPost";
 export { default as ProdReview } from "./Products/ProdReview";
 export { default as ProductCard } from "./Products/ProductCard";
 export { default as ProductTags } from "./Products/ProductTags";
-export { default as RecentlyViewed } from "./Products/RecentlyViewed";
 export { default as Relatedprod } from "./Products/Relatedprod";
 export { default as Shippingfaq } from "./Products/Shippingfaq";
 export { default as Sidebar } from "./Products/Sidebar";

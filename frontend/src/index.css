@@ -4,7 +4,7 @@
 
 /* Custom styles */
 body {
-    @apply font-cairo text-base leading-24 text-fontColor font-light antialiased overflow-x-hidden;
+    @apply bg-bgColor font-cairo text-base leading-24 text-fontColor font-light antialiased overflow-x-hidden;
 }
 
 a {

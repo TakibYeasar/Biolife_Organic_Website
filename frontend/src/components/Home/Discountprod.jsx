@@ -39,47 +39,55 @@ const discountProducts = [
 ];
 
 const Discountprod = () => {
+  // Flatten products from discountProducts for a single list
+  const allProducts = discountProducts.flatMap((item) =>
+    item.product.map((product) => ({
+      ...product,
+      discount: item.discount,
+      discounted_price: item.discounted_price,
+    }))
+  );
+
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16">
       <div className="container mx-auto">
-        {discountProducts.map((discountprodItem) => (
-          <div key={discountprodItem.id} className="mb-12">
-            {/* Discount Badge */}
-            <div className="text-center mb-6">
-              <span className="text-xl font-bold text-gray-800 bg-yellow-500 py-2 px-4 rounded-full">{discountprodItem.discount}</span>
-            </div>
+        <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">Discounted Products</h2>
 
-            {/* Product Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {discountprodItem.product.map((productItem) => (
-                <div key={productItem.id} className="relative bg-white border rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition duration-300">
-                  {/* Product Image */}
-                  <a href="#" className="block">
-                    <img
-                      src={productItem.main_image.image}
-                      alt={productItem.title}
-                      className="h-48 w-full object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
-                    />
-                  </a>
+        {/* Grid Layout */}
+        <div className="grid gap-8">
+          {allProducts.map((product) => (
+            <div
+              key={product.id}
+              className="bg-white border rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+            >
+              {/* Product Content */}
+              <div className="p-6 text-center">
+                <span className="block text-sm font-bold text-yellow-500 mb-2">
+                  {product.discount}
+                </span>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">{product.title}</h3>
+                <p className="text-lg text-gray-600">
+                  Only: <span className="font-bold">{product.discounted_price}</span>
+                </p>
+                <a
+                  href="#"
+                  className="mt-4 inline-block bg-primary text-white py-2 px-6 rounded-full text-lg font-semibold hover:bg-opacity-80 transition duration-200"
+                >
+                  Shop Now
+                </a>
+              </div>
 
-                  {/* Product Overlay */}
-                  <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-white p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
-                    <h2 className="text-xl font-semibold text-center uppercase">{productItem.title}</h2>
-                    <p className="text-lg mt-2">
-                      Only: <span className="font-bold">{discountprodItem.discounted_price}</span>
-                    </p>
-                    <a
-                      href="#"
-                      className="mt-4 inline-block bg-primary text-white py-2 px-6 rounded-full text-lg font-semibold hover:bg-opacity-80 transition duration-200"
-                    >
-                      Shop Now
-                    </a>
-                  </div>
-                </div>
-              ))}
+              {/* Product Image */}
+              <a href="#" className="block">
+                <img
+                  src={product.main_image.image}
+                  alt={product.title}
+                  className="w-full h-48 object-cover"
+                />
+              </a>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

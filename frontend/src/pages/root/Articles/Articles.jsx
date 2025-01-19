@@ -1,82 +1,79 @@
 import React from 'react';
-import { FaAngleRight } from "react-icons/fa";
-import bg from "/assets/images/home/biolife-banner__style-01.jpg";
+import { FaAngleRight } from 'react-icons/fa';
+import bg from '/assets/images/home/biolife-banner__style-01.jpg';
 import { ArticleCard } from '../../../components';
-
-// Dummy data for articles
-const articles = [
-    {
-        id: 1,
-        title: "The Benefits of Organic Fruits",
-        excerpt: "Discover the health benefits of incorporating organic fruits into your diet.",
-    },
-    {
-        id: 2,
-        title: "Seasonal Organic Fruits to Try",
-        excerpt: "Explore the best seasonal organic fruits and how to enjoy them.",
-    },
-    {
-        id: 3,
-        title: "How to Choose Organic Fruits",
-        excerpt: "Learn tips on selecting the freshest organic fruits at the market.",
-    },
-    // Add more dummy articles as needed
-];
+import { useFetchArticlesQuery } from '../../../redux/features/articles/articlesApi';
 
 const Articles = () => {
+    const { data: articles = [], isLoading: articlesLoading } = useFetchArticlesQuery();
+    const articlesPerPage = 6;
+    const [currentPage, setCurrentPage] = React.useState(1);
+
+    // Calculate start and end index for pagination
+    const startIndex = (currentPage - 1) * articlesPerPage;
+    const currentArticles = articles.slice(startIndex, startIndex + articlesPerPage);
+    const totalPages = Math.ceil(articles.length / articlesPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     return (
         <div className="bg-white">
-            {/* Breadcrumb Section */}
+            {/* Banner Section */}
             <div className="relative">
                 <img src={bg} alt="Banner" className="w-full h-[30vh] object-cover" />
-                <h1 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl font-semibold text-white text-center">
+                <h1 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl font-semibold text-white text-center">
                     Organic Fruits
                 </h1>
             </div>
 
             {/* Breadcrumb Navigation */}
-            <div className="container mx-auto px-4 mt-6">
+            <div className="container mx-auto px-4 mt-8">
                 <nav className="flex items-center space-x-2 text-lg font-medium text-gray-700">
                     <a href="/" className="hover:text-blue-600">Home</a>
-                    <span className="text-gray-500">/</span>
-                    <a href="/Articleslist" className="hover:text-blue-600">Our Blog</a>
+                    <FaAngleRight className="text-gray-500" />
+                    <a href="/Articleslist" className="hover:text-blue-600">Our Articles</a>
                 </nav>
             </div>
 
             {/* Blog Content */}
-            <div className="container mx-auto px-4 mt-6">
-                <div className="flex flex-wrap -mx-2">
-                    {articles.map((item) => (
-                        <div key={item.id} className="w-full md:w-1/3 px-2 mb-6">
+            <div className="container mx-auto px-4 mt-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {currentArticles.map((item) => (
+                        <div key={item.id} className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105">
                             <ArticleCard item={item} />
                         </div>
                     ))}
                 </div>
 
                 {/* Pagination */}
-                <div className="text-center mt-8">
-                    <div className="flex justify-center items-center space-x-3">
-                        <div>
-                            <span className="text-lg font-semibold">1</span>
-                        </div>
-                        <div>
-                            <a href="#" className="text-lg text-blue-600 hover:text-blue-800">2</a>
-                        </div>
-                        <div>
-                            <a href="#" className="text-lg text-blue-600 hover:text-blue-800">3</a>
-                        </div>
-                        <div>
-                            <span className="text-gray-500">...</span>
-                        </div>
-                        <div>
-                            <a href="#" className="text-lg text-blue-600 hover:text-blue-800">20</a>
-                        </div>
-                        <div>
-                            <a href="#" className="text-lg text-blue-600 hover:text-blue-800">
-                                <FaAngleRight aria-hidden="true" />
-                            </a>
-                        </div>
-                    </div>
+                <div className="mt-12 flex justify-center">
+                    <nav className="flex items-center space-x-4">
+                        <button
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 disabled:opacity-50"
+                        >
+                            Previous
+                        </button>
+                        {[...Array(totalPages)].map((_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => handlePageChange(index + 1)}
+                                className={`px-4 py-2 rounded-md ${currentPage === index + 1 ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-blue-100'}`}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+                        <button
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 disabled:opacity-50"
+                        >
+                            Next
+                        </button>
+                    </nav>
                 </div>
             </div>
         </div>

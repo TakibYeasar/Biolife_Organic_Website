@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
-import { FaAngleRight, FaComment, FaFileImage, FaPaperclip, FaSmile, FaThumbsDown, FaThumbsUp } from 'react-icons/fa';
+import {
+    FaAngleRight,
+    FaComment,
+    FaFileImage,
+    FaPaperclip,
+    FaSmile,
+    FaThumbsDown,
+    FaThumbsUp,
+} from 'react-icons/fa';
 import author02 from "/assets/images/blogpost/author-02.png";
 import author03 from "/assets/images/blogpost/author-03.png";
-import viewer from "/assets/images/blogpost/viewer-avt.png";
 
 const dummyComments = [
     {
@@ -28,107 +35,134 @@ const dummyComments = [
 ];
 
 const Comments = () => {
-    const [commentData, setCommentData] = useState({
-        comment: "",
-        image: "",
-        link: "",
-    });
+    const [commentData, setCommentData] = useState("");
 
-    const handleChange = (e) => {
-        setCommentData({ ...commentData, comment: e.target.value });
-    };
+    const handleChange = (e) => setCommentData(e.target.value);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Submitted comment:", commentData);
+        setCommentData("");
     };
 
     return (
-        <div className="post-comments">
-            <h3 className="text-2xl font-bold mb-4">Comments<sup className="text-gray-500 text-lg">(26)</sup></h3>
+        <div className="space-y-8">
+            <h3 className="text-xl font-bold">
+                Comments <span className="text-gray-500 text-lg">(26)</span>
+            </h3>
 
-            <div className="comment-form mb-8">
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <textarea
-                            name="txt-comment"
-                            id="txt-comment"
-                            placeholder="Write your comment"
-                            value={commentData.comment}
-                            onChange={handleChange}
-                            className="textarea textarea-bordered w-full h-40 p-4"
-                        ></textarea>
+            {/* Comment Form */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <textarea
+                    placeholder="Write your comment..."
+                    value={commentData}
+                    onChange={handleChange}
+                    className="w-full p-4 border rounded-md focus:ring-2 focus:ring-primary focus:outline-none"
+                    rows="4"
+                ></textarea>
+                <div className="flex justify-between items-center">
+                    <button
+                        type="submit"
+                        className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition"
+                    >
+                        Post Comment
+                    </button>
+                    <div className="flex space-x-3 text-gray-500">
+                        <FaSmile className="hover:text-primary cursor-pointer" />
+                        <FaPaperclip className="hover:text-primary cursor-pointer" />
+                        <FaFileImage className="hover:text-primary cursor-pointer" />
                     </div>
-                    <div className="flex items-center justify-between">
-                        <button type="submit" className="btn btn-primary">Post a comment</button>
-                        <div className="flex space-x-2">
-                            <a href="#" className="btn btn-outline"><FaSmile aria-hidden="true" /></a>
-                            <a href="#" className="btn btn-outline"><FaPaperclip aria-hidden="true" /></a>
-                            <a href="#" className="btn btn-outline"><FaFileImage aria-hidden="true" /></a>
-                        </div>
-                    </div>
-                </form>
-            </div>
+                </div>
+            </form>
 
-            <div className="comment-list">
-                <ol className="space-y-6">
-                    {dummyComments.map((comment) => (
-                        <li key={comment.id} className="comment-elem">
-                            <div className="bg-gray-100 p-4 rounded-lg">
-                                <div className="flex items-center justify-between">
-                                    <a href="#" className="flex items-center space-x-2">
-                                        <img src={comment.avatar} alt="author" width={29} height={28} className="rounded-full" />
-                                        <span>{comment.author}</span>
-                                    </a>
-                                    <span className="text-gray-500 text-sm">{comment.time}</span>
+            {/* Comment List */}
+            <ul className="space-y-6">
+                {dummyComments.map((comment) => (
+                    <li key={comment.id} className="p-4 bg-gray-100 rounded-lg">
+                        <div className="flex items-start space-x-4">
+                            <img
+                                src={comment.avatar}
+                                alt={comment.author}
+                                className="w-10 h-10 rounded-full"
+                            />
+                            <div className="flex-1">
+                                <div className="flex justify-between items-center">
+                                    <h4 className="font-semibold">{comment.author}</h4>
+                                    <span className="text-sm text-gray-400">{comment.time}</span>
                                 </div>
-                                <p className="mt-2">{comment.content}</p>
-                                <div className="flex space-x-4 mt-3">
-                                    <a href="#" className="btn btn-link"><FaComment aria-hidden="true" /> Comment</a>
-                                    <a href="#" className="btn btn-link"><FaThumbsUp aria-hidden="true" /> {comment.likes}</a>
-                                    <a href="#" className="btn btn-link"><FaThumbsDown aria-hidden="true" /> {comment.dislikes}</a>
+                                <p className="mt-2 text-gray-700">{comment.content}</p>
+                                <div className="flex space-x-4 mt-3 text-sm text-gray-500">
+                                    <button className="hover:text-primary flex items-center space-x-1">
+                                        <FaComment />
+                                        <span>Reply</span>
+                                    </button>
+                                    <button className="hover:text-primary flex items-center space-x-1">
+                                        <FaThumbsUp />
+                                        <span>{comment.likes}</span>
+                                    </button>
+                                    <button className="hover:text-primary flex items-center space-x-1">
+                                        <FaThumbsDown />
+                                        <span>{comment.dislikes}</span>
+                                    </button>
                                 </div>
 
+                                {/* Replies */}
                                 {comment.replies && (
-                                    <div className="pl-8 mt-4">
-                                        <ol className="space-y-6">
-                                            {comment.replies.map((reply) => (
-                                                <li key={reply.id}>
-                                                    <div className="bg-gray-100 p-4 rounded-lg">
-                                                        <div className="flex items-center justify-between">
-                                                            <a href="#" className="flex items-center space-x-2">
-                                                                <img src={reply.avatar} alt="author" width={29} height={28} className="rounded-full" />
-                                                                <span>{reply.author}</span>
-                                                            </a>
-                                                            <span className="text-gray-500 text-sm">{reply.time}</span>
+                                    <ul className="mt-4 space-y-4 pl-8 border-l-2 border-gray-200">
+                                        {comment.replies.map((reply) => (
+                                            <li key={reply.id} className="p-3 bg-gray-50 rounded-md">
+                                                <div className="flex items-start space-x-4">
+                                                    <img
+                                                        src={reply.avatar}
+                                                        alt={reply.author}
+                                                        className="w-8 h-8 rounded-full"
+                                                    />
+                                                    <div className="flex-1">
+                                                        <div className="flex justify-between items-center">
+                                                            <h5 className="font-medium">
+                                                                {reply.author}
+                                                            </h5>
+                                                            <span className="text-sm text-gray-400">
+                                                                {reply.time}
+                                                            </span>
                                                         </div>
-                                                        <p className="mt-2">{reply.content}</p>
-                                                        <div className="flex space-x-4 mt-3">
-                                                            <a href="#" className="btn btn-link"><FaComment aria-hidden="true" /> Comment</a>
-                                                            <a href="#" className="btn btn-link"><FaThumbsUp aria-hidden="true" /> {reply.likes}</a>
-                                                            <a href="#" className="btn btn-link"><FaThumbsDown aria-hidden="true" /> {reply.dislikes}</a>
+                                                        <p className="mt-1 text-gray-700">{reply.content}</p>
+                                                        <div className="flex space-x-4 mt-3 text-sm text-gray-500">
+                                                            <button className="hover:text-primary flex items-center space-x-1">
+                                                                <FaComment />
+                                                                <span>Reply</span>
+                                                            </button>
+                                                            <button className="hover:text-primary flex items-center space-x-1">
+                                                                <FaThumbsUp />
+                                                                <span>{reply.likes}</span>
+                                                            </button>
+                                                            <button className="hover:text-primary flex items-center space-x-1">
+                                                                <FaThumbsDown />
+                                                                <span>{reply.dislikes}</span>
+                                                            </button>
                                                         </div>
                                                     </div>
-                                                </li>
-                                            ))}
-                                        </ol>
-                                    </div>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 )}
                             </div>
-                        </li>
-                    ))}
-                </ol>
+                        </div>
+                    </li>
+                ))}
+            </ul>
 
-                <div className="biolife-panigations-block mt-8">
-                    <ul className="pagination flex space-x-2">
-                        <li><span className="btn btn-sm btn-primary">1</span></li>
-                        <li><a href="#" className="btn btn-sm">2</a></li>
-                        <li><a href="#" className="btn btn-sm">3</a></li>
-                        <li><span className="text-gray-500">....</span></li>
-                        <li><a href="#" className="btn btn-sm">20</a></li>
-                        <li><a href="#" className="btn btn-sm"><FaAngleRight aria-hidden="true" /></a></li>
-                    </ul>
-                </div>
+            {/* Pagination */}
+            <div className="flex justify-center space-x-2">
+                <button className="px-3 py-1 bg-primary text-white rounded-md">1</button>
+                <button className="px-3 py-1 text-gray-500 hover:bg-gray-200 rounded-md">2</button>
+                <button className="px-3 py-1 text-gray-500 hover:bg-gray-200 rounded-md">3</button>
+                <span className="text-gray-400">...</span>
+                <button className="px-3 py-1 text-gray-500 hover:bg-gray-200 rounded-md">20</button>
+                <button className="px-3 py-1 text-gray-500 hover:bg-gray-200 rounded-md">
+                    <FaAngleRight />
+                </button>
             </div>
         </div>
     );

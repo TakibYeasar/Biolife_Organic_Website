@@ -2,20 +2,17 @@ import React from 'react';
 
 const Articletags = ({ article }) => {
     return (
-        <div className="flex items-center space-x-2">
-            <span className="font-semibold">Tags:</span>
-            <ul className="flex flex-wrap space-x-2">
-                {article?.tags?.slice(0, 5).map((item, i) => (
-                    <li key={i} className="mb-2">
-                        <a
-                            href="#"
-                            className="text-sm text-gray-700 bg-white border border-primary rounded-full px-3 py-1 hover:bg-primary hover:text-white transition duration-300"
-                        >
-                            {item?.title}
-                        </a>
-                    </li>
-                ))}
-            </ul>
+        <div className="flex flex-wrap items-center gap-2">
+            <span className="font-medium text-gray-800">Tags:</span>
+            {article?.tags?.slice(0, 5).map((tag, index) => (
+                <a
+                    key={index}
+                    href="#"
+                    className="text-sm text-gray-600 bg-gray-100 border border-gray-300 rounded-full px-3 py-1 hover:bg-primary hover:text-white transition-all duration-200"
+                >
+                    {tag?.title}
+                </a>
+            ))}
         </div>
     );
 };

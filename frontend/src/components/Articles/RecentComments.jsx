@@ -9,26 +9,30 @@ const RecentComments = () => {
     ];
 
     return (
-        <div className="p-4 bg-white shadow-md rounded-lg">
-            <h4 className="text-2xl font-semibold mb-4">Recent Comments</h4>
-            <div className="space-y-4">
-                <ul className="space-y-2">
-                    {comments.map((comment, index) => (
-                        <li key={index} className="text-base">
-                            <p className="flex items-center space-x-2">
-                                <a href="#" className="text-primary font-semibold hover:text-primary-focus">
-                                    <i className="biolife-icon icon-conversation mr-1"></i>{comment.author}
-                                </a>
-                                <a href="#" className="text-secondary hover:text-secondary-focus">
-                                    on {comment.post}
-                                </a>
-                            </p>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+        <div className="p-6 bg-white shadow-lg rounded-lg">
+            <h4 className="text-xl font-bold text-gray-800 mb-6">Recent Comments</h4>
+            <ul className="divide-y divide-gray-200">
+                {comments.map((comment, index) => (
+                    <li key={index} className="py-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                            <a
+                                href="#"
+                                className="text-gray-900 font-medium hover:text-blue-600 transition"
+                            >
+                                {comment.author}
+                            </a>
+                            <a
+                                href="#"
+                                className="text-gray-500 text-sm mt-2 sm:mt-0 hover:text-blue-500 transition"
+                            >
+                                on {comment.post}
+                            </a>
+                        </div>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
-}
+};
 
 export default RecentComments;

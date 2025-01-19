@@ -11,22 +11,20 @@ const productTags = [
 
 const ProductTags = () => {
     return (
-        <div className="widget bg-white p-4 shadow rounded-lg">
-            <h4 className="wgt-title text-lg font-semibold mb-4">Product Tags</h4>
-            <div className="wgt-content">
-                <ul className="flex flex-wrap space-x-2">
-                    {productTags.map(tag => (
-                        <li key={tag.id} className="tag-item">
-                            <a
-                                href="#"
-                                className="tag-link inline-block bg-blue-100 text-blue-600 rounded-full py-1 px-3 text-sm hover:bg-blue-200 transition duration-300"
-                            >
-                                {tag.name}
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+        <div className="bg-white p-4 rounded-lg shadow">
+            <h4 className="text-lg font-semibold mb-4">Product Tags</h4>
+            <ul className="flex flex-wrap space-x-2">
+                {productTags.map(tag => (
+                    <li key={tag.id}>
+                        <a
+                            href="#"
+                            className="inline-block bg-blue-100 text-blue-600 rounded-full py-1 px-3 text-sm hover:bg-blue-200 transition"
+                        >
+                            {tag.name}
+                        </a>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 };

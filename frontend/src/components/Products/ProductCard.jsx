@@ -10,38 +10,39 @@ const ProductCard = ({ item }) => {
     };
 
     return (
-        <div className="group w-64 bg-white shadow-lg rounded-lg overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-xl">
+        <div className="group w-64 bg-white shadow-md rounded-lg overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-xl">
             {/* Product Image */}
             <div className="relative">
                 <button onClick={handleProductDetails} className="w-full">
                     <img
-                        src={item?.main_image?.image}
+                        src={item?.main_image}
                         alt={item?.title}
-                        className="h-64 w-full object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-110"
+                        className="h-64 w-full object-cover rounded-t-lg group-hover:scale-110 transition-transform duration-300"
                     />
                 </button>
             </div>
+
             {/* Product Information */}
             <div className="p-4 text-center">
                 <p className="text-sm text-gray-500">{item?.category}</p>
                 <h4 className="text-lg font-semibold text-gray-800 mt-2 mb-4">
                     <button
                         onClick={handleProductDetails}
-                        className="hover:text-primary transition duration-300"
+                        className="hover:text-primary transition-colors duration-300"
                     >
                         {item?.title}
                     </button>
                 </h4>
                 <div className="flex justify-center items-baseline my-2 space-x-2">
-                    <ins className="text-lg font-bold text-gray-800">£{item?.price}</ins>
+                    <span className="text-lg font-bold text-gray-800">£{item?.price}</span>
                     {item?.old_price && (
-                        <del className="text-sm line-through text-gray-500">£{item?.old_price}</del>
+                        <span className="text-sm text-gray-500 line-through">£{item?.old_price}</span>
                     )}
                 </div>
+
                 {/* Hover Actions */}
-                <div className="hidden group-hover:block mt-4">
-                    <p className="text-sm text-gray-600">{item?.description}</p>
-                    <div className="flex justify-center space-x-2 mt-4">
+                <div className="hidden group-hover:block mt-4 space-y-4">
+                    <div className="flex justify-center space-x-3">
                         <button
                             className="p-2 bg-transparent border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition duration-300"
                             aria-label="Add to Wishlist"

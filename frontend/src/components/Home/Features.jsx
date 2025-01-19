@@ -1,5 +1,4 @@
 import React from 'react';
-import { FaBeer, FaCalendarAlt, FaCarAlt } from 'react-icons/fa';
 
 // Dummy data for featured items
 const featureds = [
@@ -25,7 +24,7 @@ const featureds = [
 
 const Features = () => {
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16">
       <div className="container mx-auto px-6">
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
           {featureds.map((item) => (
@@ -47,43 +46,7 @@ const Features = () => {
           ))}
         </ul>
 
-        <div className="mt-16">
-          <ul className="flex justify-around border-2 border-gray-300 rounded-lg py-6 px-8 bg-white shadow-md">
-            <li>
-              <div className="flex items-center space-x-4">
-                <span className="bg-primary text-white font-bold rounded-full w-8 h-8 flex items-center justify-center">
-                  1
-                </span>
-                <FaBeer className="text-2xl" />
-                <a href="#" className="text-lg font-bold text-gray-800 uppercase hover:text-primary">
-                  Full Stamped Product
-                </a>
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center space-x-4">
-                <span className="bg-primary text-white font-bold rounded-full w-8 h-8 flex items-center justify-center">
-                  2
-                </span>
-                <FaCalendarAlt className="text-2xl" />
-                <a href="#" className="text-lg font-bold text-gray-800 uppercase hover:text-primary">
-                  Place and Delivery on Time
-                </a>
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center space-x-4">
-                <span className="bg-primary text-white font-bold rounded-full w-8 h-8 flex items-center justify-center">
-                  3
-                </span>
-                <FaCarAlt className="text-2xl" />
-                <a href="#" className="text-lg font-bold text-gray-800 uppercase hover:text-primary">
-                  Free Shipping in the City
-                </a>
-              </div>
-            </li>
-          </ul>
-        </div>
+        
       </div>
     </section>
   );

@@ -14,13 +14,20 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    # Add a field for nested categories
+    children = serializers.SerializerMethodField()
     product_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'slug', 'icon',
-                  'image', 'product_count', 'user']
-        read_only_fields = ['user', 'slug', 'product_count']
+        fields = ['id', 'name', 'slug', 'icon', 'image',
+                  'parent', 'product_count', 'children', 'user']
+        read_only_fields = ['user', 'slug', 'product_count', 'children']
+
+    def get_children(self, obj):
+        # Retrieve child categories for the current category
+        children = Category.objects.filter(parent=obj)
+        return CategorySerializer(children, many=True, context=self.context).data
 
     def get_product_count(self, obj):
         return obj.products.count() if hasattr(obj, 'products') else 0
