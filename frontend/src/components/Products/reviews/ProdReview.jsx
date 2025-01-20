@@ -1,70 +1,39 @@
-import React, { useState } from 'react';
-import {
-    useCreateProductReviewMutation,
-    useUpdateProductReviewMutation,
-    useDeleteProductReviewMutation,
-} from '../../../redux/features/products/productsApi';
+import React, { useState, useEffect } from 'react';
+import { useCreateProductReviewMutation, useUpdateProductReviewMutation, useDeleteProductReviewMutation } from '../../../redux/features/products/productsApi';
 import Rating from './Rating';
 import ReviewForm from './ReviewForm';
 import ReviewList from './ReviewList';
 
-const ProdReview = ({ reviews = [], productId }) => {
+const ProdReview = ({ productId, reviews = [] }) => {
     const [editReviewId, setEditReviewId] = useState(null);
     const [formData, setFormData] = useState({
+        rate: 0,
         name: '',
         email: '',
-        comment: '',
-        rating: 0,
+        comment: ''
     });
 
-    const [createReview] = useCreateProductReviewMutation();
-    const [updateReview] = useUpdateProductReviewMutation();
-    const [deleteReview] = useDeleteProductReviewMutation();
+    const [createReview, { isLoading: isCreatingReview }] = useCreateProductReviewMutation();
+    const [updateReview, { isLoading: isUpdatingReview }] = useUpdateProductReviewMutation();
+    const [deleteReview, { isLoading: isDeletingReview }] = useDeleteProductReviewMutation();
 
-    const handleRating = (value) => {
-        setFormData((prev) => ({ ...prev, rating: value }));
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (!productId) {
-            console.error('Product ID is missing.');
-            return;
-        }
-
-        const payload = {
-            ...formData,
-            product: productId,
-        };
-
+    const handleCreateReview = async () => {
         try {
-            if (editReviewId) {
-                await updateReview({ reviewId: editReviewId, data: payload }).unwrap();
-                setEditReviewId(null);
-            } else {
-                await createReview({ productId, data: payload }).unwrap();
-            }
-
-            setFormData({ name: '', email: '', comment: '', rating: 0 });
+            await createReview({ productId, data: formData }).unwrap();
+            setFormData({ rate: 0, name: '', email: '', comment: '' }); // Reset form after submit
         } catch (error) {
-            console.error('Error submitting review:', error);
+            console.error('Error creating review:', error);
         }
     };
 
-    const handleEditReview = (review) => {
-        setEditReviewId(review.id);
-        setFormData({
-            name: review.name,
-            email: review.email,
-            comment: review.comment,
-            rating: review.rate,
-        });
+    const handleEditSubmit = async () => {
+        try {
+            await updateReview({ reviewId: editReviewId, data: formData }).unwrap();
+            setEditReviewId(null); // Reset after edit
+            setFormData({ rate: 0, name: '', email: '', comment: '' }); // Reset form after update
+        } catch (error) {
+            console.error('Error updating review:', error);
+        }
     };
 
     const handleDeleteReview = async (reviewId) => {
@@ -77,46 +46,72 @@ const ProdReview = ({ reviews = [], productId }) => {
         }
     };
 
+    const handleEditReview = (review) => {
+        setEditReviewId(review.id);
+        setFormData({
+            rate: review.rate,
+            name: review.name,
+            email: review.email,
+            comment: review.comment
+        });
+    };
+
+    const handleFormChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
+
+    const handleRatingChange = (rating) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            rate: rating
+        }));
+    };
+
     const averageRating = reviews.length > 0
         ? reviews.reduce((total, review) => total + review.rate, 0) / reviews.length
         : 0;
 
     return (
-        <div className="container mx-auto my-10">
-            <div className="flex flex-col lg:flex-row">
-                <div className="lg:w-1/3 mb-8 lg:mb-0">
-                    <div className="bg-white p-5 rounded-lg shadow">
-                        <p className="text-xl font-bold">
-                            <span className="text-yellow-500">{averageRating.toFixed(1)}</span> out of 5
-                        </p>
-                        <p className="text-gray-500">See all {reviews.length} reviews</p>
-                        <ul className="mt-5">
-                            {Array.from({ length: 5 }, (_, index) => (
-                                <Rating
-                                    key={5 - index}
-                                    starRating={5 - index}
-                                    reviews={reviews}
-                                />
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-
-                <div className="lg:w-2/3">
-                    <ReviewForm
-                        formData={formData}
-                        handleSubmit={handleSubmit}
-                        handleChange={handleChange}
-                        handleRating={handleRating}
-                        isEditing={!!editReviewId}
-                    />
-                </div>
+        <div className="space-y-8">
+            <div className="bg-white p-5 rounded-lg shadow">
+                <h3 className="text-2xl font-bold">Product Reviews</h3>
+                <p className="text-xl font-semibold">
+                    <span className="text-yellow-500">{averageRating.toFixed(1)}</span> out of 5
+                </p>
+                <p className="text-gray-500">See all {reviews.length} reviews</p>
+                <ul className="mt-5">
+                    {Array.from({ length: 5 }, (_, index) => (
+                        <Rating
+                            key={5 - index}
+                            starRating={5 - index}
+                            reviews={reviews}
+                        />
+                    ))}
+                </ul>
             </div>
 
+            {/* Review Form */}
+            <ReviewForm
+                formData={formData}
+                handleFormChange={handleFormChange}
+                handleRatingChange={handleRatingChange}  // Ensure this is passed as a prop
+                isEditing={!!editReviewId}
+                onSubmit={() =>
+                    editReviewId ? handleEditSubmit() : handleCreateReview()
+                }
+                isLoading={isCreatingReview || isUpdatingReview}
+            />
+
+            {/* Review List */}
             <ReviewList
                 reviews={reviews}
                 onEdit={handleEditReview}
                 onDelete={handleDeleteReview}
+                isDeleting={isDeletingReview}
             />
         </div>
     );

@@ -1,110 +1,73 @@
 import React from 'react';
-import { FaStar } from 'react-icons/fa';
 
-const ReviewForm = ({
-    formData,
-    handleSubmit,
-    handleChange,
-    handleRating,
-    isEditing,
-}) => {
+const ReviewForm = ({ formData, handleFormChange, handleRatingChange, onSubmit, isEditing, isLoading }) => {
+    const { rate, name, email, comment } = formData;
+
+    const handleClickRating = (rating) => {
+        handleRatingChange(rating); // Call the correct prop function
+    };
+
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-bold text-gray-800">
-                {isEditing ? 'Edit Your Review' : 'Submit Your Review'}
-            </h2>
-            <form onSubmit={handleSubmit} className="mt-6">
-                {/* Rating Section */}
-                <div className="mb-5">
-                    <label className="block text-sm font-medium text-gray-700">
-                        Rate this product:
-                    </label>
-                    <div className="flex mt-2">
-                        {Array.from({ length: 5 }, (_, index) => (
-                            <button
-                                key={index}
-                                type="button"
-                                className={`text-2xl ${formData.rating >= index + 1
-                                        ? 'text-yellow-500'
-                                        : 'text-gray-300'
-                                    }`}
-                                onClick={() => handleRating(index + 1)}
-                            >
-                                <FaStar />
-                            </button>
-                        ))}
-                    </div>
+        <form onSubmit={onSubmit} className="space-y-4">
+            {/* Rating Section */}
+            <div>
+                <p className="text-xl font-semibold">Rate the product</p>
+                <div className="flex space-x-2">
+                    {Array.from({ length: 5 }, (_, index) => (
+                        <button
+                            type="button"
+                            key={index + 1}
+                            className={`text-2xl ${rate >= index + 1 ? 'text-yellow-500' : 'text-gray-300'}`}
+                            onClick={() => handleClickRating(index + 1)}  // Use handleRatingChange here
+                        >
+                            ★
+                        </button>
+                    ))}
                 </div>
+            </div>
 
-                {/* Name Input */}
-                <div className="mb-4">
-                    <label
-                        htmlFor="name"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Your Name
-                    </label>
-                    <input
-                        id="name"
-                        type="text"
-                        name="name"
-                        placeholder="Enter your name"
-                        className="block w-full mt-1 border border-gray-300 rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+            {/* Name, Email, and Comment Fields */}
+            <div>
+                <label className="block text-sm font-medium">Name</label>
+                <input
+                    type="text"
+                    name="name"
+                    value={name}
+                    onChange={handleFormChange}
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                    required
+                />
+            </div>
+            <div>
+                <label className="block text-sm font-medium">Email</label>
+                <input
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={handleFormChange}
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                    required
+                />
+            </div>
+            <div>
+                <label className="block text-sm font-medium">Comment</label>
+                <textarea
+                    name="comment"
+                    value={comment}
+                    onChange={handleFormChange}
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                    required
+                />
+            </div>
 
-                {/* Email Input */}
-                <div className="mb-4">
-                    <label
-                        htmlFor="email"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Email Address
-                    </label>
-                    <input
-                        id="email"
-                        type="email"
-                        name="email"
-                        placeholder="Enter your email"
-                        className="block w-full mt-1 border border-gray-300 rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                {/* Comment Section */}
-                <div className="mb-6">
-                    <label
-                        htmlFor="comment"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Review
-                    </label>
-                    <textarea
-                        id="comment"
-                        name="comment"
-                        placeholder="Write your review here..."
-                        className="block w-full mt-1 border border-gray-300 rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        rows="4"
-                        value={formData.comment}
-                        onChange={handleChange}
-                        required
-                    ></textarea>
-                </div>
-
-                {/* Submit Button */}
-                <button
-                    type="submit"
-                    className="w-full py-2 px-4 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                    {isEditing ? 'Update Review' : 'Submit Review'}
-                </button>
-            </form>
-        </div>
+            <button
+                type="submit"
+                className="bg-blue-500 text-white py-2 px-4 rounded"
+                disabled={isLoading}
+            >
+                {isEditing ? (isLoading ? 'Updating...' : 'Update Review') : (isLoading ? 'Submitting...' : 'Submit Review')}
+            </button>
+        </form>
     );
 };
 

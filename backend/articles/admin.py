@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import ArticleCategory, ArticleTag, Article, ArticleComment
+from django.core.exceptions import ValidationError
 
 
 @admin.register(ArticleCategory)
@@ -33,3 +34,10 @@ class ArticleCommentAdmin(admin.ModelAdmin):
     list_filter = ('created_at',)
     search_fields = ('comment', 'user__username', 'article__title')
     autocomplete_fields = ('user', 'article', 'parent')
+    
+    def save_model(self, request, obj, form, change):
+        if obj.parent and obj.parent.article != obj.article:
+            raise ValidationError(
+                "The parent comment must belong to the same article.")
+        super().save_model(request, obj, form, change)
+

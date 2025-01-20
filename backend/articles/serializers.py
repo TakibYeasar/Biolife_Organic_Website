@@ -60,22 +60,23 @@ class ArticleCommentCreateUpdateSerializer(serializers.ModelSerializer):
         return data
 
 
-
 class ArticleCommentSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     article = serializers.SlugRelatedField(
         queryset=Article.objects.all(), slug_field='slug'
     )
     parent_comment = serializers.StringRelatedField(
-        source="parent", read_only=True)
+        source="parent", read_only=True
+    )
     like_count = serializers.SerializerMethodField()
     dislike_count = serializers.SerializerMethodField()
+    children = serializers.SerializerMethodField()
 
     class Meta:
         model = ArticleComment
         fields = [
             'id', 'user', 'article', 'parent', 'parent_comment', 'comment',
-            'likes', 'dislikes', 'like_count', 'dislike_count', 'created_at'
+            'likes', 'dislikes', 'like_count', 'dislike_count', 'created_at', 'children'
         ]
         read_only_fields = ['likes', 'dislikes',
                             'like_count', 'dislike_count', 'created_at']
@@ -86,12 +87,17 @@ class ArticleCommentSerializer(serializers.ModelSerializer):
     def get_dislike_count(self, obj):
         return obj.dislikes.count()
 
+    def get_children(self, obj):
+        """Get serialized children of the comment"""
+        children = ArticleComment.objects.filter(
+            parent=obj).order_by('-created_at')
+        return ArticleCommentSerializer(children, many=True, context=self.context).data
+
 
 class ArticleSerializer(serializers.ModelSerializer):
     categories = ArticleCategorySerializer(many=True, read_only=True)
     tags = ArticleTagSerializer(many=True, read_only=True)
-    comments = ArticleCommentSerializer(
-        many=True, read_only=True, source='comments.all')
+    comments = serializers.SerializerMethodField()
     user = serializers.StringRelatedField(read_only=True)
     like_count = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
@@ -113,6 +119,12 @@ class ArticleSerializer(serializers.ModelSerializer):
         if obj.image and request:
             return request.build_absolute_uri(obj.image.url)
         return obj.image.url if obj.image else None
+
+    def get_comments(self, obj):
+        """Get top-level comments with nested children"""
+        comments = ArticleComment.objects.filter(
+            article=obj, parent=None).order_by('-created_at')
+        return ArticleCommentSerializer(comments, many=True, context=self.context).data
 
 
 class ArticleCreateUpdateSerializer(serializers.ModelSerializer):

@@ -406,13 +406,12 @@ class UpdateProductReviewView(APIView):
 class DeleteProductReviewView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request, review_id):
         user = request.user
         if user.role != 'customer':
             raise PermissionDenied(
                 "You do not have permission to delete product review.")
 
-        review_id = kwargs.get('id')
         try:
             review = Review.objects.get(id=review_id)
             if review.user != request.user:

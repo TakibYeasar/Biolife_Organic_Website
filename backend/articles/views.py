@@ -209,55 +209,22 @@ class GetArticleView(APIView):
         article_id = kwargs.get('id')
 
         if article_id:
-            # Fetch the article and handle the possibility of Article.DoesNotExist
             try:
-                # Efficient query: prefetch related categories, tags, and likes; select related for user
                 article = Article.objects.select_related('user').prefetch_related(
-                    'categories', 'tags', 'likes', 'comments').get(id=article_id)
+                    'categories', 'tags', 'likes', 'comments__likes', 'comments__dislikes'
+                ).get(id=article_id)
+
                 serializer = ArticleSerializer(
                     article, context={'request': request})
-
-                # Fetch and serialize comments with recursive replies, ordering by 'created_at'
-                comments = ArticleComment.objects.filter(article=article).order_by(
-                    '-created_at')  # Use 'created_at' instead of 'created'
-                flat_comments = self.get_flat_comments(comments)
-
-                # Attach comments data to the article response
-                serializer.data['comments'] = flat_comments
-
                 return Response(serializer.data, status=status.HTTP_200_OK)
             except Article.DoesNotExist:
                 return Response({'error': "No article found"}, status=status.HTTP_404_NOT_FOUND)
 
         else:
-            # If no article_id, fetch all articles
             articles = Article.objects.all()
-            articles_data = ArticleSerializer(
-                articles, context={'request': request}, many=True).data
-            return Response(data=articles_data, status=status.HTTP_200_OK)
-
-    def get_flat_comments(self, comments):
-        """Helper function to serialize comments and their children"""
-        flat_comments = []
-        for comment in ArticleCommentSerializer(comments, many=True).data:
-            children = self.get_children(comment['id'])
-            comment['children'] = children
-            flat_comments.append(comment)
-        return flat_comments
-
-    def get_children(self, parent_id):
-        """Recursive function to retrieve child comments (replies)"""
-        children = ArticleComment.objects.filter(
-            parent_id=parent_id).order_by('-created_at')
-        serialized_children = []
-
-        for child in children:
-            child_data = ArticleCommentSerializer(child).data
-            # Recursively get the children of this comment
-            child_data['children'] = self.get_children(child.id)
-            serialized_children.append(child_data)
-
-        return serialized_children
+            serializer = ArticleSerializer(
+                articles, context={'request': request}, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
@@ -397,9 +364,21 @@ class UpdateCommentArticleView(APIView):
         except ArticleComment.DoesNotExist:
             return Response({'error': "No comment found"}, status=status.HTTP_404_NOT_FOUND)
 
+        # Check if the comment belongs to the authenticated user
         if comment.user.id != request.user.id:
             return Response({'error': "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
 
+        # Ensure that the parent comment, if provided, is in the same article
+        parent = request.data.get('parent')
+        if parent:
+            try:
+                parent_comment = ArticleComment.objects.get(id=parent)
+                if parent_comment.article != comment.article:
+                    return Response({'error': "The parent comment must belong to the same article."}, status=status.HTTP_400_BAD_REQUEST)
+            except ArticleComment.DoesNotExist:
+                return Response({'error': "Parent comment does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Validate and update the comment
         serializer = ArticleCommentCreateUpdateSerializer(
             comment, data=request.data, partial=True
         )
@@ -418,11 +397,17 @@ class DeleteCommentArticleView(APIView):
         except ArticleComment.DoesNotExist:
             return Response({'error': "No comment found"}, status=status.HTTP_404_NOT_FOUND)
 
+        # Check if the comment belongs to the authenticated user
         if comment.user.id != request.user.id:
             return Response({'error': "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
 
+        # Ensure that any replies to this comment are deleted before deleting the comment
+        comment.replies.all().delete()
+
+        # Delete the comment
         comment.delete()
-        return Response({'msg': "Comment deleted successfully"}, status=status.HTTP_200_OK)
+        return Response({'msg': "Comment (and its replies) deleted successfully"}, status=status.HTTP_200_OK)
+
     
 
 class CreateCommentLikeDislikeView(APIView):

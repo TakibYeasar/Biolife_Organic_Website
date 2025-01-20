@@ -42,6 +42,8 @@ urlpatterns = [
 
     path('article/<int:article_id>/create-comment/',
          CreateCommentArticleView.as_view(), name='create_article_comment'),
+    path('articles/<int:article_id>/comments/<int:parent_id>/create-reply-comment/',
+        CreateCommentArticleView.as_view(), name='create_reply_comment'),
     path('article-update-comment/<int:comment_id>/',
          UpdateCommentArticleView.as_view(), name='update_article_comment'),
     path('article-delete-comment/<int:comment_id>/',

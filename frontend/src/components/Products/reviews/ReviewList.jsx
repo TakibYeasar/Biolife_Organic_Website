@@ -1,14 +1,13 @@
 import React from 'react';
 import { FaStar } from 'react-icons/fa';
 
-const ReviewList = ({ reviews, onEdit, onDelete }) => {
+const ReviewList = ({ reviews, onEdit, onDelete, isDeleting }) => {
     return (
         <div className="mt-10">
             <h3 className="text-xl font-bold text-gray-800">Customer Reviews</h3>
             {reviews.length > 0 ? (
                 <ol className="mt-6 space-y-6">
                     {reviews.map((review) => {
-                        // Format the review creation date
                         const reviewDate = new Date(review.created_at).toLocaleDateString();
 
                         return (
@@ -26,8 +25,8 @@ const ReviewList = ({ reviews, onEdit, onDelete }) => {
                                             <FaStar
                                                 key={index}
                                                 className={`${index < review.rate
-                                                        ? 'text-yellow-500'
-                                                        : 'text-gray-300'
+                                                    ? 'text-yellow-500'
+                                                    : 'text-gray-300'
                                                     }`}
                                             />
                                         ))}
@@ -39,7 +38,7 @@ const ReviewList = ({ reviews, onEdit, onDelete }) => {
                                     {/* Actions */}
                                     <div className="flex justify-end gap-3 mt-4">
                                         <button
-                                            onClick={() => onEdit(review.id)}
+                                            onClick={() => onEdit(review)}
                                             className="text-sm text-blue-600 hover:underline"
                                         >
                                             Edit
@@ -47,8 +46,9 @@ const ReviewList = ({ reviews, onEdit, onDelete }) => {
                                         <button
                                             onClick={() => onDelete(review.id)}
                                             className="text-sm text-red-600 hover:underline"
+                                            disabled={isDeleting}
                                         >
-                                            Delete
+                                            {isDeleting ? 'Deleting...' : 'Delete'}
                                         </button>
                                     </div>
                                 </div>

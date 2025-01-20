@@ -115,6 +115,13 @@ export const articlesApi = apiSlice.injectEndpoints({
                 body: data,
             }),
         }),
+        createReplyComment: builder.mutation({
+            query: ({ articleId, data }) => ({
+                url: `${ARTICLES_URL}/articles/${articleId}/comments/${parentId}/create-reply-comment/`,
+                method: "POST",
+                body: data,
+            }),
+        }),
         updateComment: builder.mutation({
             query: ({ commentId, data }) => ({
                 url: `${ARTICLES_URL}/article-update-comment/${commentId}/`,
@@ -171,6 +178,7 @@ export const {
     useUnlikeArticleMutation,
 
     useCreateCommentMutation,
+    useCreateReplyCommentMutation,
     useUpdateCommentMutation,
     useDeleteCommentMutation,
 
