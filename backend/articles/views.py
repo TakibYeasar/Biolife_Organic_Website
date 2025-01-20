@@ -247,13 +247,17 @@ class GetArticleView(APIView):
 
     def get_children(self, parent_id):
         """Recursive function to retrieve child comments (replies)"""
-        children = ArticleComment.objects.filter(parent_id=parent_id).order_by(
-            '-created_at')  # Use 'created_at' for ordering replies
-        children_data = ArticleCommentSerializer(children, many=True).data
-        for child in children_data:
-            child['children'] = self.get_children(
-                child['id'])  # Recursively add replies
-        return children_data
+        children = ArticleComment.objects.filter(
+            parent_id=parent_id).order_by('-created_at')
+        serialized_children = []
+
+        for child in children:
+            child_data = ArticleCommentSerializer(child).data
+            # Recursively get the children of this comment
+            child_data['children'] = self.get_children(child.id)
+            serialized_children.append(child_data)
+
+        return serialized_children
 
 
 

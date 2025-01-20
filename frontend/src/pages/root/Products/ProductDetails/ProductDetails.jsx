@@ -32,14 +32,14 @@ const ProductDetails = () => {
 
   if (error) {
     return (
-      <div className="text-center py-8 text-green-600">
+      <div className="text-center py-8 text-red-600">
         Error: {error.message}
       </div>
     );
   }
 
   return (
-    <section className="py-8 bg-green-50 font-serif text-gray-800">
+    <section className="py-8 bg-gray-50 font-serif text-gray-800">
       <div className="container mx-auto px-4">
         {/* Breadcrumb */}
         <nav className="text-sm breadcrumbs mb-6 text-gray-500">
@@ -98,14 +98,6 @@ const ProductDetails = () => {
                 </span>
               )}
             </div>
-            {product?.color && (
-              <p className="mt-2 text-sm text-gray-600">
-                Color: {product.color}
-              </p>
-            )}
-            {product?.size && (
-              <p className="mt-1 text-sm text-gray-600">Size: {product.size}</p>
-            )}
             <div className="mt-4">
               <span className="inline-block bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
                 <FaLeaf className="inline mr-1" />
@@ -150,8 +142,8 @@ const ProductDetails = () => {
 
         {/* Additional Sections */}
         <div className="mt-12">
-          <Shippingfaq />
-          <ProdReview reviews={product.reviews} />
+          <Shippingfaq faqs={product.additional_info} />
+          <ProdReview reviews={product.reviews} productId={product.id} />
           <Relatedprod />
         </div>
       </div>

@@ -8,6 +8,7 @@ from django.db.models import Count
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 
+
 # Create your views here.
 
 
@@ -348,21 +349,33 @@ class CreateProductReviewView(APIView):
 
     def post(self, request, product_id):
         user = request.user
+
+        # Ensure that the user is a customer
         if user.role != 'customer':
             raise PermissionDenied(
                 "You do not have permission to review a product.")
 
         try:
+            # Retrieve the product for the given product_id
             product = Product.objects.get(id=product_id)
-            # Use the ReviewCreateUpdateSerializer to create a review
-            serializer = ReviewCreateUpdateSerializer(data=request.data)
-            if serializer.is_valid():
-                # Assign user and product to review
-                serializer.save(user=user, product=product)
-                return Response({'message': 'Review created successfully'}, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Product.DoesNotExist:
-            return Response({'error': 'No product found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Prepare the review data
+        review_data = request.data.copy()
+        review_data['user'] = user.id  # Add the user ID to the review data
+        # Add the product ID to the review data
+        review_data['product'] = product.id
+
+        # Pass the request object to the serializer context
+        serializer = ReviewCreateUpdateSerializer(
+            data=review_data, context={'request': request})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Review created successfully'}, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UpdateProductReviewView(APIView):

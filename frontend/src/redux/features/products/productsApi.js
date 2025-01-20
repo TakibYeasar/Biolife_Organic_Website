@@ -140,7 +140,7 @@ export const productsApi = apiSlice.injectEndpoints({
         // Create Product Review
         createProductReview: builder.mutation({
             query: ({ productId, data }) => ({
-                url: `${PRODUCTS_URL}/product/${productId}/create/review/`,
+                url: `${PRODUCTS_URL}/product/${productId}/create-review/`,
                 method: "POST",
                 body: data,
             }),
@@ -149,7 +149,7 @@ export const productsApi = apiSlice.injectEndpoints({
         // Update Product Review
         updateProductReview: builder.mutation({
             query: ({ reviewId, data }) => ({
-                url: `${PRODUCTS_URL}/product/update/review/${reviewId}/`,
+                url: `${PRODUCTS_URL}/product/update-review/${reviewId}/`,
                 method: "PUT",
                 body: data,
             }),
@@ -158,7 +158,7 @@ export const productsApi = apiSlice.injectEndpoints({
         // Delete Product Review
         deleteProductReview: builder.mutation({
             query: (reviewId) => ({
-                url: `${PRODUCTS_URL}/product/delete/review/${reviewId}/`,
+                url: `${PRODUCTS_URL}/product/delete-review/${reviewId}/`,
                 method: "DELETE",
             }),
         }),

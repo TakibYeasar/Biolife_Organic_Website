@@ -126,6 +126,7 @@ class ReviewCreateUpdateSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
+        # 'request' is available in context now
         user = self.context['request'].user
         validated_data['user'] = user
         return super().create(validated_data)
@@ -148,19 +149,27 @@ class ReviewProductSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
-    categories = serializers.SlugRelatedField(
-        queryset=Category.objects.all(), slug_field='slug', many=True)
-    images = ProductImageSerializer(many=True, required=False)
+    categories = CategorySerializer(
+        many=True, source='categories.all', required=False
+    )
+    images = ProductImageSerializer(
+        many=True, source='images.all', required=False
+    )
     additional_info = AdditionalInfoSerializer(
-        many=True, read_only=True, source='additional_info.all')
+        many=True, source='additional_info.all', required=False
+    )
     reviews = ReviewProductSerializer(
-        many=True, read_only=True, source='reviews.all')
+        many=True, source='reviews.all', required=False
+    )
     likes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ['id', 'user', 'title', 'main_image', 'images', 'price', 'old_price', 'description', 'categories',
-                  'additional_info', 'likes', 'likes_count', 'reviews', 'is_active', 'slug', 'created_at', 'is_approved']
+        fields = [
+            'id', 'user', 'title', 'main_image', 'images', 'price', 'old_price',
+            'description', 'categories', 'additional_info', 'likes',
+            'likes_count', 'reviews', 'is_active', 'slug', 'created_at', 'is_approved'
+        ]
         read_only_fields = ['slug', 'created_at', 'user']
 
     def get_likes_count(self, obj):

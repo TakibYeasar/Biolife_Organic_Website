@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
-import { useCreateProductReviewMutation, useUpdateProductReviewMutation } from '../../../redux/features/products/productsApi';
+import {
+    useCreateProductReviewMutation,
+    useUpdateProductReviewMutation,
+    useDeleteProductReviewMutation,
+} from '../../../redux/features/products/productsApi';
 import Rating from './Rating';
 import ReviewForm from './ReviewForm';
 import ReviewList from './ReviewList';
 
 const ProdReview = ({ reviews = [], productId }) => {
+    const [editReviewId, setEditReviewId] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -14,33 +19,66 @@ const ProdReview = ({ reviews = [], productId }) => {
 
     const [createReview] = useCreateProductReviewMutation();
     const [updateReview] = useUpdateProductReviewMutation();
+    const [deleteReview] = useDeleteProductReviewMutation();
 
     const handleRating = (value) => {
-        setFormData({ ...formData, rating: value });
+        setFormData((prev) => ({ ...prev, rating: value }));
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const reviewData = { ...formData, product: productId };
 
-        if (formData.id) {
-            updateReview({ id: formData.id, ...reviewData });  // If we are updating a review
-        } else {
-            createReview(reviewData);  // If we are creating a new review
+        if (!productId) {
+            console.error('Product ID is missing.');
+            return;
         }
 
-        // Reset form data after submission
-        setFormData({ name: '', email: '', comment: '', rating: 0 });
+        const payload = {
+            ...formData,
+            product: productId,
+        };
+
+        try {
+            if (editReviewId) {
+                await updateReview({ reviewId: editReviewId, data: payload }).unwrap();
+                setEditReviewId(null);
+            } else {
+                await createReview({ productId, data: payload }).unwrap();
+            }
+
+            setFormData({ name: '', email: '', comment: '', rating: 0 });
+        } catch (error) {
+            console.error('Error submitting review:', error);
+        }
     };
 
-    // Calculate the average rating if reviews are not empty
-    const averageRating = reviews.length > 0 ?
-        reviews.reduce((total, review) => total + review.rating, 0) / reviews.length
+    const handleEditReview = (review) => {
+        setEditReviewId(review.id);
+        setFormData({
+            name: review.name,
+            email: review.email,
+            comment: review.comment,
+            rating: review.rate,
+        });
+    };
+
+    const handleDeleteReview = async (reviewId) => {
+        if (window.confirm('Are you sure you want to delete this review?')) {
+            try {
+                await deleteReview(reviewId).unwrap();
+            } catch (error) {
+                console.error('Error deleting review:', error);
+            }
+        }
+    };
+
+    const averageRating = reviews.length > 0
+        ? reviews.reduce((total, review) => total + review.rate, 0) / reviews.length
         : 0;
 
     return (
@@ -53,12 +91,13 @@ const ProdReview = ({ reviews = [], productId }) => {
                         </p>
                         <p className="text-gray-500">See all {reviews.length} reviews</p>
                         <ul className="mt-5">
-                            {Array.from({ length: 5 }, (_, index) => {
-                                const starRating = 5 - index;
-                                return (
-                                    <Rating key={starRating} starRating={starRating} reviews={reviews} />
-                                );
-                            })}
+                            {Array.from({ length: 5 }, (_, index) => (
+                                <Rating
+                                    key={5 - index}
+                                    starRating={5 - index}
+                                    reviews={reviews}
+                                />
+                            ))}
                         </ul>
                     </div>
                 </div>
@@ -69,11 +108,16 @@ const ProdReview = ({ reviews = [], productId }) => {
                         handleSubmit={handleSubmit}
                         handleChange={handleChange}
                         handleRating={handleRating}
+                        isEditing={!!editReviewId}
                     />
                 </div>
             </div>
 
-            <ReviewList reviews={reviews} />
+            <ReviewList
+                reviews={reviews}
+                onEdit={handleEditReview}
+                onDelete={handleDeleteReview}
+            />
         </div>
     );
 };

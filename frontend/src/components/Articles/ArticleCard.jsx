@@ -93,8 +93,9 @@ const ArticleCard = ({ item }) => {
           {/* Comment Count */}
           <div className="flex items-center space-x-1">
             <FaComment className="text-blue-500" />
-            <span>6</span>
+            <span>{item?.comments?.length}</span>
           </div>
+
         </div>
 
         {/* Footer Section */}
