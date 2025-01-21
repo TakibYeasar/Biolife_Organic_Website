@@ -34,8 +34,8 @@ urlpatterns = [
 
     path('product/<int:product_id>/create-review/',
          CreateProductReviewView.as_view(), name='create_product_review'),
-    path('product/update-review/<int:review_id>',
+    path('product/update-review/<int:review_id>/',
          UpdateProductReviewView.as_view(), name='update_product_review'),
-    path('product/delete-review/<int:review_id>',
+    path('product/delete-review/<int:review_id>/',
          DeleteProductReviewView.as_view(), name='delete_review'),
 ]
