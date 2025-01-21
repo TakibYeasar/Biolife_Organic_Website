@@ -1,17 +1,15 @@
 import { useState } from 'react';
-import AccountSettings from './components/AccountSettings';
+import MyInquiries from './components/MyInquiries';
+import Wishlists from './components/Wishlists';
 import OrderHistory from './components/OrderHistory';
 import OrderTracking from './components/OrderTracking';
-import RateAndReview from './components/RateAndReview';
-import RecurringPurchases from './components/RecurringPurchases';
-import Wishlists from './components/Wishlists';
+import AccountSettings from './components/AccountSettings';
 
 const sections = [
+  { name: 'inquiries', label: 'My Inquiries', component: <MyInquiries /> },
   { name: 'wishlists', label: 'WishLists', component: <Wishlists /> },
   { name: 'history', label: 'Order History', component: <OrderHistory /> },
-  { name: 'purshase', label: 'Recurring Purchases', component: <RecurringPurchases /> },
   { name: 'tracking', label: 'Order Tracking', component: <OrderTracking /> },
-  { name: 'review', label: 'Rate & Review', component: <RateAndReview /> },
   { name: 'settings', label: 'Account Settings', component: <AccountSettings /> },
 ];
 

@@ -1,16 +1,16 @@
 import { useState } from 'react';
+import ManageInquiries from './components/ManageInquiries';
 import ManageUsers from './components/ManageUsers';
-import OrderFulfillment from './components/OrderFulfillment';
 import ManageProducts from './components/Products/ManageProducts';
 import ManagePromotions from './components/ManagePromotions';
 import SalesAnalytics from './components/SalesAnalytics';
 import ManageArticles from './components/Articles/ManageArticles';
 
 const sections = [
+  { name: 'inquiries', label: 'Manage Inquiries', component: <ManageInquiries /> },
   { name: 'users', label: 'Manage Users', component: <ManageUsers /> },
   { name: 'articles', label: 'Manage Articles', component: <ManageArticles /> },
   { name: 'products', label: 'Manage Products', component: <ManageProducts /> },
-  { name: 'orders', label: 'Manage Orders', component: <OrderFulfillment /> },
   { name: 'promotions', label: 'Manage Promotions', component: <ManagePromotions /> },
   { name: 'analytics', label: 'Sales & Analytics', component: <SalesAnalytics /> }
 ];
