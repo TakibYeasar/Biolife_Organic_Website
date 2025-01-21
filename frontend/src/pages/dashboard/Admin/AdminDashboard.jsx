@@ -5,6 +5,7 @@ import ManageProducts from './components/Products/ManageProducts';
 import ManagePromotions from './components/ManagePromotions';
 import SalesAnalytics from './components/SalesAnalytics';
 import ManageArticles from './components/Articles/ManageArticles';
+import ManageContent from './components/Content/ManageContent';
 
 const sections = [
   { name: 'inquiries', label: 'Manage Inquiries', component: <ManageInquiries /> },
@@ -12,11 +13,12 @@ const sections = [
   { name: 'articles', label: 'Manage Articles', component: <ManageArticles /> },
   { name: 'products', label: 'Manage Products', component: <ManageProducts /> },
   { name: 'promotions', label: 'Manage Promotions', component: <ManagePromotions /> },
-  { name: 'analytics', label: 'Sales & Analytics', component: <SalesAnalytics /> }
+  { name: 'analytics', label: 'Sales & Analytics', component: <SalesAnalytics /> },
+  { name: 'content', label: 'Manage Content', component: <ManageContent /> },
 ];
 
 const AdminDashboard = () => {
-  const [activeSection, setActiveSection] = useState('users');
+  const [activeSection, setActiveSection] = useState('inquiries');
 
   const handleSectionChange = (section) => setActiveSection(section);
 

@@ -21,6 +21,19 @@ class BannerSerializer(serializers.ModelSerializer):
             return obj.image.url
 
 
+class FeaturedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Featured
+        fields = "__all__"
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(obj.image.url)
+        else:
+            return obj.image.url
+
+
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
@@ -46,3 +59,8 @@ class TestimonialSerializer(serializers.ModelSerializer):
         else:
             return obj.image.url
 
+
+class NewsletterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Newsletter
+        fields = "__all__"

@@ -39,6 +39,20 @@ class Banner(models.Model):
         return self.title or "Banner"
 
 
+class Featured(models.Model):
+    image = models.ImageField(upload_to='featureds/')
+    title = models.CharField(max_length=255, blank=True, null=True)
+    subtitle = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Featureds'
+        ordering = ('-created_at',)
+
+    def __str__(self):
+        return self.title or "Featured"
+
+
 class Brand(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
     logo = models.ImageField(upload_to='brands/', blank=True, null=True)

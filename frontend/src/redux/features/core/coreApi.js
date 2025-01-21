@@ -69,6 +69,40 @@ export const coreApi = apiSlice.injectEndpoints({
             }),
         }),
 
+        // Fetch Featured
+        fetchFeatured: builder.query({
+            query: () => ({
+                url: `${CORE_URL}/featureds/`,
+            }),
+        }),
+
+        // Create Featured
+        createFeatured: builder.mutation({
+            query: (data) => ({
+                url: `${CORE_URL}/create/featured/`,
+                method: "POST",
+                body: data,
+            }),
+        }),
+
+        // Update Featured
+        updateFeatured: builder.mutation({
+            query: ({ id, data }) => ({
+                url: `${CORE_URL}/update/featured/${id}/`,
+                method: "PUT",
+                body: data,
+            }),
+        }),
+
+        // Delete Featured
+        deleteFeatured: builder.mutation({
+            query: (id) => ({
+                url: `${CORE_URL}/delete/featured/${id}/`,
+                method: "DELETE",
+            }),
+        }),
+
+
         // Fetch Brands
         fetchBrands: builder.query({
             query: () => ({
@@ -109,29 +143,10 @@ export const coreApi = apiSlice.injectEndpoints({
             }),
         }),
 
-        // Create Testimonial
-        createTestimonial: builder.mutation({
-            query: (data) => ({
-                url: `${CORE_URL}/create-testimonial/`,
-                method: "POST",
-                body: data,
-            }),
-        }),
-
-        // Update Testimonial
-        updateTestimonial: builder.mutation({
-            query: ({ id, data }) => ({
-                url: `${CORE_URL}/update-testimonial/${id}/`,
-                method: "PUT",
-                body: data,
-            }),
-        }),
-
-        // Delete Testimonial
-        deleteTestimonial: builder.mutation({
-            query: (id) => ({
-                url: `${CORE_URL}/delete-testimonial/${id}/`,
-                method: "DELETE",
+        // Fetch Testimonials
+        fetchNewsletters: builder.query({
+            query: () => ({
+                url: `${CORE_URL}/newsletter/`,
             }),
         }),
     }),
@@ -142,16 +157,22 @@ export const {
     useCreateContactInfoMutation,
     useUpdateContactInfoMutation,
     useDeleteContactInfoMutation,
+
     useFetchBannersQuery,
     useCreateBannerMutation,
     useUpdateBannerMutation,
     useDeleteBannerMutation,
+
+    useFetchFeaturedQuery,
+    useCreateFeaturedMutation,
+    useUpdateFeaturedMutation,
+    useDeleteFeaturedMutation,
+
     useFetchBrandsQuery,
     useCreateBrandMutation,
     useUpdateBrandMutation,
     useDeleteBrandMutation,
+
     useFetchTestimonialsQuery,
-    useCreateTestimonialMutation,
-    useUpdateTestimonialMutation,
-    useDeleteTestimonialMutation,
+    useFetchNewslettersQuery,
 } = coreApi;

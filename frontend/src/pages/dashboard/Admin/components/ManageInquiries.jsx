@@ -58,6 +58,7 @@ const ManageInquiries = () => {
                 <table className="w-full table-auto border-collapse">
                     <thead>
                         <tr>
+                            <th className="border px-4 py-2">#</th>
                             <th className="border px-4 py-2">Customer Name</th>
                             <th className="border px-4 py-2">Inquiry Date</th>
                             <th className="border px-4 py-2">Status</th>
@@ -67,8 +68,9 @@ const ManageInquiries = () => {
                     </thead>
                     <tbody>
                         {filteredInquiries.length > 0 ? (
-                            filteredInquiries.map((inquiry) => (
+                            filteredInquiries.map((inquiry, index) => (
                                 <tr key={inquiry.id}>
+                                    <td className="border px-4 py-2">{index + 1}</td>
                                     <td className="border px-4 py-2">{inquiry.customerName}</td>
                                     <td className="border px-4 py-2">{inquiry.inquiryDate}</td>
                                     <td className="border px-4 py-2">

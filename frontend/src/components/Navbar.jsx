@@ -4,7 +4,7 @@ import { BsSun, BsMoon } from 'react-icons/bs';
 import organic4 from '/assets/images/organic-4.png';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { useLogoutMutation } from '../redux/features/auth/authApi';  // Ensure correct import for the logout mutation
+import { useLogoutMutation } from '../redux/features/auth/authApi';
 import { toast } from 'react-toastify';
 import LikedProducts from './Products/LikedProducts';
 import Wishlists from './Products/Wishlists';
@@ -12,8 +12,7 @@ import Wishlists from './Products/Wishlists';
 const Navbar = ({ user, isAuthenticated }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
-    const [isHoveredHeart, setIsHoveredHeart] = useState(false);
-    const [isHoveredCart, setIsHoveredCart] = useState(false);
+    const [isHovered, setIsHovered] = useState({ heart: false, cart: false });
     const [theme, setTheme] = useState('light-theme');
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -51,7 +50,6 @@ const Navbar = ({ user, isAuthenticated }) => {
 
     const handleLogout = async () => {
         try {
-            // Assuming the token is stored in localStorage (update as needed)
             const token = localStorage.getItem('authToken');
 
             if (!token) {
@@ -152,28 +150,27 @@ const Navbar = ({ user, isAuthenticated }) => {
 
                 {/* Right Section */}
                 <div className="flex items-center gap-4">
-                    {/* Conditional rendering for 'customer' role */}
                     {user?.role === 'customer' && (
                         <div className="flex items-center gap-4">
                             <div
                                 className="relative"
-                                onMouseEnter={() => setIsHoveredHeart(true)}
-                                onMouseLeave={() => setIsHoveredHeart(false)}
+                                onMouseEnter={() => setIsHovered((prev) => ({ ...prev, heart: true }))}
+                                onMouseLeave={() => setIsHovered((prev) => ({ ...prev, heart: false }))}
                             >
                                 <button className="text-gray-600 hover:text-gray-900">
                                     <FaHeart className="text-white text-2xl" />
                                 </button>
-                                {isHoveredHeart && <LikedProducts />}
+                                {isHovered.heart && <LikedProducts />}
                             </div>
                             <div
                                 className="relative"
-                                onMouseEnter={() => setIsHoveredCart(true)}
-                                onMouseLeave={() => setIsHoveredCart(false)}
+                                onMouseEnter={() => setIsHovered((prev) => ({ ...prev, cart: true }))}
+                                onMouseLeave={() => setIsHovered((prev) => ({ ...prev, cart: false }))}
                             >
                                 <button className="text-gray-600 hover:text-gray-900">
                                     <FaShoppingCart className="text-white text-2xl" />
                                 </button>
-                                {isHoveredCart && <Wishlists />}
+                                {isHovered.cart && <Wishlists />}
                             </div>
                         </div>
                     )}

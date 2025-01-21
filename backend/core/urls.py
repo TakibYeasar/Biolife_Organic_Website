@@ -16,6 +16,14 @@ urlpatterns = [
          UpdateBannerView.as_view(), name='update_banner'),
     path('delete/banner/<int:pk>/',
          DeleteBannerView.as_view(), name='delete_banner'),
+    
+    path('featureds/', GetFeaturedView.as_view(), name='get_featured'),
+    path('create/featured/', CreateFeaturedView.as_view(), name='create_featured'),
+    path('update/featured/<int:pk>/',
+         UpdateFeaturedView.as_view(), name='update_featured'),
+    path('delete/featured/<int:pk>/',
+         DeleteFeaturedView.as_view(), name='delete_featured'),
+
 
     path('brands/', GetBrandsView.as_view(), name='get_brands'),
     path('create-brand/', CreateBrandView.as_view(), name='create_brands'),
@@ -25,10 +33,5 @@ urlpatterns = [
          DeleteBrandView.as_view(), name='delete_brands'),
 
     path('testimonial/', GetTestimonialView.as_view(), name='get_testimonial'),
-    path('create-testimonial/', CreateTestimonialView.as_view(),
-         name='create_testimonial'),
-    path('update-testimonial/<int:pk>/',
-         UpdateTestimonialView.as_view(), name='update_testimonial'),
-    path('delete-testimonial/<int:pk>/',
-         DeleteTestimonialView.as_view(), name='delete_testimonial'),
+    path('newsletter/', GetNewsletterView.as_view(), name='get_newsletter'),
 ]

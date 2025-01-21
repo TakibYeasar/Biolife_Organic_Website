@@ -45,6 +45,7 @@ const ManageUsers = () => {
             <table className="w-full table-auto border-collapse">
                 <thead>
                     <tr>
+                        <th className="border px-4 py-2">#</th>
                         <th className="border px-4 py-2">Username</th>
                         <th className="border px-4 py-2">Email</th>
                         <th className="border px-4 py-2">Role</th>
@@ -54,8 +55,9 @@ const ManageUsers = () => {
                 </thead>
                 <tbody>
                     {users && users.length > 0 ? (
-                        users.map((user) => (
+                        users.map((user, index) => (
                             <tr key={user.id}>
+                                <td className="border px-4 py-2">{index + 1}</td>
                                 <td className="border px-4 py-2">{user.username}</td>
                                 <td className="border px-4 py-2">{user.email}</td>
                                 <td className="border px-4 py-2">

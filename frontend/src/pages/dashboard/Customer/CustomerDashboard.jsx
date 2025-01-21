@@ -14,7 +14,7 @@ const sections = [
 ];
 
 const CustomerDashboard = () => {
-  const [activeSection, setActiveSection] = useState('wishlists');
+  const [activeSection, setActiveSection] = useState('inquiries');
 
   const handleSectionChange = (section) => setActiveSection(section);
 

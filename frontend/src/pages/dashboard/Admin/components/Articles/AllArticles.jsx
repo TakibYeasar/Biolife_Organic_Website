@@ -69,6 +69,7 @@ const AllArticles = ({
             <table className="min-w-full bg-white border rounded-md">
                 <thead className="bg-gray-200">
                     <tr>
+                        <th className="py-3 px-4 text-left text-sm text-gray-600">#</th>
                         <th className="py-3 px-4 text-left text-sm text-gray-600">Title</th>
                         <th className="py-3 px-4 text-left text-sm text-gray-600">Category</th>
                         <th className="py-3 px-4 text-left text-sm text-gray-600">Author</th>
@@ -77,8 +78,9 @@ const AllArticles = ({
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredArticles.map((article) => (
+                    {filteredArticles.map((article, index) => (
                         <tr key={article.id} className="border-b hover:bg-gray-50">
+                            <td className="py-3 px-4 text-gray-700">{index + 1}</td>
                             <td className="py-3 px-4 text-gray-700">{article.title}</td>
                             <td className="py-3 px-4 text-gray-700">{article.category}</td>
                             <td className="py-3 px-4 text-gray-700">{article.author_name}</td>

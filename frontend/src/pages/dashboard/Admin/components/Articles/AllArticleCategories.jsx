@@ -23,9 +23,9 @@ const AllArticleCategories = ({
                     </tr>
                 </thead>
                 <tbody>
-                    {categories.map((category) => (
+                    {categories.map((category, index) => (
                         <tr key={category.id} className="border-b hover:bg-gray-50">
-                            <td className="py-3 px-4 text-gray-700">{category.id}</td>
+                            <td className="py-3 px-4 text-gray-700">{index + 1}</td>
                             <td className="py-3 px-4 text-gray-700">
                                 <img src={category.icon} alt="Category Icon" className="w-10 h-10" />
                             </td>

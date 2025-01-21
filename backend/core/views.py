@@ -139,6 +139,71 @@ class DeleteBannerView(APIView):
             return Response({'error': "No Banner found"}, status=status.HTTP_404_NOT_FOUND)
 
 
+class GetFeaturedView(APIView):
+    def get(self, request):
+        try:
+            featured_obj = Featured.objects.all()
+            serializer = FeaturedSerializer(
+                featured_obj, context={'request': request}, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({'error': "No Featured items found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class CreateFeaturedView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        if user.role != 'admin':
+            raise PermissionDenied(
+                "You do not have permission to create a featured item.")
+
+        serializer = FeaturedSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateFeaturedView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, pk):
+        user = request.user
+        if user.role != 'admin':
+            raise PermissionDenied(
+                "You do not have permission to update a featured item.")
+
+        try:
+            featured_obj = Featured.objects.get(pk=pk)
+            serializer = FeaturedSerializer(
+                featured_obj, context={'request': request}, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            return Response({'error': "No Featured item found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class DeleteFeaturedView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        user = request.user
+        if user.role != 'admin':
+            raise PermissionDenied(
+                "You do not have permission to delete a featured item.")
+
+        try:
+            featured = Featured.objects.get(pk=pk)
+            featured.delete()
+            return Response({'message': 'Featured item deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except ObjectDoesNotExist:
+            return Response({'error': "No Featured item found"}, status=status.HTTP_404_NOT_FOUND)
+
+
 class GetBrandsView(APIView):
     def get(self, request):
         try:
@@ -212,58 +277,15 @@ class GetTestimonialView(APIView):
                 test_obj, context={'request': request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
-            return Response({'error': "No About found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-class CreateTestimonialView(APIView):
-    permission_classes = [IsAuthenticated]
-    
-    def post(self, request):
-        user = request.user
-        if user.role != 'admin':
-            raise PermissionDenied(
-                "You do not have permission to create a testimonial.")
-            
-        serializer = TestimonialSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class UpdateTestimonialView(APIView):
-    permission_classes = [IsAuthenticated]
-    
-    def put(self, request, pk):
-        user = request.user
-        if user.role != 'admin':
-            raise PermissionDenied(
-                "You do not have permission to update a testimonial.")
-            
-        try:
-            test_obj = Testimonial.objects.get(pk=pk)
-            serializer = TestimonialSerializer(
-                test_obj, context={'request': request}, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except ObjectDoesNotExist:
-            return Response({'error': "No About found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-class DeleteTestimonialView(APIView):
-    permission_classes = [IsAuthenticated]
-    
-    def delete(self, request, pk):
-        user = request.user
-        if user.role != 'admin':
-            raise PermissionDenied(
-                "You do not have permission to update a testimonial.")
-            
-        try:
-            test_obj = Testimonial.objects.get(pk=pk)
-            test_obj.delete()
-            return Response({'message': 'Testimonial deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
-        except ObjectDoesNotExist:
             return Response({'error': "No Testimonial found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class GetNewsletterView(APIView):
+    def get(self, request):
+        try:
+            newsletter_obj = Newsletter.objects.all()
+            serializer = NewsletterSerializer(
+                newsletter_obj, context={'request': request}, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({'error': "No Newsletter found"}, status=status.HTTP_404_NOT_FOUND)

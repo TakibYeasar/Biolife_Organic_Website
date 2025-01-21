@@ -24,7 +24,7 @@ const WishlistItem = ({ image, name, price }) => {
 
 const Wishlists = () => {
     return (
-        <div className="absolute top-14 right-0 bg-white shadow-lg border rounded-lg w-72 p-4 z-50">
+        <div className="absolute right-0 bg-white shadow-lg border rounded-lg w-72 p-4 z-50">
             <h3 className="text-lg font-semibold mb-3 text-green-700">My Wishlist</h3>
             <ul className="space-y-3">
                 <WishlistItem

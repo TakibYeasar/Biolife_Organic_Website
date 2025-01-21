@@ -1,34 +1,41 @@
-import React from 'react';
-
-// Dummy data for featured items
-const featureds = [
-  {
-    id: 1,
-    title: 'Feature One',
-    subtitle: 'Description for feature one',
-    image: 'https://via.placeholder.com/193x185?text=Feature+One',
-  },
-  {
-    id: 2,
-    title: 'Feature Two',
-    subtitle: 'Description for feature two',
-    image: 'https://via.placeholder.com/193x185?text=Feature+Two',
-  },
-  {
-    id: 3,
-    title: 'Feature Three',
-    subtitle: 'Description for feature three',
-    image: 'https://via.placeholder.com/193x185?text=Feature+Three',
-  },
-];
+import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { useFetchFeaturedQuery } from '../../redux/features/core/coreApi';
 
 const Features = () => {
+  const { data: featureds, error, isLoading } = useFetchFeaturedQuery();
+  const [width, setWidth] = useState(0);
+  const carousel = useRef();
+
+  useEffect(() => {
+    if (carousel.current) {
+      setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
+    }
+  }, [featureds]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading featured items.</div>;
+  }
+
   return (
     <section className="py-16">
-      <div className="container mx-auto px-6">
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-semibold text-gray-800">Featured Items</h2>
+      </div>
+
+      <motion.div className="overflow-hidden">
+        <motion.ul
+          ref={carousel}
+          drag="x"
+          dragConstraints={{ right: 0, left: -width }}
+          className="flex space-x-6 px-4 md:px-6 lg:px-8"
+        >
           {featureds.map((item) => (
-            <li key={item.id} className="relative">
+            <motion.li key={item.id} className="relative min-w-[300px]">
               <div className="overflow-hidden rounded-xl shadow-lg bg-white transition-transform transform hover:scale-105">
                 <a href="#" className="block">
                   <img
@@ -42,12 +49,10 @@ const Features = () => {
                   <p className="text-sm mt-2">{item.subtitle}</p>
                 </div>
               </div>
-            </li>
+            </motion.li>
           ))}
-        </ul>
-
-        
-      </div>
+        </motion.ul>
+      </motion.div>
     </section>
   );
 };
