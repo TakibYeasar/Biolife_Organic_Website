@@ -138,16 +138,17 @@ export const articlesApi = apiSlice.injectEndpoints({
 
         // Comment Likes/Dislikes
         likeDislikeComment: builder.mutation({
-            query: ({ commentId, data }) => ({
+            query: ({ commentId, action }) => ({
                 url: `${ARTICLES_URL}/article-comment/${commentId}/create-like_dislike/`,
                 method: "POST",
-                body: data,
+                body: { action },
             }),
         }),
+
         removeLikeDislikeComment: builder.mutation({
             query: (commentId) => ({
                 url: `${ARTICLES_URL}/article-comment/${commentId}/remove-like_dislike/`,
-                method: "DELETE",
+                method: "POST",
             }),
         }),
     }),

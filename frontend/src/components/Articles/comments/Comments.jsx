@@ -79,9 +79,10 @@ const Comments = ({ articleId, comments }) => {
         }
     };
 
+
     const handleRemoveReaction = async (commentId) => {
         try {
-            await removeLikeDislikeComment({ commentId }).unwrap();
+            await removeLikeDislikeComment(commentId).unwrap();
         } catch (error) {
             console.error('Error removing reaction:', error);
         }
