@@ -17,6 +17,12 @@ urlpatterns = [
     path('prods/<int:pk>/remove/', ManageProductsView.as_view(), name='remove_prod'),
 
     path('all_products/', GetProductView.as_view(), name='get_products'),
+    path('top-rated_products/', TopratedProdView.as_view(),
+         name='top-rated-products'),
+    path('bestselling_products/', BestsellingApiView.as_view(),
+         name='bestselling-products'),
+    path('products/<int:id>/related_prods/',
+         RelatedProdApiView.as_view(), name='related-products'),
     path('single-product/<int:id>/',
          GetProductView.as_view(), name='single_product'),
     path('user_products/', GetProductsByUserView.as_view(), name='user_products'),

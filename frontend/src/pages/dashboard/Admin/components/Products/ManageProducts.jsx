@@ -22,7 +22,7 @@ const ManageProducts = () => {
     const [editData, setEditData] = useState(null);
 
     // API queries and mutations
-    const { data: categories = [], isLoading: isLoadingCategories } = useFetchProdCategoryQuery();
+    const { data: categoriesData, isLoading: isLoadingCategories } = useFetchProdCategoryQuery();
     const { data: products = [], isLoading: isLoadingProducts } = useManageProductsQuery();
     const [updateProdCategory] = useUpdateProdCategoryMutation();
     const [deleteProdCategory] = useDeleteProdCategoryMutation();
@@ -31,6 +31,20 @@ const ManageProducts = () => {
 
     // Handlers
     const handleSearch = (e) => setSearchQuery(e.target.value);
+
+    const flattenCategories = (categories) => {
+        const flatList = [];
+        const traverse = (categoryList) => {
+            categoryList.forEach((category) => {
+                flatList.push(category);
+                if (category.children?.length) traverse(category.children);
+            });
+        };
+        traverse(categories);
+        return flatList;
+    };
+
+    const categories = flattenCategories(categoriesData || []);
 
     const handleEditCategory = (category) => {
         setEditData(category);

@@ -73,6 +73,27 @@ export const productsApi = apiSlice.injectEndpoints({
             }),
         }),
 
+        // Fetch Toprated Products
+        fetchTopratedProducts: builder.query({
+            query: () => ({
+                url: `${PRODUCTS_URL}/top-rated_products/`,
+            }),
+        }),
+
+        // Fetch Bestselling Products
+        fetchBestsellingProducts: builder.query({
+            query: () => ({
+                url: `${PRODUCTS_URL}/bestselling_products/`,
+            }),
+        }),
+
+        // Fetch Bestselling Products
+        fetchRelatedProducts: builder.query({
+            query: () => ({
+                url: `${PRODUCTS_URL}/products/${prodId}/related_prods/`,
+            }),
+        }),
+
         // Fetch Users Products
         fetchUserProducts: builder.query({
             query: () => ({
@@ -177,6 +198,9 @@ export const {
     useRemoveProductMutation,
 
     useFetchAllProductsQuery,
+    useFetchTopratedProductsQuery,
+    useFetchBestsellingProductsQuery,
+    useFetchRelatedProductsQuery,
     useFetchUserProductsQuery,
     useFetchSingleProductQuery,
     useCreateProductMutation,

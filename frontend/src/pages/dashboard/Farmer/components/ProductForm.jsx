@@ -18,9 +18,23 @@ const ProductForm = ({ productData, onSuccess, onClose }) => {
         additional_info: [],
     });
 
-    const { data: categories = [] } = useFetchProdCategoryQuery();
+    const { data: categoriesData } = useFetchProdCategoryQuery();
     const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
     const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
+
+    const flattenCategories = (categories) => {
+        const flatList = [];
+        const traverse = (categoryList) => {
+            categoryList.forEach((category) => {
+                flatList.push(category);
+                if (category.children?.length) traverse(category.children);
+            });
+        };
+        traverse(categories);
+        return flatList;
+    };
+
+    const categories = flattenCategories(categoriesData || []);
 
     useEffect(() => {
         if (productData) {

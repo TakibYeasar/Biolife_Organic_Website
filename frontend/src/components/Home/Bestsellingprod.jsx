@@ -1,28 +1,32 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion } from "framer-motion";
 import { ProductCard } from "../index";
-
-// Dummy data
-const bestsellingprod = [
-  {
-    product: [
-      { id: 1, title: "Product 1", price: 29.99, image: "https://via.placeholder.com/150" },
-      { id: 2, title: "Product 2", price: 39.99, image: "https://via.placeholder.com/150" },
-      { id: 3, title: "Product 3", price: 49.99, image: "https://via.placeholder.com/150" },
-      { id: 4, title: "Product 4", price: 19.99, image: "https://via.placeholder.com/150" },
-      { id: 5, title: "Product 5", price: 59.99, image: "https://via.placeholder.com/150" },
-      { id: 6, title: "Product 6", price: 79.99, image: "https://via.placeholder.com/150" },
-    ]
-  }
-];
+import { useFetchBestsellingProductsQuery } from '../../redux/features/products/productsApi';
 
 const Bestsellingprod = () => {
+  const { data: bestsellingprod, error, isLoading } = useFetchBestsellingProductsQuery();
   const [width, setWidth] = useState(0);
   const carousel = useRef();
 
   useEffect(() => {
-    setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
-  }, []);
+    if (carousel.current && bestsellingprod) {
+      setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
+    }
+  }, [bestsellingprod]);
+
+  if (isLoading) {
+    return <div className="text-center py-8 text-lg font-semibold text-gray-500">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-lg font-semibold text-red-500">Error: {error.message}</div>;
+  }
+
+  const products = bestsellingprod?.[0]?.product || [];
+
+  // Split products into two rows
+  const firstRow = products?.slice(0, 5);
+  const secondRow = products?.slice(5);
 
   return (
     <section className="my-16">
@@ -31,21 +35,37 @@ const Bestsellingprod = () => {
       </div>
 
       <motion.div className="overflow-hidden">
+        {/* First Row */}
+        <motion.ul
+          ref={carousel}
+          drag="x"
+          dragConstraints={{ right: 0, left: -width }}
+          className="flex space-x-6 px-4 md:px-6 lg:px-8 mb-8"
+        >
+          {firstRow.map((productItem) => (
+            <motion.li
+              key={productItem.id}
+              className="flex-shrink-0"
+            >
+              <ProductCard item={productItem} />
+            </motion.li>
+          ))}
+        </motion.ul>
+
+        {/* Second Row */}
         <motion.ul
           ref={carousel}
           drag="x"
           dragConstraints={{ right: 0, left: -width }}
           className="flex space-x-6 px-4 md:px-6 lg:px-8"
         >
-          {bestsellingprod.map((bestsellingprodItem, index) => (
-            bestsellingprodItem.product.map((productItem) => (
-              <motion.li
-                key={productItem.id}
-                className=""
-              >
-                <ProductCard item={productItem} />
-              </motion.li>
-            ))
+          {secondRow.map((productItem) => (
+            <motion.li
+              key={productItem.id}
+              className="flex-shrink-0"
+            >
+              <ProductCard item={productItem} />
+            </motion.li>
           ))}
         </motion.ul>
       </motion.div>

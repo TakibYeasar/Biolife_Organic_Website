@@ -4,7 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.db.models import Count
+from django.db.models import Avg, Count
+from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 
@@ -207,6 +208,66 @@ class GetProductView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class TopratedProdView(APIView):
+    """
+    API view to fetch top-rated products based on average rating from reviews.
+    """
+
+    def get(self, request, *args, **kwargs):
+        # Annotate products with their average review rating
+        products = Product.objects.filter(
+            is_approved=True, is_active=True
+        ).prefetch_related(
+            'categories', 'images', 'additional_info'
+        ).annotate(average_rating=Avg('reviews__rate')).order_by('-average_rating')
+
+        # Serialize the products
+        serializer = ProductSerializer(
+            products, context={'request': request}, many=True
+        )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class BestsellingApiView(APIView):
+    """
+    API view to fetch bestselling products based on the number of likes.
+    """
+
+    def get(self, request, *args, **kwargs):
+        # Annotate products with their total number of likes
+        products = Product.objects.filter(
+            is_approved=True, is_active=True
+        ).prefetch_related(
+            'categories', 'images', 'additional_info'
+        ).annotate(likes_count=Count('likes')).order_by('-likes_count')
+
+        # Serialize the products
+        serializer = ProductSerializer(
+            products, context={'request': request}, many=True
+        )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RelatedProdApiView(APIView):
+    """
+    API view to fetch related products based on shared categories.
+    """
+
+    def get(self, request, product_id, *args, **kwargs):
+        product = get_object_or_404(Product, id=product_id)
+
+        # Fetch related products
+        related_products = Product.objects.filter(
+            categories__in=product.categories.all()
+        ).exclude(id=product.id).distinct()
+
+        # Serialize the related products
+        serializer = ProductSerializer(related_products, many=True)
+
+        # Return the response
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class GetProductsByUserView(APIView):
     def get(self, request, *args, **kwargs):

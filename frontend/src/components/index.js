@@ -13,8 +13,6 @@ export { default as OurProducts } from "./Home/OurProducts";
 export { default as Specialoffer } from "./Home/Specialoffer";
 export { default as Bestsellingprod } from "./Home/Bestsellingprod";
 export { default as Discountprod } from "./Home/Discountprod";
-export { default as Onsaleprod } from "./Home/Onsaleprod";
-export { default as Topratedprod } from "./Home/Topratedprod";
 export { default as Companies } from "./Home/Companies";
 export { default as OurArticles } from "./Home/OurArticles";
 export { default as Testimonial } from "./Home/Testimonial";
