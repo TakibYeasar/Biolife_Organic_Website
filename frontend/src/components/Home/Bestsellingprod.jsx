@@ -8,6 +8,8 @@ const Bestsellingprod = () => {
   const [width, setWidth] = useState(0);
   const carousel = useRef();
 
+  // console.log(bestsellingprod);
+
   useEffect(() => {
     if (carousel.current && bestsellingprod) {
       setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
@@ -22,11 +24,12 @@ const Bestsellingprod = () => {
     return <div className="text-center py-8 text-lg font-semibold text-red-500">Error: {error.message}</div>;
   }
 
-  const products = bestsellingprod?.[0]?.product || [];
+  // Access the products directly from bestsellingprod
+  const products = bestsellingprod || [];
 
   // Split products into two rows
-  const firstRow = products?.slice(0, 5);
-  const secondRow = products?.slice(5);
+  const firstRow = products.slice(0, 5);
+  const secondRow = products.slice(5);
 
   return (
     <section className="my-16">

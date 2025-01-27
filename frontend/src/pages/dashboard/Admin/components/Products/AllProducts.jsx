@@ -15,7 +15,7 @@ const AllProducts = ({
                         <th className="py-3 px-4 text-left">Name</th>
                         <th className="py-3 px-4 text-left">Category</th>
                         <th className="py-3 px-4 text-left">Price</th>
-                        <th className="py-3 px-4 text-left">Status</th>
+                        <th className="py-3 px-4 text-left">User</th>
                         <th className="py-3 px-4 text-left">Actions</th>
                     </tr>
                 </thead>
@@ -27,7 +27,7 @@ const AllProducts = ({
                                 <td className="py-3 px-4">{product.title}</td>
                                 <td className="py-3 px-4">{product.category}</td>
                                 <td className="py-3 px-4">${product.price}</td>
-                                <td className="py-3 px-4">{product.status}</td>
+                                <td className="py-3 px-4">{product.user}</td>
                                 <td className="py-3 px-4 flex gap-2">
                                     {actions(product)}
                                 </td>

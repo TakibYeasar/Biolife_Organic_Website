@@ -4,7 +4,6 @@ from cart.models import Cart
 
 # Create your models here.
 
-
 ADDRESS_TYPE_CHOICES = (
     ("ship", "Shipping"),
     ("bill", "Billing"),
@@ -15,25 +14,32 @@ class Address(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     address_type = models.CharField(
-        max_length=10, choices=ADDRESS_TYPE_CHOICES, default="ship")
+        max_length=10, choices=ADDRESS_TYPE_CHOICES, default="ship"
+    )
     first_name = models.CharField(max_length=200, blank=True, null=True)
     last_name = models.CharField(max_length=200, blank=True, null=True)
     email = models.EmailField(max_length=255, blank=True, null=True)
-    mobile = models.CharField(max_length=50, null=True, blank=True)
-    street_address = models.CharField(max_length=200, null=True, blank=True)
-    town = models.CharField(max_length=50, null=True, blank=True)
-    country = models.CharField(max_length=50, null=True, blank=True)
-    zip_code = models.CharField(max_length=50, null=True, blank=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    street_address = models.CharField(max_length=255, blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True)
+    state = models.CharField(max_length=100, blank=True, null=True)
+    zip_code = models.CharField(max_length=20, blank=True, null=True)
+    country = models.CharField(max_length=100, blank=True, null=True)
     is_default = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Address"
+        verbose_name_plural = "Addresses"
 
     def __str__(self):
-        return f"{self.user.username} - {self.address_type} Address"
+        return f"{self.user.username} - {self.get_address_type_display()} Address"
 
 
 PAYMENT_METHOD_CHOICES = (
-    ('paypal', 'PayPal'),
-    ('stripe', 'Stripe'),
+    ("stripe", "Stripe"),
+    ("paypal", "Paypal"),
+    ("credit_card", "Credit Card"),
 )
 
 
@@ -41,11 +47,16 @@ class Payment(models.Model):
     customer = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     payment_method = models.CharField(
-        max_length=50, choices=PAYMENT_METHOD_CHOICES)
+        max_length=50, choices=PAYMENT_METHOD_CHOICES
+    )
     payment_id = models.CharField(max_length=255, unique=True)
     amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Payment"
+        verbose_name_plural = "Payments"
 
     def __str__(self):
         return f"Payment {self.payment_id} for {self.customer.username}"
@@ -62,33 +73,39 @@ ORDER_STATUS_CHOICES = (
 
 class Order(models.Model):
     customer = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="orders"
+    )
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
     address = models.ForeignKey(
-        Address, on_delete=models.SET_NULL, null=True, blank=True)
+        Address, on_delete=models.SET_NULL, null=True, blank=True
+    )
     subtotal = models.DecimalField(
         max_digits=10, decimal_places=2, default=0.00)
     discount = models.DecimalField(
         max_digits=10, decimal_places=2, default=0.00)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     payment = models.ForeignKey(
-        Payment, on_delete=models.SET_NULL, null=True, blank=True)
+        Payment, on_delete=models.SET_NULL, null=True, blank=True
+    )
     payment_complete = models.BooleanField(default=False)
     order_status = models.CharField(
-        max_length=50, choices=ORDER_STATUS_CHOICES, default="received")
+        max_length=50, choices=ORDER_STATUS_CHOICES, default="received"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-created_at', ]
+        ordering = ["-created_at"]
+        verbose_name = "Order"
+        verbose_name_plural = "Orders"
 
     def __str__(self):
         return f"Order {self.id} for {self.customer.username}"
 
     def calculate_totals(self):
         self.subtotal = sum(
-            item.subtotal for item in self.cart.cart_products.all())
+            item.subtotal for item in self.cart.cart_products.all()
+        )
         self.total = self.subtotal - self.discount
-        self.save()
 
     def save(self, *args, **kwargs):
         self.calculate_totals()

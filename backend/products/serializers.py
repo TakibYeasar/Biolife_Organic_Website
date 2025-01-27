@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, Review, ProductImage, AdditionalInfo
+from .models import *
 
 
 class CategoryCreateSerializer(serializers.ModelSerializer):
@@ -174,3 +174,34 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_likes_count(self, obj):
         return obj.likes.count()
+
+
+class SpecialOfferSerializer(serializers.ModelSerializer):
+    category = CategorySerializer()
+    duration_display = serializers.SerializerMethodField()
+    is_active = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SpecialOffer
+        fields = "__all__"
+
+    def get_duration_display(self, obj):
+        """Returns a human-readable display of the duration."""
+        return obj.get_display_duration()
+
+    def get_is_active(self, obj):
+        """Returns whether the special offer is currently active."""
+        return obj.is_active()
+
+
+class DiscountProductSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+
+    class Meta:
+        model = DiscountProduct
+        fields = [
+            'id', 'product', 'product_id', 'user', 'user_id',
+            'discount_percentage', 'start_date', 'end_date', 'created_at', 'updated_at', 'slug'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at', 'slug']
+

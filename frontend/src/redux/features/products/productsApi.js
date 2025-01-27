@@ -54,7 +54,7 @@ export const productsApi = apiSlice.injectEndpoints({
         editApproval: builder.mutation({
             query: (id) => ({
                 url: `${PRODUCTS_URL}/prods/${id}/edit-approval/`,
-                method: "PUT",
+                method: "PATCH",
             }),
         }),
 
@@ -183,6 +183,72 @@ export const productsApi = apiSlice.injectEndpoints({
                 method: "DELETE",
             }),
         }),
+
+        // Fetch Product Categories
+        fetchSpecialOffer: builder.query({
+            query: () => ({
+                url: `${PRODUCTS_URL}/specialoffer/`,
+            }),
+        }),
+
+        // Create Category
+        createSpecialOffer: builder.mutation({
+            query: (data) => ({
+                url: `${PRODUCTS_URL}/create/specialoffer/`,
+                method: "POST",
+                body: data,
+            }),
+        }),
+
+        // Update Category
+        updateSpecialOffer: builder.mutation({
+            query: ({ offerId, formData }) => ({
+                url: `${PRODUCTS_URL}/update/specialoffer/${offerId}/`,
+                method: "PUT",
+                body: formData,
+            }),
+        }),
+
+        // Delete Category
+        deleteSpecialOffer: builder.mutation({
+            query: (offerId) => ({
+                url: `${PRODUCTS_URL}/delete/specialoffer/${offerId}/`,
+                method: "DELETE",
+            }),
+        }),
+
+        // Fetch Product Categories
+        fetchDiscountProduct: builder.query({
+            query: () => ({
+                url: `${PRODUCTS_URL}/discount_prod/`,
+            }),
+        }),
+
+        // Create Category
+        createDiscountProduct: builder.mutation({
+            query: (data) => ({
+                url: `${PRODUCTS_URL}/create/discount_prod/`,
+                method: "POST",
+                body: data,
+            }),
+        }),
+
+        // Update Category
+        updateDiscountProduct: builder.mutation({
+            query: ({ prodId, formData }) => ({
+                url: `${PRODUCTS_URL}/update/discount_prod/${prodId}/`,
+                method: "PUT",
+                body: formData,
+            }),
+        }),
+
+        // Delete Category
+        deleteDiscountProduct: builder.mutation({
+            query: (prodId) => ({
+                url: `${PRODUCTS_URL}/delete/discount_prod/${prodId}/`,
+                method: "DELETE",
+            }),
+        }),
     }),
 });
 
@@ -214,4 +280,14 @@ export const {
     useCreateProductReviewMutation,
     useUpdateProductReviewMutation,
     useDeleteProductReviewMutation,
+
+    useFetchSpecialOfferQuery,
+    useCreateSpecialOfferMutation,
+    useUpdateSpecialOfferMutation,
+    useDeleteSpecialOfferMutation,
+
+    useFetchDiscountProductQuery,
+    useCreateDiscountProductMutation,
+    useUpdateDiscountProductMutation,
+    useDeleteDiscountProductMutation,
 } = productsApi;

@@ -119,7 +119,7 @@ class ManageProductsView(APIView):
 
     def patch(self, request, pk, *args, **kwargs):
         """
-        Approve or unapprove a product. Only accessible by admin users.
+        Toggle approval status of a product. Only accessible by admin users.
         """
         if request.user.role != 'admin':
             return Response(
@@ -132,22 +132,17 @@ class ManageProductsView(APIView):
         except Product.DoesNotExist:
             return Response({"detail": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Approve or unapprove the product based on the request data
-        is_approved = request.data.get("is_approved", None)
+        # Toggle the approval status
+        new_status = not product.is_approved
+        product.is_approved = new_status
+        product.save()
 
-        if is_approved is not None:
-            product.is_approved = is_approved
-            product.save()
-            status_message = "approved" if is_approved else "set to pending approval"
-            return Response(
-                {"detail": f"Product '{product.title}' has been {status_message}."},
-                status=status.HTTP_200_OK,
-            )
-
+        status_message = "approved" if new_status else "unapproved"
         return Response(
-            {"detail": "Please provide the 'is_approved' field in the request."},
-            status=status.HTTP_400_BAD_REQUEST
+            {"detail": f"Product '{product.title}' has been {status_message}."},
+            status=status.HTTP_200_OK,
         )
+
 
     def delete(self, request, pk, *args, **kwargs):
         """
@@ -483,4 +478,103 @@ class DeleteProductReviewView(APIView):
         except Review.DoesNotExist:
             return Response({'error': 'Review not found'}, status=status.HTTP_404_NOT_FOUND)
 
+
+class GetSpecialOfferView(APIView):
+    def get(self, request):
+        try:
+            soffer_obj = SpecialOffer.objects.all()
+            serializer = SpecialOfferSerializer(
+                soffer_obj, context={'request': request}, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({'error': "No SpecialOffer found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class CreateSpecialOfferView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = SpecialOfferSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateSpecialOfferView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, pk):
+        try:
+            soffer_obj = SpecialOffer.objects.get(pk=pk)
+            serializer = SpecialOfferSerializer(
+                soffer_obj, context={'request': request}, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            return Response({'error': "No SpecialOffer found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class DeleteSpecialOfferView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        try:
+            soffer_obj = SpecialOffer.objects.get(pk=pk)
+            soffer_obj.delete()
+            return Response({'message': 'SpecialOffer deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except ObjectDoesNotExist:
+            return Response({'error': "No SpecialOffer found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class GetDiscountProductView(APIView):
+    def get(self, request):
+        try:
+            product_obj = DiscountProduct.objects.all()
+            serializer = DiscountProductSerializer(
+                product_obj, context={'request': request}, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({'error': "No products found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class CreateDiscountProductView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = DiscountProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateDiscountProductView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, pk):
+        try:
+            product_obj = DiscountProduct.objects.get(pk=pk)
+            serializer = DiscountProductSerializer(
+                product_obj, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            return Response({'error': "No product found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class DeleteDiscountProductView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        try:
+            product_obj = DiscountProduct.objects.get(pk=pk)
+            product_obj.delete()
+            return Response({'message': 'Discount product deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except ObjectDoesNotExist:
+            return Response({'error': "No product found"}, status=status.HTTP_404_NOT_FOUND)
 

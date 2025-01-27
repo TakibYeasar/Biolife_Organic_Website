@@ -44,4 +44,21 @@ urlpatterns = [
          UpdateProductReviewView.as_view(), name='update_product_review'),
     path('product/delete-review/<int:review_id>/',
          DeleteProductReviewView.as_view(), name='delete_review'),
+    
+    path('specialoffer/', GetSpecialOfferView.as_view(), name='get_specialoffer'),
+    path('create/specialoffer/', CreateSpecialOfferView.as_view(),
+         name='create_specialoffer'),
+    path('update/specialoffer/<int:pk>/',
+         UpdateSpecialOfferView.as_view(), name='update_specialoffer'),
+    path('delete/specialoffer/<int:pk>/',
+         DeleteSpecialOfferView.as_view(), name='delete_specialoffer'),
+    
+    path('discount_prod/', GetDiscountProductView.as_view(),
+         name='get_discount_products'),
+    path('create/discount_prod/', CreateDiscountProductView.as_view(),
+         name='create_discount_product'),
+    path('update/discount_prod/<int:pk>/', UpdateDiscountProductView.as_view(),
+         name='update_discount_product'),
+    path('delete/discount_prod/<int:pk>/', DeleteDiscountProductView.as_view(),
+         name='delete_discount_product'),
 ]

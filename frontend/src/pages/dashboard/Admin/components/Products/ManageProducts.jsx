@@ -56,14 +56,14 @@ const ManageProducts = () => {
         await deleteProdCategory({ id: categoryId });
     };
 
-    const handleApproveProduct = async (productId, isApproved) => {
+    const handleApproveProduct = async (productId) => {
         if (!productId) return;
-        await approveProduct({ id: productId, is_approved: isApproved });
+        await approveProduct(productId).unwrap();
     };
 
     const handleDeleteProduct = async (productId) => {
         if (!productId) return;
-        await deleteProduct({ id: productId });
+        await deleteProduct(productId).unwrap();
     };
 
     const closeModal = () => {

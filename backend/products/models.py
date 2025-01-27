@@ -2,6 +2,7 @@ from django.db import models
 from django.shortcuts import reverse
 from django.utils.text import slugify
 from django.conf import settings
+from django.utils import timezone
 from django.utils.timezone import now, datetime
 
 
@@ -100,7 +101,6 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('products:product_detail', args=[self.slug])
-    
 
 
 class Review(models.Model):
@@ -159,3 +159,51 @@ class SpecialOffer(models.Model):
             return now() <= self.end_date
         else:
             return True
+
+
+class DiscountProduct(models.Model):
+    product = models.OneToOneField(
+        'Product',
+        on_delete=models.CASCADE,
+        related_name='discount',
+        verbose_name='Discounted Product'
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='discounted_products',
+        verbose_name='Farmer'
+    )
+    discount_percentage = models.DecimalField(
+        max_digits=5, decimal_places=2, verbose_name='Discount Percentage'
+    )
+    start_date = models.DateTimeField(
+        auto_now_add=True, verbose_name='Start Date')
+    end_date = models.DateTimeField(verbose_name='End Date')
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name='Created At')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Updated At')
+    slug = models.SlugField(unique=True, blank=True,
+                            allow_unicode=True, db_index=True)
+
+    class Meta:
+        verbose_name = 'Discount Product'
+        verbose_name_plural = 'Discount Products'
+        ordering = ('-created_at',)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(
+                f"{self.product.title}-{self.discount_percentage}")
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.product.title} - {self.discount_percentage}% Discount"
+
+    def is_valid_discount(self):
+        """Check if the discount is still valid."""
+        now = timezone.now()
+        return self.start_date <= now <= self.end_date
+
+    def get_absolute_url(self):
+        return reverse('products:discount_detail', args=[self.slug])
