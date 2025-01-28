@@ -289,3 +289,26 @@ class GetNewsletterView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({'error': "No Newsletter found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class ContactApiView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        serializer = ContactSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, data=status.HTTP_400_BAD_REQUEST)
+
+
+class GetContactApiView(APIView):
+    def get(self, request):
+        try:
+            contact_obj = Contact.objects.all()
+            serializer = ContactSerializer(
+                contact_obj, context={'request': request}, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({'error': "No Contact found"}, status=status.HTTP_404_NOT_FOUND)
+

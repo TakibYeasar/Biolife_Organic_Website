@@ -102,3 +102,17 @@ class Newsletter(models.Model):
     def __str__(self):
         return self.email
 
+
+class Contact(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField(max_length=255)
+    phone = models.CharField(max_length=20)
+    message = models.TextField()
+    created_at = models.DateField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Contacts'
+        ordering = ('-created_at',)
+
+    def __str__(self):
+        return self.email

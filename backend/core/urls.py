@@ -34,4 +34,8 @@ urlpatterns = [
 
     path('testimonial/', GetTestimonialView.as_view(), name='get_testimonial'),
     path('newsletter/', GetNewsletterView.as_view(), name='get_newsletter'),
+    
+    path('all-contacts/', GetContactApiView.as_view(), name='get_contacts'),
+    path('create-contact/', ContactApiView.as_view(),
+         name='create_contact'),
 ]

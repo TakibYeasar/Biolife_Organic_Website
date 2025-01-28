@@ -149,6 +149,22 @@ export const coreApi = apiSlice.injectEndpoints({
                 url: `${CORE_URL}/newsletter/`,
             }),
         }),
+
+        // Fetch Contact
+        fetchContacts: builder.query({
+            query: () => ({
+                url: `${CORE_URL}/all-contacts/`,
+            }),
+        }),
+
+        // Create Contact
+        createContact: builder.mutation({
+            query: (data) => ({
+                url: `${CORE_URL}/create-contact/`,
+                method: "POST",
+                body: data,
+            }),
+        }),
     }),
 });
 
@@ -175,4 +191,7 @@ export const {
 
     useFetchTestimonialsQuery,
     useFetchNewslettersQuery,
+
+    useFetchContactsQuery,
+    useCreateContactMutation,
 } = coreApi;
