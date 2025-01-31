@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Reusable Product Component for Wishlist
-const WishlistItem = ({ image, name, price }) => {
+const CartItem = ({ image, name, price }) => {
     return (
         <li className="flex items-center justify-between space-x-3">
             <div className="flex items-center">
@@ -22,22 +22,22 @@ const WishlistItem = ({ image, name, price }) => {
     );
 };
 
-const Wishlists = () => {
+const CartProducts = () => {
     return (
         <div className="absolute right-0 bg-white shadow-lg border rounded-lg w-72 p-4 z-50">
             <h3 className="text-lg font-semibold mb-3 text-green-700">My Wishlist</h3>
             <ul className="space-y-3">
-                <WishlistItem
+                <CartItem
                     image="/assets/images/product1.jpg"
                     name="Organic Spinach"
                     price="$2.99 / bunch"
                 />
-                <WishlistItem
+                <CartItem
                     image="/assets/images/product2.jpg"
                     name="Organic Kale"
                     price="$3.49 / bunch"
                 />
-                <WishlistItem
+                <CartItem
                     image="/assets/images/product3.jpg"
                     name="Fresh Carrots"
                     price="$1.99 / lb"
@@ -50,4 +50,4 @@ const Wishlists = () => {
     );
 };
 
-export default Wishlists;
+export default CartProducts;

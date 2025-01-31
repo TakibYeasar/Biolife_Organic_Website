@@ -65,8 +65,12 @@ class LogoutUserSerializer(serializers.Serializer):
     refresh_token = serializers.CharField()
 
     def validate(self, attrs):
-        self.token = attrs.get('refresh_token')
+        token = attrs.get("refresh_token")
+        if not token:
+            raise ValidationError({"detail": "Refresh token is required."})
+        self.token = token
         return attrs
+
 
     def save(self):
         try:

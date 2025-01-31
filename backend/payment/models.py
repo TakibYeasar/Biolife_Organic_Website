@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from cart.models import Cart
+from cart.models import Cart, CartProduct
 
 # Create your models here.
 
@@ -110,3 +110,35 @@ class Order(models.Model):
     def save(self, *args, **kwargs):
         self.calculate_totals()
         super().save(*args, **kwargs)
+
+
+class SubOrder(models.Model):
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name="sub_orders")
+    farmer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="sub_orders_as_farmer",
+    )
+    products = models.ManyToManyField(CartProduct, related_name="sub_orders")
+    subtotal = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00)
+    order_status = models.CharField(
+        max_length=50, choices=ORDER_STATUS_CHOICES, default="received"
+    )
+
+    class Meta:
+        verbose_name = "Sub Order"
+        verbose_name_plural = "Sub Orders"
+
+    def __str__(self):
+        return f"SubOrder {self.id} for Order {self.order.id} (Farmer: {self.farmer.username})"
+
+    def calculate_subtotal(self):
+        self.subtotal = sum(
+            product.subtotal for product in self.products.all())
+
+    def save(self, *args, **kwargs):
+        self.calculate_subtotal()
+        super().save(*args, **kwargs)
+

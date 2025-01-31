@@ -6,6 +6,7 @@ import {
     useRemoveProductLikeMutation
 } from "../../redux/features/products/productsApi";
 import { useCurrentUserQuery } from "../../redux/features/auth/authApi";
+import { useAddToCartMutation } from "../../redux/features/cart/cartApi";
 
 const ProductCard = ({ item }) => {
     const { data: user, isLoading, error } = useCurrentUserQuery();  // Fetch current user

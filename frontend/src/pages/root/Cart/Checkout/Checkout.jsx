@@ -2,150 +2,167 @@ import React from 'react';
 import pr01 from '/assets/images/shippingcart/pr-01.jpg';
 import pr02 from '/assets/images/shippingcart/pr-02.jpg';
 
-const data = [
+const cartData = [
   {
     image: pr01,
     title: 'National Fresh Fruit',
     price: '85',
     old_price: '135',
+    quantity: 1,
   },
   {
     image: pr02,
-    title: 'National Fresh Fruit',
+    title: 'Organic Berries',
     price: '85',
     old_price: '135',
+    quantity: 1,
   },
 ];
 
 const Checkout = () => {
   return (
-    <section className="p-8">
-      <div className="breadcrumb mb-6">
-        <h1 className="text-2xl font-semibold">Organic Fruits</h1>
-      </div>
-      <div className="checkout-sec">
-        <div className="container">
-          <nav className="flex mb-4">
-            <a href="/" className="text-blue-600">Home</a>
-            <span className="mx-2">/</span>
-            <a href="/checkout" className="text-blue-600">Shoppingcart</a>
-          </nav>
+    <section className="pt-32 p-8 bg-gray-50">
+      <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Shipping Address Form */}
+        <div className="p-6 bg-white rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">Shipping Address</h2>
+          <form>
+            <div className="mb-4">
+              <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-1">
+                Full Name
+              </label>
+              <input
+                type="text"
+                id="full_name"
+                placeholder="Enter your full name"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
 
-          <div className="flex">
-            {/* Customer Info Section */}
-            <div className="w-2/3 pr-4">
-              <div className="checkout-progress p-6 bg-gray-100 rounded-lg">
-                <ul className="steps">
-                  <li className="step step-active">
-                    <div className="checkout-act">
-                      <h3 className="title-box text-lg font-bold">
-                        <span className="inline-block w-8 h-8 bg-blue-600 text-white text-center rounded-full mr-2">1</span>
-                        Customer
-                      </h3>
-                      <div className="box-content mt-4">
-                        <p className="txt-desc text-gray-700">
-                          Checking out as a <a className="text-blue-500" href="#">Guest?</a> You’ll be able to save your details to create an account with us later.
-                        </p>
-                        <div className="login-checkout mt-4">
-                          <form>
-                            <div className="mb-4">
-                              <label htmlFor="input_email" className="block font-bold">Email Address</label>
-                              <input type="email" name="email" id="input_email" placeholder="Your email" className="mt-2 p-2 border border-gray-300 rounded w-full" />
-                              <button type="submit" className="mt-4 btn btn-blue">Continue As Guest</button>
-                            </div>
-                            <div className="flex items-center mb-4">
-                              <input type="checkbox" name="subscribe" id="input_subscribe" className="mr-2" />
-                              <label htmlFor="input_subscribe" className="text-gray-700">Subscribe to our newsletter</label>
-                            </div>
-                            <p className="msg text-gray-600">Already have an account? <a href="#" className="text-blue-500">Sign in now</a></p>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="step">
-                    <div className="checkout-act">
-                      <h3 className="title-box text-lg font-bold">
-                        <span className="inline-block w-8 h-8 bg-blue-600 text-white text-center rounded-full mr-2">2</span>
-                        Shipping
-                      </h3>
-                    </div>
-                  </li>
-                  <li className="step">
-                    <div className="checkout-act">
-                      <h3 className="title-box text-lg font-bold">
-                        <span className="inline-block w-8 h-8 bg-blue-600 text-white text-center rounded-full mr-2">3</span>
-                        Billing
-                      </h3>
-                    </div>
-                  </li>
-                  <li className="step">
-                    <div className="checkout-act">
-                      <h3 className="title-box text-lg font-bold">
-                        <span className="inline-block w-8 h-8 bg-blue-600 text-white text-center rounded-full mr-2">4</span>
-                        Payment
-                      </h3>
-                    </div>
-                  </li>
-                </ul>
+            <div className="mb-4">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                Address
+              </label>
+              <input
+                type="text"
+                id="address"
+                placeholder="Enter your address"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
+                  City
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  placeholder="Enter your city"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="zip_code" className="block text-sm font-medium text-gray-700 mb-1">
+                  Zip Code
+                </label>
+                <input
+                  type="text"
+                  id="zip_code"
+                  placeholder="Enter your zip code"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                />
               </div>
             </div>
 
-            {/* Order Summary Section */}
-            <div className="w-1/3 pl-4">
-              <div className="order-summary bg-white p-6 rounded-lg shadow">
-                <div className="title-block flex justify-between items-center mb-4">
-                  <h3 className="title text-lg font-bold">Order Summary</h3>
-                  <a href="#" className="text-blue-500">Edit cart</a>
-                </div>
-                <div className="cart-list-box">
-                  <span className="number text-gray-700">2 items</span>
-                  <ul className="cart-list list-none my-4">
-                    {data.map((item, i) => (
-                      <li className="cart-elem flex justify-between items-center mb-4" key={i}>
-                        <div className="cart-item flex items-center">
-                          <div className="product-thumb mr-4">
-                            <a className="prd-thumb" href="#">
-                              <img src={item.image} width={60} height={60} alt="shop-cart" className="rounded" />
-                            </a>
-                          </div>
-                          <div className="info">
-                            <span className="txt-quantity text-gray-600">1</span><br />
-                            <a href="#" className="pr-name text-gray-800 font-semibold">{item.title}</a>
-                          </div>
-                        </div>
-                        <div className="price-contain text-right">
-                          <ins className="font-bold text-lg"><span className="currencySymbol">£</span>{item.price}</ins>
-                          <del className="text-gray-600"><span className="currencySymbol">£</span>{item.old_price}</del>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                  <ul className="subtotal list-none border-t pt-4">
-                    <li className="flex justify-between">
-                      <b className="stt-name">Subtotal</b>
-                      <span className="stt-price">£170.00</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <b className="stt-name">Shipping</b>
-                      <span className="stt-price">£20.00</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <b className="stt-name">Tax</b>
-                      <span className="stt-price">£0.00</span>
-                    </li>
-                    <li>
-                      <a href="#" className="text-blue-500 hover:underline">Promo/Gift Certificate</a>
-                    </li>
-                  </ul>
-                  <div className="total-price flex justify-between mt-4 font-bold">
-                    <span className="stt-name">Total:</span>
-                    <span className="stt-price">£190.00</span>
+            <div className="mb-4">
+              <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+                Country
+              </label>
+              <select
+                id="country"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">Select your country</option>
+                <option value="US">United States</option>
+                <option value="UK">United Kingdom</option>
+                <option value="CA">Canada</option>
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Save Address
+            </button>
+          </form>
+        </div>
+
+        {/* Order Summary and Payment Section */}
+        <div className="p-6 bg-white rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">Order Summary</h2>
+          <ul className="divide-y divide-gray-200 mb-6">
+            {cartData.map((item, i) => (
+              <li key={i} className="flex justify-between items-center py-4">
+                <div className="flex items-center">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-16 h-16 rounded border border-gray-200 mr-4"
+                  />
+                  <div>
+                    <p className="text-gray-800 font-medium">{item.title}</p>
+                    <p className="text-gray-600 text-sm">Quantity: {item.quantity}</p>
                   </div>
                 </div>
-              </div>
+                <div className="text-right">
+                  <p className="text-lg font-semibold text-gray-800">£{item.price}</p>
+                  <p className="text-sm text-gray-500 line-through">£{item.old_price}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <div className="text-sm border-t border-gray-200 pt-4">
+            <div className="flex justify-between mb-2">
+              <span className="text-gray-600">Subtotal</span>
+              <span className="text-gray-800">£170.00</span>
+            </div>
+            <div className="flex justify-between mb-2">
+              <span className="text-gray-600">Shipping</span>
+              <span className="text-gray-800">£20.00</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Tax</span>
+              <span className="text-gray-800">£0.00</span>
             </div>
           </div>
+
+          <div className="flex justify-between items-center mt-6 text-lg font-semibold">
+            <span>Total</span>
+            <span className="text-gray-800">£190.00</span>
+          </div>
+
+          <button
+            className="mt-6 w-full bg-green-600 text-white py-3 rounded-md font-semibold hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+          >
+            Proceed to Payment
+          </button>
         </div>
       </div>
     </section>

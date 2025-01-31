@@ -9,17 +9,7 @@ class CartProductSerializer(serializers.ModelSerializer):
         model = CartProduct
         fields = ['id', 'cart', 'product',
                   'quantity', 'subtotal']
-        read_only_fields = ['subtotal']  # Subtotal is calculated
-
-
-class CartSerializer(serializers.ModelSerializer):
-    cart_products = CartProductSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Cart
-        fields = ['id', 'customer', 'total',
-                  'complete', 'created_at', 'cart_products']
-        read_only_fields = ['total', 'created_at']
+        read_only_fields = ['subtotal']
 
 
 class CartSerializer(serializers.ModelSerializer):

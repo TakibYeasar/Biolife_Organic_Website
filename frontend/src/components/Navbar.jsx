@@ -5,9 +5,10 @@ import organic4 from '/assets/images/organic-4.png';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLogoutMutation } from '../redux/features/auth/authApi';
+import { resetAuthState } from '../redux/features/auth/authSlice';
 import { toast } from 'react-toastify';
 import LikedProducts from './Products/LikedProducts';
-import Wishlists from './Products/Wishlists';
+import CartProducts from './Products/CartProducts';
 
 const Navbar = ({ user, isAuthenticated }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,15 +18,14 @@ const Navbar = ({ user, isAuthenticated }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const [logout] = useLogoutMutation();
+
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-    const handleScroll = () => {
-        setIsScrolled(window.scrollY >= 80);
-    };
-
     useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', () => {
+            setIsScrolled(window.scrollY >= 80);
+        });
     }, []);
 
     const toggleTheme = () => {
@@ -36,35 +36,37 @@ const Navbar = ({ user, isAuthenticated }) => {
         document.body.className = theme;
     }, [theme]);
 
-    const getDashboardPath = () => {
-        if (user?.role === 'admin') return '/admin-dashboard';
-        if (user?.role === 'customer') return '/customer-dashboard';
-        if (user?.role === 'farmer') return '/farmer-dashboard';
-        return '/sign-in';
+    useEffect(() => {
+        const tokenTimestamp = localStorage.getItem('loginTimestamp');
+        if (tokenTimestamp) {
+            const timeElapsed = Date.now() - Number(tokenTimestamp);
+            if (timeElapsed >= 3600000) {
+                handleLogout();
+            } else {
+                setTimeout(handleLogout, 3600000 - timeElapsed);
+            }
+        }
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        localStorage.removeItem('loginTimestamp');
+        sessionStorage.clear();
+        dispatch(resetAuthState());
+        toast.success('Logged out successfully');
+        navigate('/sign-in');
     };
 
     const handleDashboardClick = () => {
-        const path = getDashboardPath();
-        navigate(path);
+        const dashboardPath =
+            user?.role === 'admin' ? '/admin-dashboard' :
+                user?.role === 'customer' ? '/customer-dashboard' :
+                    user?.role === 'farmer' ? '/farmer-dashboard' : '/sign-in';
+        navigate(dashboardPath);
     };
 
-    const handleLogout = async () => {
-        try {
-            const token = localStorage.getItem('authToken');
 
-            if (!token) {
-                throw new Error('No token found');
-            }
-
-            await dispatch(useLogoutMutation({ token })).unwrap();
-            localStorage.clear();
-            sessionStorage.clear();
-            toast.success('Logged out successfully');
-            navigate('/');
-        } catch (error) {
-            toast.error(`Logout failed: ${error.message || 'Please try again.'}`);
-        }
-    };
 
     return (
         <header
@@ -170,7 +172,7 @@ const Navbar = ({ user, isAuthenticated }) => {
                                 <button className="text-gray-600 hover:text-gray-900">
                                     <FaShoppingCart className="text-white text-2xl" />
                                 </button>
-                                {isHovered.cart && <Wishlists />}
+                                {isHovered.cart && <CartProducts />}
                             </div>
                         </div>
                     )}

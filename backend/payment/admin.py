@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Address, Payment, Order
+from .models import *
 
 
 @admin.register(Address)
@@ -68,3 +68,25 @@ class OrderAdmin(admin.ModelAdmin):
     )
     ordering = ("-created_at",)
     readonly_fields = ("subtotal", "discount", "total")
+
+
+class CartProductInline(admin.TabularInline):
+    model = SubOrder.products.through
+    extra = 0
+    verbose_name = "Cart Product"
+    verbose_name_plural = "Cart Products"
+
+@admin.register(SubOrder)
+class SubOrderAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "order",
+        "farmer",
+        "subtotal",
+        "order_status",
+    )
+    list_filter = ("order_status", "farmer")
+    search_fields = ("order__id", "farmer__username")
+    inlines = [CartProductInline]
+    readonly_fields = ("subtotal",)
+

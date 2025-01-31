@@ -10,7 +10,7 @@ urlpatterns = [
     path("api/articles/", include('articles.urls')),
     path("api/core/", include('core.urls')),
     path("api/products/", include('products.urls')),
-    # path("api/cart/", include('cart.urls')),
+    path("api/cart/", include('cart.urls')),
     # path("api/payment/", include('payment.urls')),
 ]
 
