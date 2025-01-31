@@ -5,10 +5,9 @@ export const cartApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         // Add product to cart
         addToCart: builder.mutation({
-            query: (productData) => ({
-                url: `${CART_URL}/add-to-cart/`,
+            query: (productId) => ({
+                url: `${CART_URL}/add-to-cart/${productId}/`,
                 method: "POST",
-                body: productData,
             }),
         }),
 
@@ -23,25 +22,23 @@ export const cartApi = apiSlice.injectEndpoints({
         // Increase cart product quantity
         increaseCartProduct: builder.mutation({
             query: (cartProductId) => ({
-                url: `${CART_URL}/increase-cart-product/`,
+                url: `${CART_URL}/increase-cart-product/${cartProductId}/`,
                 method: "POST",
-                body: { id: cartProductId },
             }),
         }),
 
         // Decrease cart product quantity
         decreaseCartProduct: builder.mutation({
             query: (cartProductId) => ({
-                url: `${CART_URL}/decrease-cart-product/`,
+                url: `${CART_URL}/decrease-cart-product/${cartProductId}/`,
                 method: "POST",
-                body: { id: cartProductId },
             }),
         }),
 
         // Delete a cart product
         deleteCartProduct: builder.mutation({
-            query: (cartProductId) => ({
-                url: `${CART_URL}/delete-cart-product/${cartProductId}/`,
+            query: (productId) => ({
+                url: `${CART_URL}/delete-cart-product/${productId}/`,
                 method: "DELETE",
             }),
         }),

@@ -3,40 +3,64 @@ import { FaEye, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import {
     useCreateProductLikeMutation,
-    useRemoveProductLikeMutation
+    useRemoveProductLikeMutation,
 } from "../../redux/features/products/productsApi";
 import { useCurrentUserQuery } from "../../redux/features/auth/authApi";
 import { useAddToCartMutation } from "../../redux/features/cart/cartApi";
+import { toast } from "react-toastify";
 
 const ProductCard = ({ item }) => {
-    const { data: user, isLoading, error } = useCurrentUserQuery();  // Fetch current user
-    const [isLiked, setIsLiked] = useState(false);
     const navigate = useNavigate();
 
-    // Redux hooks for like and unlike actions
+    // Fetch the current user
+    const { data: user } = useCurrentUserQuery();
+
+    // Like and Unlike mutations
     const [createProductLike] = useCreateProductLikeMutation();
     const [removeProductLike] = useRemoveProductLikeMutation();
 
-    // Check if the product is liked on component mount or item update
+    // Add to cart mutation
+    const [addToCart] = useAddToCartMutation();
+
+    // State to track if the product is liked
+    const [isLiked, setIsLiked] = useState(false);
+
+    // Check if the product is liked by the current user
     useEffect(() => {
         if (user && item?.likes?.includes(user.id)) {
-            setIsLiked(true);  // Set to true if current user has liked the product
+            setIsLiked(true);
         } else {
-            setIsLiked(false); // Set to false if current user has not liked the product
+            setIsLiked(false);
         }
     }, [user, item]);
 
     // Handle like/unlike functionality
-    const handleLike = () => {
-        if (isLiked) {
-            removeProductLike(item?.id); // Remove like
-        } else {
-            createProductLike(item?.id); // Add like
+    const handleLike = async () => {
+        try {
+            if (isLiked) {
+                await removeProductLike(item?.id).unwrap();
+                toast.success("Removed from wishlist");
+            } else {
+                await createProductLike(item?.id).unwrap();
+                toast.success("Added to wishlist");
+            }
+            setIsLiked(!isLiked); // Toggle the like state
+        } catch (error) {
+            toast.error("Failed to update wishlist");
         }
-        setIsLiked(!isLiked); // Toggle the like state
     };
 
-    // Navigate to product details page with product ID
+    // Handle adding product to cart
+    const handleAddToCart = async () => {
+        try {
+            await addToCart(item?.id).unwrap();
+            toast.success("Added to cart");
+        } catch (error) {
+            toast.error("Failed to add to cart");
+        }
+    };
+
+    // Navigate to product details page
     const handleProductDetails = () => {
         if (item?.id) {
             navigate(`/product/${item.id}`);
@@ -79,18 +103,24 @@ const ProductCard = ({ item }) => {
                 {/* Hover Actions */}
                 <div className="hidden group-hover:block mt-4 space-y-4">
                     <div className="flex justify-center space-x-3">
+                        {/* Like Button */}
                         <button
                             className="p-2 bg-transparent border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition duration-300"
                             onClick={handleLike}
                             aria-label={isLiked ? "Remove from Wishlist" : "Add to Wishlist"}
                         >
-                            <FaHeart className={`text-xl ${isLiked ? 'text-red-500' : 'text-gray-600'}`} />
+                            <FaHeart className={`text-xl ${isLiked ? "text-red-500" : "text-gray-600"}`} />
                         </button>
+
+                        {/* Add to Cart Button */}
                         <button
                             className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary transition duration-300"
+                            onClick={handleAddToCart}
                         >
                             Add to Cart
                         </button>
+
+                        {/* View Details Button */}
                         <button
                             className="p-2 bg-transparent border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition duration-300"
                             onClick={handleProductDetails}

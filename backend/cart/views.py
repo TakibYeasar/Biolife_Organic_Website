@@ -11,9 +11,7 @@ from .serializers import CartSerializer
 class AddToCartView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        product_id = request.data.get('id')
-
+    def post(self, request, product_id):
         try:
             product = Product.objects.get(pk=product_id)
             user = request.user
@@ -65,7 +63,7 @@ class MyCart(APIView):
 
     def get(self, request):
         try:
-            cart = Cart.objects.get(customer=request.user, complete=False)
+            cart = Cart.objects.get(customer=request.user,complete=False)
             serializer = CartSerializer(cart)
             return Response(serializer.data)
         except Cart.DoesNotExist:
@@ -75,12 +73,10 @@ class MyCart(APIView):
 class IncreaseCartProdQuantity(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        cart_product_id = request.data.get('id')
-
+    def post(self, request, product_id):
         try:
             cart_product = CartProduct.objects.get(
-                pk=cart_product_id, cart__customer=request.user)
+                pk=product_id, cart__customer=request.user)
 
             cart_product.quantity += 1
             cart_product.subtotal = cart_product.calculate_subtotal()
@@ -98,12 +94,10 @@ class IncreaseCartProdQuantity(APIView):
 class DecreaseCartProdQuantity(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        cart_product_id = request.data.get('id')
-
+    def post(self, request, product_id):
         try:
             cart_product = CartProduct.objects.get(
-                pk=cart_product_id, cart__customer=request.user)
+                pk=product_id, cart__customer=request.user)
 
             if cart_product.quantity > 1:
                 cart_product.quantity -= 1
@@ -125,10 +119,10 @@ class DecreaseCartProdQuantity(APIView):
 class DeleteCartProduct(APIView):
     permission_classes = [IsAuthenticated]
 
-    def delete(self, request, pk):
+    def delete(self, request, product_id):
         try:
             cart_product = CartProduct.objects.get(
-                pk=pk, cart__customer=request.user)
+                pk=product_id, cart__customer=request.user)
             cart_product.delete()
             return Response({"message": "Cart product deleted."}, status=status.HTTP_204_NO_CONTENT)
         except CartProduct.DoesNotExist:
@@ -145,4 +139,5 @@ class DeleteFullCart(APIView):
             return Response({"message": "Cart deleted."}, status=status.HTTP_204_NO_CONTENT)
         except Cart.DoesNotExist:
             raise NotFound("Cart not found.")
+
 

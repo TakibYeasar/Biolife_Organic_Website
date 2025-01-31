@@ -4,7 +4,6 @@ from products.models import Product
 
 # Create your models here.
 
-
 class Cart(models.Model):
     customer = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="carts"
