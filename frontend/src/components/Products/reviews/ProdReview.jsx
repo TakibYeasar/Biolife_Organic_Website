@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useCreateProductReviewMutation, useUpdateProductReviewMutation, useDeleteProductReviewMutation } from '../../../redux/features/products/productsApi';
+import { useCreateProductReviewMutation, useUpdateProductReviewMutation, useDeleteProductReviewMutation } from '../../../store/features/products/productsApi';
 import Rating from './Rating';
 import ReviewForm from './ReviewForm';
 import ReviewList from './ReviewList';

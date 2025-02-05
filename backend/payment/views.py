@@ -1,11 +1,14 @@
+from .serializers import OrderSerializer
+from .models import Address, Order
+from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.conf import settings
-from rest_framework import status, viewsets
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Address, Payment, Order
-from .serializers import AddressSerializer, OrderSerializer, PaymentSerializer
+from .serializers import AddressSerializer, OrderSerializer
 from cart.models import Cart
 import stripe
 import paypalrestsdk
@@ -25,182 +28,146 @@ class AddAddressAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        # Fetch the first unprocessed order for the user
         order = Order.objects.filter(
             customer=request.user, order_status="received").first()
         if not order:
-            return Response({"error": "No active order found for this user."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "No active order found."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Use default address if requested
         if request.data.get("use_default", False):
             address = Address.objects.filter(
                 user=request.user, is_default=True).first()
             if address:
                 order.address = address
                 order.save()
-                return Response({"success": "Default address applied to the order."}, status=status.HTTP_200_OK)
-            else:
-                return Response({"error": "No default address found for the user."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"success": "Default address applied."}, status=status.HTTP_200_OK)
+            return Response({"error": "No default address found."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Add a new address
         serializer = AddressSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         address = serializer.save(user=request.user)
 
-        # Set the new address as default if requested
         if request.data.get("is_default", False):
             Address.objects.filter(
                 user=request.user, is_default=True).update(is_default=False)
             address.is_default = True
             address.save()
 
-        # Associate the new address with the order
         order.address = address
         order.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class OrderViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
+class OrderAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return self.queryset.filter(customer=self.request.user)
+    def get(self, request):
+        """Retrieve all orders for the authenticated user."""
+        orders = Order.objects.filter(customer=request.user)
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def retrieve(self, request, pk=None):
-        order = get_object_or_404(self.get_queryset(), pk=pk)
-        serializer = self.get_serializer(order)
-        return Response(serializer.data)
-
-    def destroy(self, request, pk=None):
-        order = get_object_or_404(self.get_queryset(), pk=pk)
-        cart = order.cart
-        order.delete()
-        cart.delete()
-        return Response({"message": "Order and associated cart deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
-
-    def create(self, request):
+    def post(self, request):
+        """Create multiple orders per farmer from a cart."""
         cart_id = request.data.get("cart_id")
         cart = get_object_or_404(Cart, id=cart_id, customer=request.user)
         address_id = request.data.get("address_id")
         address = get_object_or_404(Address, id=address_id, user=request.user)
 
-        # Create order
-        order = Order.objects.create(
-            customer=request.user,
-            cart=cart,
-            address=address,
-            subtotal=cart.total,
-            discount=3,  # Apply any discount logic here
-            total=cart.total - 3,
-        )
-        serializer = self.get_serializer(order)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        orders = []
+        for item in cart.items.all():
+            order = Order.objects.create(
+                customer=request.user,
+                cart=cart,
+                address=address,
+                farmer=item.product.farmer,
+                subtotal=item.product.price * item.quantity,
+                discount=3,  # Modify discount logic as needed
+                total=(item.product.price * item.quantity) - 3,
+            )
+            orders.append(order)
+
+        return Response({"orders": OrderSerializer(orders, many=True).data}, status=status.HTTP_201_CREATED)
+
 
 
 class PaymentView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        try:
-            # Retrieve and validate payment method
-            payment_method = request.data.get("payment_method")
-            if payment_method not in ["stripe", "paypal", "credit_card"]:
-                return Response({"error": "Invalid payment method."}, status=status.HTTP_400_BAD_REQUEST)
+        payment_method = request.data.get("payment_method")
+        if payment_method not in ["stripe", "paypal", "credit_card"]:
+            return Response({"error": "Invalid payment method."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Retrieve and validate order
-            order = get_object_or_404(
-                Order, customer=request.user, payment_complete=False
-            )
-            amount = float(order.total)
+        orders = Order.objects.filter(
+            customer=request.user, payment_complete=False)
+        if not orders.exists():
+            return Response({"error": "No unpaid orders found."}, status=status.HTTP_400_BAD_REQUEST)
 
-            if payment_method == "stripe":
-                # Handle Stripe payment
-                token = request.data.get("stripe_token")
-                if not token:
-                    return Response({"error": "Stripe token is required."}, status=status.HTTP_400_BAD_REQUEST)
+        total_amount = sum(order.total for order in orders)
 
-                try:
-                    charge = stripe.Charge.create(
-                        amount=int(amount * 100),  # Convert to cents
-                        currency="usd",
-                        source=token,
-                        description=f"Payment for Order #{
-                            order.id} by {request.user.username}",
-                    )
-
-                    # Record payment and update order
-                    payment = Payment.objects.create(
-                        customer=request.user,
-                        payment_method="stripe",
-                        payment_id=charge.id,
-                        amount_paid=amount,
-                        status=True,
-                    )
-                    order.payment = payment
-                    order.payment_complete = True
-                    order.order_status = "completed"
-                    order.save()
-
-                    return Response({"success": "Payment successful.", "order_id": order.id}, status=status.HTTP_200_OK)
-
-                except stripe.error.StripeError as e:
-                    return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-            elif payment_method == "paypal":
-                # Handle PayPal payment
-                paypal_payment = paypalrestsdk.Payment({
-                    "intent": "sale",
-                    "payer": {"payment_method": "paypal"},
-                    "transactions": [{
-                        "amount": {"total": f"{amount:.2f}", "currency": "USD"},
-                        "description": f"Payment for Order #{order.id}",
-                    }],
-                    "redirect_urls": {
-                        "return_url": request.data.get("return_url", "http://localhost:8000/payment-success/"),
-                        "cancel_url": request.data.get("cancel_url", "http://localhost:8000/payment-cancel/"),
-                    },
-                })
-
-                if paypal_payment.create():
-                    payment = Payment.objects.create(
-                        customer=request.user,
-                        payment_method="paypal",
-                        payment_id=paypal_payment.id,
-                        amount_paid=amount,
-                        status=True,
-                    )
-                    order.payment = payment
-                    order.payment_complete = True
-                    order.order_status = "completed"
-                    order.save()
-
-                    return Response({
-                        "success": "PayPal payment initiated.",
-                        # Approval URL
-                        "redirect_url": paypal_payment["links"][1]["href"]
-                    }, status=status.HTTP_200_OK)
-
-                else:
-                    return Response({"error": "PayPal payment creation failed."}, status=status.HTTP_400_BAD_REQUEST)
-
-            elif payment_method == "credit_card":
-                # Example handling for credit card (custom implementation required)
-                payment_id = "CREDIT_CARD_PAYMENT_ID"  # Replace with actual logic
+        if payment_method == "stripe":
+            token = request.data.get("stripe_token")
+            if not token:
+                return Response({"error": "Stripe token required."}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                charge = stripe.Charge.create(
+                    amount=int(total_amount * 100),
+                    currency="usd",
+                    source=token,
+                    description=f"Payment for Orders by {
+                        request.user.username}",
+                )
                 payment = Payment.objects.create(
                     customer=request.user,
-                    payment_method="credit_card",
-                    payment_id=payment_id,
-                    amount_paid=amount,
+                    payment_method="stripe",
+                    payment_id=charge.id,
+                    amount_paid=total_amount,
                     status=True,
                 )
-                order.payment = payment
-                order.payment_complete = True
-                order.order_status = "completed"
-                order.save()
+                orders.update(payment=payment, payment_complete=True,
+                              order_status="completed")
+                return Response({"success": "Payment successful."}, status=status.HTTP_200_OK)
+            except stripe.error.StripeError as e:
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-                return Response({"success": "Credit card payment successful.", "order_id": order.id}, status=status.HTTP_200_OK)
+        elif payment_method == "paypal":
+            paypal_payment = paypalrestsdk.Payment({
+                "intent": "sale",
+                "payer": {"payment_method": "paypal"},
+                "transactions": [{
+                    "amount": {"total": f"{total_amount:.2f}", "currency": "USD"},
+                    "description": "Payment for Orders",
+                }],
+                "redirect_urls": {
+                    "return_url": request.data.get("return_url", "http://localhost:8000/payment-success/"),
+                    "cancel_url": request.data.get("cancel_url", "http://localhost:8000/payment-cancel/"),
+                },
+            })
+            if paypal_payment.create():
+                payment = Payment.objects.create(
+                    customer=request.user,
+                    payment_method="paypal",
+                    payment_id=paypal_payment.id,
+                    amount_paid=total_amount,
+                    status=True,
+                )
+                orders.update(payment=payment, payment_complete=True,
+                              order_status="completed")
+                return Response({"success": "PayPal payment initiated.", "redirect_url": paypal_payment["links"][1]["href"]}, status=status.HTTP_200_OK)
+            return Response({"error": "PayPal payment failed."}, status=status.HTTP_400_BAD_REQUEST)
 
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif payment_method == "credit_card":
+            payment_id = "CREDIT_CARD_PAYMENT_ID"
+            payment = Payment.objects.create(
+                customer=request.user,
+                payment_method="credit_card",
+                payment_id=payment_id,
+                amount_paid=total_amount,
+                status=True,
+            )
+            orders.update(payment=payment, payment_complete=True,
+                          order_status="completed")
+            return Response({"success": "Credit card payment successful."}, status=status.HTTP_200_OK)
+
+        return Response({"error": "Payment processing failed."}, status=status.HTTP_400_BAD_REQUEST)
+

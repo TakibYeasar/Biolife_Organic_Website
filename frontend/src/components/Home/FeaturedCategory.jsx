@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaBeer, FaCalendarAlt, FaCarAlt } from 'react-icons/fa';
-import { useFetchProdCategoryQuery } from '../../redux/features/products/productsApi';
+import { useFetchProdCategoryQuery } from '../../store/features/products/productsApi';
 
 const FeaturedCategory = () => {
   const { data: categoriesData, error, isLoading } = useFetchProdCategoryQuery();

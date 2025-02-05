@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFetchMyCartQuery } from '../../redux/features/cart/cartApi';
+import { useFetchMyCartQuery } from '../../store/features/cart/cartApi';
 
 // Reusable Cart Item Component
 const CartItem = ({ image, name, price, quantity }) => {

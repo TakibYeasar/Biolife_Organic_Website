@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ProductCard } from '../index';
-import { useFetchAllProductsQuery, useFetchTopratedProductsQuery } from '../../redux/features/products/productsApi';
+import { useFetchAllProductsQuery, useFetchTopratedProductsQuery } from '../../store/features/products/productsApi';
 
 const OurProducts = () => {
   const { data: products, error: allProductsError, isLoading: allProductsLoading } = useFetchAllProductsQuery();

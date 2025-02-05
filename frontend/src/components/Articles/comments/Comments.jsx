@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCurrentUserQuery } from '../../../redux/features/auth/authApi';
+import { useCurrentUserQuery } from '../../../store/features/auth/authApi';
 import {
     useCreateCommentMutation,
     useCreateReplyCommentMutation,
@@ -7,7 +7,7 @@ import {
     useDeleteCommentMutation,
     useLikeDislikeCommentMutation,
     useRemoveLikeDislikeCommentMutation,
-} from '../../../redux/features/articles/articlesApi';
+} from '../../../store/features/articles/articlesApi';
 import CommentForm from './CommentForm';
 import CommentsList from './CommentsList';
 

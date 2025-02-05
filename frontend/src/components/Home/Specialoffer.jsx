@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useFetchSpecialOfferQuery } from '../../redux/features/products/productsApi';
+import { useFetchSpecialOfferQuery } from '../../store/features/products/productsApi';
 
 const Specialoffer = () => {
   const { data: specialOffer, isLoading, isError } = useFetchSpecialOfferQuery();

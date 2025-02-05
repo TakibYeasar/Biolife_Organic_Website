@@ -1,47 +1,49 @@
 from rest_framework import serializers
-from .models import Address, Payment, Order
+from .models import Order, SubOrder, Payment, Address
 from cart.models import CartProduct
-from cart.serializers import CartProductSerializer
 
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = [
-            'id', 'user', 'address_type', 'first_name', 'last_name', 'email',
-            'phone', 'street_address', 'city', 'state', 'zip_code',
-            'country', 'is_default', 'created_at'
-        ]
-        read_only_fields = ['created_at']
+        fields = "__all__"
 
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        fields = [
-            'id', 'customer', 'payment_method', 'payment_id', 'amount_paid',
-            'status', 'created_at'
-        ]
-        read_only_fields = ['created_at']
+        fields = "__all__"
+
+
+class CartProductSerializer(serializers.ModelSerializer):
+    product_name = serializers.CharField(source="product.name", read_only=True)
+
+    class Meta:
+        model = CartProduct
+        fields = ["id", "product_name", "quantity", "price"]
+
+
+class SubOrderSerializer(serializers.ModelSerializer):
+    products = CartProductSerializer(many=True, read_only=True)
+    farmer_name = serializers.CharField(
+        source="farmer.username", read_only=True)
+
+    class Meta:
+        model = SubOrder
+        fields = ["id", "order", "farmer", "farmer_name",
+                  "products", "subtotal", "order_status", "paid"]
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    cart_products = serializers.SerializerMethodField()
+    sub_orders = SubOrderSerializer(many=True, read_only=True)
+    customer_name = serializers.CharField(
+        source="customer.username", read_only=True)
     address = AddressSerializer(read_only=True)
     payment = PaymentSerializer(read_only=True)
 
     class Meta:
         model = Order
-        fields = [
-            'id', 'customer', 'cart', 'address', 'cart_products',
-            'subtotal', 'discount', 'total', 'payment',
-            'payment_complete', 'order_status', 'created_at'
-        ]
-        read_only_fields = ['subtotal', 'total', 'created_at']
+        fields = ["id", "customer", "customer_name", "cart", "address", "subtotal",
+                  "discount", "total", "payment", "payment_complete", "order_status", "sub_orders"]
 
-    def get_cart_products(self, obj):
-        """
-        Retrieve all cart products associated with the cart in the order.
-        """
-        cart_products = CartProduct.objects.filter(cart=obj.cart)
-        return CartProductSerializer(cart_products, many=True).data
+

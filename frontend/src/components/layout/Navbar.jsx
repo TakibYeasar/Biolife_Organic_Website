@@ -1,0 +1,243 @@
+import React, { useEffect, useState } from 'react';
+import { FaBars, FaTimes, FaEnvelope, FaHeart, FaShoppingCart } from 'react-icons/fa';
+import { BsSun, BsMoon } from 'react-icons/bs';
+import organic4 from '/assets/images/organic-4.png';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { useLogoutMutation } from '../../store/features/auth/authApi';
+import { resetAuthState } from '../../store/features/auth/authSlice';
+import { toast } from 'react-toastify';
+import LikedProducts from '../Products/LikedProducts';
+import CartProducts from '../Products/CartProducts';
+
+const Navbar = ({ user, isAuthenticated }) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [isHovered, setIsHovered] = useState({ heart: false, cart: false });
+    const [theme, setTheme] = useState('light-theme');
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const [logout] = useLogoutMutation();
+
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+    useEffect(() => {
+        window.addEventListener('scroll', () => {
+            setIsScrolled(window.scrollY >= 80);
+        });
+    }, []);
+
+    const toggleTheme = () => {
+        setTheme((prev) => (prev === 'dark-theme' ? 'light-theme' : 'dark-theme'));
+    };
+
+    useEffect(() => {
+        document.body.className = theme;
+    }, [theme]);
+
+    useEffect(() => {
+        const tokenTimestamp = localStorage.getItem('loginTimestamp');
+        if (tokenTimestamp) {
+            const timeElapsed = Date.now() - Number(tokenTimestamp);
+            if (timeElapsed >= 3600000) {
+                handleLogout();
+            } else {
+                setTimeout(handleLogout, 3600000 - timeElapsed);
+            }
+        }
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        localStorage.removeItem('loginTimestamp');
+        sessionStorage.clear();
+        dispatch(resetAuthState());
+        toast.success('Logged out successfully');
+        navigate('/sign-in');
+    };
+
+    const handleDashboardClick = () => {
+        const dashboardPath =
+            user?.role === 'admin' ? '/admin-dashboard' :
+                user?.role === 'customer' ? '/customer-dashboard' :
+                    user?.role === 'farmer' ? '/farmer-dashboard' : '/sign-in';
+        navigate(dashboardPath);
+    };
+
+
+
+    return (
+        <header
+            className={`bg-primary ${isScrolled ? 'shadow-md' : ''} fixed top-0 left-0 w-full z-50 transition-shadow duration-300`}
+        >
+            {/* Top Bar */}
+            <div className="bg-secondary py-2 text-sm">
+                <div className="container mx-auto flex justify-between items-center text-white">
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                            <FaEnvelope />
+                            <span>Organic@company.com</span>
+                        </div>
+                        <span>Free Shipping for Orders over $99</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <select className="bg-transparent border border-white px-2 py-1 rounded text-white">
+                            <option value="eur">€ EUR</option>
+                            <option value="usd">$ USD</option>
+                            <option value="gbp">£ GBP</option>
+                            <option value="jpy">¥ JPY</option>
+                        </select>
+                        <select className="bg-transparent border border-white px-2 py-1 rounded text-white">
+                            <option value="en">English</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="jp">Japanese</option>
+                        </select>
+                        {isAuthenticated ? (
+                            <button
+                                onClick={handleLogout}
+                                className="bg-white text-primary px-4 py-1 rounded hover:bg-secondary hover:text-white transition"
+                            >
+                                Logout
+                            </button>
+                        ) : (
+                            <div className="flex gap-2">
+                                <Link
+                                    to="/sign-up"
+                                    className="bg-white text-primary px-4 py-1 rounded hover:bg-secondary hover:text-white transition"
+                                >
+                                    Sign Up
+                                </Link>
+                                <Link
+                                    to="/sign-in"
+                                    className="bg-white text-primary px-4 py-1 rounded hover:bg-secondary hover:text-white transition"
+                                >
+                                    Sign In
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Main Navbar */}
+            <div className="container mx-auto flex justify-between items-center py-4">
+                {/* Logo */}
+                <Link to="/">
+                    <img src={organic4} alt="Organic Farm Logo" className="h-12" />
+                </Link>
+
+                {/* Desktop Links */}
+                <nav className="hidden lg:flex gap-8 text-white">
+                    {['Home', 'About', 'Products', 'Articles', 'Contact'].map((item) => (
+                        <Link
+                            to={`/${item.toLowerCase()}`}
+                            key={item}
+                            className="hover:text-secondary transition"
+                        >
+                            {item}
+                        </Link>
+                    ))}
+                    {isAuthenticated && (
+                        <button
+                            onClick={handleDashboardClick}
+                            className="hover:text-secondary transition"
+                        >
+                            Dashboard
+                        </button>
+                    )}
+                </nav>
+
+                {/* Right Section */}
+                <div className="flex items-center gap-4">
+                    {user?.role === 'customer' && (
+                        <div className="flex items-center gap-4">
+                            <div
+                                className="relative"
+                                onMouseEnter={() => setIsHovered((prev) => ({ ...prev, heart: true }))}
+                                onMouseLeave={() => setIsHovered((prev) => ({ ...prev, heart: false }))}
+                            >
+                                <button className="text-gray-600 hover:text-gray-900">
+                                    <FaHeart className="text-white text-2xl" />
+                                </button>
+                                {isHovered.heart && <LikedProducts />}
+                            </div>
+                            <div
+                                className="relative"
+                                onMouseEnter={() => setIsHovered((prev) => ({ ...prev, cart: true }))}
+                                onMouseLeave={() => setIsHovered((prev) => ({ ...prev, cart: false }))}
+                            >
+                                <button className="text-gray-600 hover:text-gray-900">
+                                    <FaShoppingCart className="text-white text-2xl" />
+                                </button>
+                                {isHovered.cart && <CartProducts />}
+                            </div>
+                        </div>
+                    )}
+                    <button onClick={toggleTheme} className="text-white text-2xl">
+                        {theme === 'dark-theme' ? <BsSun /> : <BsMoon />}
+                    </button>
+                    <button onClick={toggleMenu} className="text-white text-2xl lg:hidden">
+                        {isMenuOpen ? <FaTimes /> : <FaBars />}
+                    </button>
+                </div>
+            </div>
+
+            {/* Mobile Menu */}
+            {isMenuOpen && (
+                <div className="bg-primary lg:hidden">
+                    <ul className="flex flex-col items-center py-4 text-white">
+                        {['Home', 'About', 'Products', 'Articles', 'Contact'].map((item) => (
+                            <li key={item}>
+                                <Link to={`/${item.toLowerCase()}`} onClick={toggleMenu}>
+                                    {item}
+                                </Link>
+                            </li>
+                        ))}
+                        {isAuthenticated ? (
+                            <>
+                                <li>
+                                    <button
+                                        onClick={() => {
+                                            handleDashboardClick();
+                                            toggleMenu();
+                                        }}
+                                    >
+                                        Dashboard
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        onClick={() => {
+                                            handleLogout();
+                                            toggleMenu();
+                                        }}
+                                    >
+                                        Logout
+                                    </button>
+                                </li>
+                            </>
+                        ) : (
+                            <>
+                                <li>
+                                    <Link to="/sign-in" onClick={toggleMenu}>
+                                        Sign In
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/sign-up" onClick={toggleMenu}>
+                                        Sign Up
+                                    </Link>
+                                </li>
+                            </>
+                        )}
+                    </ul>
+                </div>
+            )}
+        </header>
+    );
+};
+
+export default Navbar;

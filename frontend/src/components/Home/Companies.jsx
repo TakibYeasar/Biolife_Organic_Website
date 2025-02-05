@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFetchBrandsQuery } from '../../redux/features/core/coreApi';
+import { useFetchBrandsQuery } from '../../store/features/core/coreApi';
 
 const Companies = () => {
   const { data: brands, error, isLoading } = useFetchBrandsQuery();

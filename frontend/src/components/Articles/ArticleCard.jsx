@@ -11,8 +11,8 @@ import {
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import author from "/assets/images/about-us/author-02.png";
-import { useCurrentUserQuery } from "../../redux/features/auth/authApi";
-import { useLikeArticleMutation, useUnlikeArticleMutation } from "../../redux/features/articles/articlesApi";
+import { useCurrentUserQuery } from "../../store/features/auth/authApi";
+import { useLikeArticleMutation, useUnlikeArticleMutation } from "../../store/features/articles/articlesApi";
 
 const ArticleCard = ({ item }) => {
   const navigate = useNavigate();

@@ -3,7 +3,7 @@ import { FaHeart } from "react-icons/fa";
 import {
     useFetchUserLikedProductsQuery,
     useRemoveProductLikeMutation,
-} from "../../redux/features/products/productsApi";
+} from "../../store/features/products/productsApi";
 
 // Reusable Product Component
 const LikedProdItem = ({ product, isLiked, onRemoveLike, onViewDetails }) => {

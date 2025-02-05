@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLoginMutation } from '../../redux/features/auth/authApi';
+import { useLoginMutation } from '../../store/features/auth/authApi';
 import { toast } from 'react-toastify';
 
 const SignIn = () => {

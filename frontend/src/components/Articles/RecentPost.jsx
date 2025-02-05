@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFetchArticlesQuery } from '../../redux/features/articles/articlesApi';
+import { useFetchArticlesQuery } from '../../store/features/articles/articlesApi';
 
 const RecentPost = () => {
     const { data: articles = [], isLoading: articlesLoading } = useFetchArticlesQuery();

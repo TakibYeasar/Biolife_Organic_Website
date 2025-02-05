@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaFacebook, FaGoogle, FaTwitter } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useRegisterMutation } from "../../redux/features/auth/authApi";
+import { useRegisterMutation } from "../../store/features/auth/authApi";
 
 const SignUp = () => {
     const navigate = useNavigate();

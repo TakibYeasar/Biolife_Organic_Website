@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import { useFetchBannersQuery } from '../../redux/features/core/coreApi';
+import { useFetchBannersQuery } from '../../store/features/core/coreApi';
 
 const variants = {
   initial: (direction) => ({

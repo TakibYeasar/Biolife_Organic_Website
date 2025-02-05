@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFetchDiscountProductQuery } from '../../redux/features/products/productsApi';
+import { useFetchDiscountProductQuery } from '../../store/features/products/productsApi';
 
 const Discountprod = () => {
   // Fetch discounted products using Redux

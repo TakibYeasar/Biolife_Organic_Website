@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArticleCard } from '../index';
-import { useFetchArticlesQuery } from '../../redux/features/articles/articlesApi';
+import { useFetchArticlesQuery } from '../../store/features/articles/articlesApi';
 
 const OurArticles = () => {
   const { data: articles = [], isLoading: articlesLoading } = useFetchArticlesQuery();

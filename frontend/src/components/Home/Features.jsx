@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { useFetchFeaturedQuery } from '../../redux/features/core/coreApi';
+import { useFetchFeaturedQuery } from '../../store/features/core/coreApi';
 
 const Features = () => {
   const { data: featureds, error, isLoading } = useFetchFeaturedQuery();

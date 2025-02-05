@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import {
     useCreateProductLikeMutation,
     useRemoveProductLikeMutation,
-} from "../../redux/features/products/productsApi";
-import { useCurrentUserQuery } from "../../redux/features/auth/authApi";
-import { useAddToCartMutation } from "../../redux/features/cart/cartApi";
+} from "../../store/features/products/productsApi";
+import { useCurrentUserQuery } from "../../store/features/auth/authApi";
+import { useAddToCartMutation } from "../../store/features/cart/cartApi";
 import { toast } from "react-toastify";
 
 const ProductCard = ({ item }) => {

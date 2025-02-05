@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion } from "framer-motion";
 import { ProductCard } from "../index";
-import { useFetchBestsellingProductsQuery } from '../../redux/features/products/productsApi';
+import { useFetchBestsellingProductsQuery } from '../../store/features/products/productsApi';
 
 const Bestsellingprod = () => {
   const { data: bestsellingprod, error, isLoading } = useFetchBestsellingProductsQuery();
