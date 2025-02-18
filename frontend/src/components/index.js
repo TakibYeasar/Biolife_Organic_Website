@@ -57,7 +57,6 @@ export { default as SalesReports } from './dashboard/farmer/SalesReports';
 
 // components - dashboard - customer
 export { default as MyInquiries } from './dashboard/customer/MyInquiries';
-export { default as Wishlists } from './dashboard/customer/Wishlists';
 export { default as OrderHistory } from './dashboard/customer/OrderHistory';
 export { default as OrderTracking } from './dashboard/customer/OrderTracking';
 export { default as AccountSettings } from './dashboard/customer/AccountSettings';

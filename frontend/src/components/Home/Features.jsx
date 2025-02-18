@@ -22,9 +22,9 @@ const Features = () => {
   }
 
   return (
-    <section className="py-16">
+    <section className="">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-semibold text-gray-800">Featured Items</h2>
+        <h2 className="main-title">Featured Items</h2>
       </div>
 
       <motion.div className="overflow-hidden">
@@ -44,9 +44,9 @@ const Features = () => {
                     className="w-full h-56 object-cover transition-transform transform hover:scale-110"
                   />
                 </a>
-                <div className="absolute inset-0 flex flex-col justify-center items-center text-center bg-black bg-opacity-40 text-white px-4 py-8">
-                  <h3 className="text-xl font-semibold">{item.title}</h3>
-                  <p className="text-sm mt-2">{item.subtitle}</p>
+                <div className="absolute inset-0 flex flex-col justify-center items-center text-center bg-black bg-opacity-40 px-4 pt-8">
+                  <h3 className="text-3xl font-bold text-fontLight">{item.title}</h3>
+                  <p className="text-xl font-semibold text-fontLight">{item.subtitle}</p>
                 </div>
               </div>
             </motion.li>

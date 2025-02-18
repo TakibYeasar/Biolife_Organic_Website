@@ -34,12 +34,11 @@ const OurProducts = () => {
   const topRatedProducts = topratedProducts?.slice(0, 8) || [];
 
   return (
-    <section className="py-16">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="max-w-7xl mx-auto px-6">
         {/* Section Heading */}
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-primary mb-2">Curated for You</p>
-          <h2 className="text-3xl font-bold text-gray-800">Our Products</h2>
+          <p className="title-two">Curated for You</p>
+          <h2 className="main-title">Our Products</h2>
         </div>
 
         {/* Tab Navigation */}
@@ -97,7 +96,6 @@ const OurProducts = () => {
             </motion.div>
           )}
         </div>
-      </div>
     </section>
   );
 };

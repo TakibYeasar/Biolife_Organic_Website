@@ -29,7 +29,7 @@ export default {
         base: '14px',
         'p-md': ['18px', '28px'],
         'main-title': ['38px', '48px'],
-        'title-two': ['30px', '40px'],
+        'title-two': ['18px', '26px'],
       },
       fontFamily: {
         cairo: ['Cairo', 'sans-serif'],

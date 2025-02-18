@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import {
   MyInquiries,
-  Wishlists,
   OrderHistory,
   OrderTracking,
   AccountSettings
@@ -9,7 +8,6 @@ import {
 
 const sections = [
   { name: 'inquiries', label: 'My Inquiries', component: <MyInquiries /> },
-  { name: 'wishlists', label: 'WishLists', component: <Wishlists /> },
   { name: 'history', label: 'Order History', component: <OrderHistory /> },
   { name: 'tracking', label: 'Order Tracking', component: <OrderTracking /> },
   { name: 'settings', label: 'Account Settings', component: <AccountSettings /> },

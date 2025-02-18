@@ -33,8 +33,8 @@ const Bestsellingprod = () => {
 
   return (
     <section className="my-16">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-semibold text-gray-800">Bestselling Products</h2>
+      <div className="mb-8 pl-10">
+        <h2 className="main-title">Bestselling Products</h2>
       </div>
 
       <motion.div className="overflow-hidden">

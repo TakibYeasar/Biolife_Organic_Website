@@ -19,14 +19,14 @@ const Discountprod = () => {
   return (
     <section className="py-16">
       <div className="container mx-auto">
-        <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">Discounted Products</h2>
+        <h2 className="main-title mb-12">Discounted Products</h2>
 
         {/* Column Layout */}
         <div className="flex flex-col gap-8">
           {productsToDisplay.map((product) => (
             <div
               key={product.id}
-              className="bg-white border rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+              className="flex bg-white border rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
             >
               {/* Product Image */}
               <a href="#" className="block">

@@ -1,38 +1,53 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import { useFetchBrandsQuery } from '../../store/features/core/coreApi';
 
 const Companies = () => {
   const { data: brands, error, isLoading } = useFetchBrandsQuery();
+  const carousel = useRef(null);
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    if (carousel.current) {
+      setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
+    }
+  }, [brands]);
 
   if (isLoading) {
-    return <div className="text-center py-8">Loading...</div>;
+    return <div className="text-center py-8 text-gray-600">Loading...</div>;
   }
 
   if (error) {
-    return <div className="text-center py-8 text-primary">Error: {error.message}</div>;
+    return <div className="text-center py-8 text-red-500">Error: {error.message}</div>;
   }
 
   return (
-    <section className="py-16">
-      <div className="container mx-auto px-6">
-        <ul className="flex flex-wrap justify-center gap-8">
-          {brands.map((item) => (
-            <li key={item.id} className="w-full sm:w-1/2 lg:w-1/5">
-              <div className="p-4 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                <a href="#" className="block">
-                  <figure className="flex justify-center">
-                    <img
-                      src={item.logo}
-                      alt={`Brand ${item.id}`}
-                      className="rounded-lg shadow-md w-full h-auto object-contain"
-                    />
-                  </figure>
-                </a>
-              </div>
-            </li>
-          ))}
-        </ul>
+    <section className="">
+      <div className="text-center mb-8">
+        <h2 className="main-title">Our Partners</h2>
       </div>
+
+      <motion.div ref={carousel} className="overflow-hidden">
+        <motion.ul
+          className="flex space-x-6 px-6 md:px-12 lg:px-20"
+          drag="x"
+          dragConstraints={{ right: 0, left: -width }}
+          animate={{ x: [0, -width] }}
+          transition={{ ease: "linear", duration: 20, repeat: Infinity }}
+        >
+          {brands.concat(brands).map((item, index) => (
+            <motion.li key={index} className="min-w-[150px] md:min-w-[180px]">
+              <div className="p-4 rounded-lg flex justify-center items-center">
+                <img
+                  src={item.logo}
+                  alt={`Brand ${item.id}`}
+                  className="w-48 h-48 object-contain"
+                />
+              </div>
+            </motion.li>
+          ))}
+        </motion.ul>
+      </motion.div>
     </section>
   );
 };

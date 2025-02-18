@@ -2,9 +2,10 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useCurrentUserQuery } from '../store/features/auth/authApi';
 
-const PrivateRoute = ({ children }) => {
+const PrivateRoute = ({ children, allowedRoles }) => {
     const { data: user, isLoading, error } = useCurrentUserQuery();
     const isAuthenticated = !!user;
+    const userRole = user?.role; // Assuming user object has a 'role' field
 
     if (isLoading) {
         return <div>Loading...</div>; // Show loading state while fetching user data
@@ -12,6 +13,10 @@ const PrivateRoute = ({ children }) => {
 
     if (error || !isAuthenticated) {
         return <Navigate to="/sign-in" replace />; // Redirect to sign-in if unauthenticated
+    }
+
+    if (allowedRoles && !allowedRoles.includes(userRole)) {
+        return <Navigate to="/" replace />; // Redirect to homepage if role is not allowed
     }
 
     return children;

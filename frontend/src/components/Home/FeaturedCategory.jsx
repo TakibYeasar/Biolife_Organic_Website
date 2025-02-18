@@ -36,11 +36,8 @@ const FeaturedCategory = () => {
   return (
     <section className="py-16">
       <div className="text-center mb-10">
-        <p className="text-primary text-sm font-semibold mb-2">HOT CATEGORIES 2023</p>
-        <h4 className="text-4xl font-extrabold text-gray-800 mb-4">Featured Categories</h4>
-        <p className="italic text-lg max-w-3xl mx-auto text-gray-500">
-          Natural food is taken from the world's most modern farms with strict safety cycles.
-        </p>
+        <p className="title-two">HOT CATEGORIES 2023</p>
+        <h4 className="main-title">Featured Categories</h4>
       </div>
 
       <motion.div

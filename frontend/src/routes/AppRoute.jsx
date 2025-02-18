@@ -25,12 +25,49 @@ import {
 const AppRoute = () => {
     return (
         <Routes>
-            {/* 🔒 Protected Routes */}
-            <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
-            <Route path="/customer-dashboard" element={<PrivateRoute><CustomerDashboard /></PrivateRoute>} />
-            <Route path="/farmer-dashboard" element={<PrivateRoute><FarmerDashboard /></PrivateRoute>} />
-            <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
-            <Route path="/checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
+            {/* 🔒 Role-Based Protected Routes */}
+            <Route
+                path="/admin-dashboard"
+                element={
+                    <PrivateRoute allowedRoles={['admin']}>
+                        <AdminDashboard />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/customer-dashboard"
+                element={
+                    <PrivateRoute allowedRoles={['customer']}>
+                        <CustomerDashboard />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/farmer-dashboard"
+                element={
+                    <PrivateRoute allowedRoles={['farmer']}>
+                        <FarmerDashboard />
+                    </PrivateRoute>
+                }
+            />
+
+            {/* 🔒 Authenticated User Routes */}
+            <Route
+                path="/cart"
+                element={
+                    <PrivateRoute allowedRoles={['customer', 'farmer', 'admin']}>
+                        <Cart />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/checkout"
+                element={
+                    <PrivateRoute allowedRoles={['customer', 'farmer', 'admin']}>
+                        <Checkout />
+                    </PrivateRoute>
+                }
+            />
 
             {/* 🌍 Public Routes */}
             <Route path="/" element={<Homepage />} />
