@@ -4,8 +4,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from authapi.models import CustomUser
 from authapi.serializers import UserSerializer
-from .models import Customer, Farmer
-from .serializers import CustomerSerializer, FarmerSerializer
+from .models import UserProfile
+from .serializers import UserProfileSerializer
 from rest_framework.exceptions import NotFound
 from rest_framework.exceptions import PermissionDenied
 
@@ -60,56 +60,6 @@ class RemoveUserView(APIView):
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
-
-class CreateUserProfileView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, *args, **kwargs):
-        user = request.user
-
-        if user.role == 'admin':
-            profile_type = request.data.get('profile_type')
-
-            if profile_type == 'customer':
-                return self.create_customer_profile(request)
-            elif profile_type == 'farmer':
-                return self.create_farmer_profile(request)
-            else:
-                return Response({"error": "Invalid profile type. Must be 'customer' or 'farmer'."}, status=status.HTTP_400_BAD_REQUEST)
-
-        elif user.role == 'customer':
-            return self.create_customer_profile(request)
-
-        elif user.role == 'farmer':
-            return self.create_farmer_profile(request)
-
-        else:
-            raise PermissionDenied(
-                "You do not have permission to create profiles.")
-
-    def create_customer_profile(self, request):
-        customer_data = {
-            **request.data,
-            'user': request.user.id,
-        }
-        serializer = CustomerSerializer(data=customer_data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def create_farmer_profile(self, request):
-        farmer_data = {
-            **request.data,
-            'user': request.user.id,
-        }
-        serializer = FarmerSerializer(data=farmer_data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 class UserProfileView(APIView):
     """
     View to retrieve the authenticated user's profile.
@@ -119,26 +69,12 @@ class UserProfileView(APIView):
     def get(self, request):
         user = request.user
 
-        if user.role == "customer":
-            try:
-                customer = Customer.objects.get(user=user)
-                serializer = CustomerSerializer(customer)
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            except customer.DoesNotExist:
-                raise NotFound({"detail": "customer profile not found."})
-
-        elif user.role == "farmer":
-            try:
-                farmer = Farmer.objects.get(user=user)
-                serializer = FarmerSerializer(farmer)
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            except farmer.DoesNotExist:
-                raise NotFound({"detail": "farmer profile not found."})
-
-        return Response(
-            {"detail": "Invalid user role."},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        try:
+            user_profile = UserProfile.objects.get(user=user)
+            serializer = UserProfileSerializer(user_profile)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except UserProfile.DoesNotExist:
+            raise NotFound({"detail": "User profile not found."})
 
 
 class UserProfileUpdateView(APIView):
@@ -150,32 +86,13 @@ class UserProfileUpdateView(APIView):
     def put(self, request):
         user = request.user
 
-        if user.role == "customer":
-            try:
-                customer = Customer.objects.get(user=user)
-                serializer = CustomerSerializer(
-                    customer, data=request.data, partial=True
-                )
-                if serializer.is_valid():
-                    serializer.save()
-                    return Response(serializer.data, status=status.HTTP_200_OK)
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            except customer.DoesNotExist:
-                raise NotFound({"detail": "customer profile not found."})
-
-        elif user.role == "farmer":
-            try:
-                farmer = Farmer.objects.get(user=user)
-                serializer = FarmerSerializer(
-                    farmer, data=request.data, partial=True
-                )
-                if serializer.is_valid():
-                    serializer.save()
-                    return Response(serializer.data, status=status.HTTP_200_OK)
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            except farmer.DoesNotExist:
-                raise NotFound({"detail": "farmer profile not found."})
-
-        return Response(
-            {"detail": "Invalid user role."}, status=status.HTTP_400_BAD_REQUEST
-        )
+        try:
+            user_profile = UserProfile.objects.get(user=user)
+            serializer = UserProfileSerializer(
+                user_profile, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except UserProfile.DoesNotExist:
+            raise NotFound({"detail": "User profile not found."})
