@@ -7,7 +7,7 @@
 
 A modern e-commerce platform connecting health-conscious consumers with organic producers. Built with Django, React, and PostgreSQL.
 
-![Project Banner]()
+![Project Banner](https://github.com/TakibYeasar/Biolife_Organic_Website/blob/main/screencapture-localhost-5173-2025-03-09-09_16_49.png)
 
 ## 📌 Overview
 
