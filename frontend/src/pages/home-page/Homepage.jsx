@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  CategorySection,
   Banner,
   Features,
   OurProducts,
@@ -10,7 +11,6 @@ import {
   OurArticles,
   FeaturedCategory,
 } from '../../components';
-import CategoryList from "../../components/home/CategoryList";
 
 const Homepage = () => {
   return (
@@ -19,7 +19,7 @@ const Homepage = () => {
       <section className="container mx-auto px-4 pt-32 ">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-1 md:col-span-1">
-            <CategoryList />
+            <CategorySection />
           </div>
           <div className="md:col-span-2 lg:col-span-3">
             <Banner />

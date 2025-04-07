@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaAngleRight, FaBars, FaCaretDown } from "react-icons/fa";
 import { useFetchProdCategoryQuery } from '../../store/features/products/productsApi';
 
-const CategoryList = () => {
+const CategorySection = () => {
     const { data: categories = [], isLoading, isError } = useFetchProdCategoryQuery();
     const [hoveredCategory, setHoveredCategory] = useState(null);
     const [isOpen, setIsOpen] = useState(true);
@@ -80,4 +80,4 @@ const CategoryList = () => {
     );
 };
 
-export default CategoryList;
+export default CategorySection;
