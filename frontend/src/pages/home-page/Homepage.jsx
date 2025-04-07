@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  CategoryList,
   Banner,
   Features,
   OurProducts,
@@ -11,6 +10,7 @@ import {
   OurArticles,
   FeaturedCategory,
 } from '../../components';
+import CategoryList from "../../components/home/CategoryList";
 
 const Homepage = () => {
   return (
