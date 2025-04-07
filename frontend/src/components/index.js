@@ -7,7 +7,7 @@ export { default as Navbar } from "./layout/Navbar";
 export { default as Footer } from "./layout/Footer";
 
 // components - home
-export { default as CategoryList } from "./home/CategoryList.jsx";
+export { default as CategoryList } from "./home/CategoryList";
 export { default as Banner } from "./home/Banner";
 export { default as Features } from "./home/Features";
 export { default as FeaturedCategory } from "./home/FeaturedCategory";
