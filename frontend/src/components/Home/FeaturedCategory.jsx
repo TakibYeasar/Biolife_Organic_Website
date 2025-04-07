@@ -21,8 +21,8 @@ const FeaturedCategory = () => {
 
   const flattenCategories = (categories) => {
     const flatList = [];
-    const traverse = (categoryList) => {
-      categoryList.forEach((category) => {
+    const traverse = (cat_list) => {
+      cat_list.forEach((category) => {
         flatList.push(category);
         if (category.children?.length) traverse(category.children);
       });
